@@ -101,7 +101,7 @@ print(desk)
 
 Output:
 
-```py
+```sh
 ## On Linux
 /home/YOU/Desktop
 
