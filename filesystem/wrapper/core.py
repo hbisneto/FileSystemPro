@@ -1,4 +1,4 @@
-import glob as glob_lib
+import glob
 import os
 import shutil
 
@@ -8,10 +8,10 @@ def get_facts(pathname):
             return fun(pathname)
         except:
             return default
-
+        
     head, tail = os.path.split(pathname)
+
     result = {}
-    
     result["modified"] = fun_or_default(pathname, os.path.getmtime)
     result["created"] = fun_or_default(pathname, os.path.getctime)
     result["access"] = fun_or_default(pathname, os.path.getatime)
@@ -27,12 +27,11 @@ def get_facts(pathname):
     result["ext"] = tail.split(".")[-1] if result["is_file"] else ""
     return result
 
-def glob(path):
-
+def get_files(path):
     path = os.path.expanduser(path)
     print(path)
     result = []
-    for x in glob_lib.glob(path):
+    for x in glob.glob(path):
         result.append(get_facts(x))
     return result
 
@@ -43,6 +42,23 @@ def walk(path):
         results.append(get_facts(root))
         results.extend([get_facts(os.path.join(root,x)) for x in files])
     return results
+
+def enumerate_files(path):
+    ### Same is walk
+    # walk is under support until test phase is over.
+    # It can be removed in the next versions.
+    results = []
+    path = os.path.expanduser(path)
+    for root, dirs, files in os.walk(path):
+        results.append(get_facts(root))
+        results.extend([get_facts(os.path.join(root,x)) for x in files])
+    return results
+
+def mkdir(path):
+    try:
+        os.mkdir(path)
+    except OSError:
+        pass
 
 def makedirs(path):
     try:
@@ -57,11 +73,9 @@ def delete(path):
     if os.path.isdir(path):
         shutil.rmtree(path)
         return
-    
     os.remove(path)
 
     
 def store(path, value):
     with open(path, "w") as f:
         f.write(value)
-
