@@ -24,8 +24,7 @@ git clone https://github.com/hbisneto/FileSystem.git
 
 ## Usage Example
 
-These directories are dynamically generated based on the operating system platform (linux, darwin for Mac, and Windows). Learn more about how to use the library below:
-
+These directories are dynamically generated based on the operating system platform (linux, darwin for Mac, and Windows)
 #
 
 <details>
@@ -89,7 +88,7 @@ print(fs.windows_favorites) # (specific to Windows)
 <details>
 <summary>Reaching Desktop Folder</summary>
 
-In this exemple of code, we will get the Desktop URL of your operating system.
+The following example shows how to get the `Desktop` directory path
 
 ```py
 import filesystem as fs
@@ -116,9 +115,9 @@ C:\Users\YOU\Desktop
 #
 
 <details>
-<summary>Creating A Folder</summary>
+<summary>Creating a Folder</summary>
 
-This exemple shows how to create a folder inside the `Documents` folder.
+The following example shows how to create a new directory named `database` inside the `Documents` directory
 
 ```py
 import filesystem as fs
@@ -126,30 +125,32 @@ import os
 
 bd_folder = "database"
 try:
-   # The directory "database" will be added inside "Documents"
-   # /Users/YOU/Documents/database
    os.mkdir(os.path.join(fs.documents, bd_folder))
 except:
    print("Could`t create the folder")
 ```
+#
 
-You can also use Wrapper to create a folder.
-<br> Learn more about Wrapper below
+#### Using Wrapper
+You can also use Wrapper to create a folder. The following example shows how to create a new directory named `database` inside the `Documents` directory using Wrapper.
+
+**<p>Learn more about Wrapper reading below.</p>**
 
 ```py
+import filesystem as fs
+from filesystem import wrapper as wr
 
+bd_folder = "database"
+try:
+   wr.mkdir(f'{fs.documents}/{bd_folder}')
+except:
+   print("Could`t create the folder")
 ```
-<!--[python.org](https://www.python.org/)-->
 </details>
 
 #
 
 # Wrapper
-
-<!--
-Wrapper is a collection of utility functions for file and directory operations.
-Wrapper also is used to monitor changes in a file system.
--->
 
 Wrapper is a comprehensive toolkit that provides a set of utility functions specifically designed to facilitate file and directory operations. These operations may include creating, reading, updating, and deleting files or directories.
 
@@ -166,9 +167,9 @@ These directories are dynamically generated based on the operating system platfo
 
 1. `get_facts(pathname)`: This function takes a file or directory path as input and returns a dictionary containing various attributes of the file or directory. These attributes include the time of last modification, creation time, last access time, name, size, absolute path, parent directory, whether it's a directory or file or link, whether it exists, and its extension (if it's a file).
 
-2. `glob(path)`: This function takes a path as input (which can include wildcards), expands any user home directory symbols (`~`), and returns a list of dictionaries containing the attributes of each file or directory that matches the path.
+2. `get_files(path)`: This function takes a path as input (which can include wildcards), expands any user home directory symbols (`~`), and returns a list of dictionaries containing the attributes of each file or directory that matches the path.
 
-3. `walk(path)`: This function performs a depth-first traversal of the directory tree at the given path (after expanding any user home directory symbols). It returns a list of dictionaries containing the attributes of each file and directory in the tree.
+3. `enumerate_files(path)`: This function performs a depth-first traversal of the directory tree at the given path (after expanding any user home directory symbols). It returns a list of dictionaries containing the attributes of each file and directory in the tree.
 
 4. `makedirs(path)`: This function attempts to create directories at the given path. If the directories already exist, it does nothing.
 
@@ -186,7 +187,7 @@ Wrapper Watcher is used to monitor changes in a file system.
 
 - `__init__(self, root)`: This is the constructor method that initializes the `Watcher` object with a root directory to watch. It also saves the current state of the file system in `self.saved_state`.
 
-- `get_state(self, path)`: This method returns a dictionary where the keys are the absolute paths of all files in the given path and the values are file metadata obtained from the `core.walk(path)` function.
+- `get_state(self, path)`: This method returns a dictionary where the keys are the absolute paths of all files in the given path and the values are file metadata obtained from the `core.enumerate_files(path)` function.
 
 - `diff(self)`: This method compares the current state of the file system with the saved state and identifies any changes (created, updated, or removed files). It returns a list of dictionaries where each dictionary contains the metadata of a changed file and an additional key "change" indicating the type of change.
 
@@ -254,7 +255,7 @@ Output:
 ['CLI.py', 'Sample_File.py']
 ```
 
-#### Walk recursively a directory
+#### Enumerate files (walk recursively) from a directory
 The following code is using a list comprehension to generate a list of all files in the `downloads` directory:
 
 ```py
