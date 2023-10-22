@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name = 'filesystem',
-    version = '0.0.0.11',
+    version = '0.0.0.12',
     url = 'https://github.com/hbisneto/FileSystem',
     license = 'MIT License',
     

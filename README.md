@@ -6,14 +6,30 @@ FileSystem is designed to identify the operating system (OS) on which it’s run
 
 #### Dependencies
 
-It's recommended Python 3.9 or later to use **FileSystem**. You can find it at [python.org](https://www.python.org/).
+It's recommended Python 3.9 or later to use **FileSystem**. You can download the latest version of Python in [python.org](https://www.python.org/).
 
 #### Installation
-Clone this repo to your local machine using:
+
+Don't forget to upgrade pip:
+
+```
+pip3 install --upgrade pip
+```
+
+And install **FileSystem:**
+
+```
+pip3 install -i https://test.pypi.org/simple/ filesystem
+```
+
+You can also clone this repo to your local machine using:
 
 ```sh
 git clone https://github.com/hbisneto/FileSystem.git
 ```
+
+#
+
 ## Features
 - **Cross-platform Compatibility:** The code is designed to work on multiple operating systems, including Linux, Mac, and Windows. This makes it versatile and adaptable to different environments.
 - **Directory Path Identification:** The code identifies and defines the paths to several common user directories based on the operating system. This includes directories like Desktop, Documents, Downloads, Music, Pictures, Public, Videos, and others.
@@ -134,8 +150,6 @@ except:
 #### Using Wrapper
 You can also use Wrapper to create a folder. The following example shows how to create a new directory named `database` inside the `Documents` directory using Wrapper.
 
-**<p>Learn more about Wrapper reading below.</p>**
-
 ```py
 import filesystem as fs
 from filesystem import wrapper as wr
@@ -146,6 +160,8 @@ try:
 except:
    print("Could`t create the folder")
 ```
+
+**<p>Learn more about Wrapper reading below.</p>**
 </details>
 
 #
@@ -165,17 +181,24 @@ These directories are dynamically generated based on the operating system platfo
 <details>
 <summary>Default Functions</summary>
 
-1. `get_facts(pathname)`: This function takes a file or directory path as input and returns a dictionary containing various attributes of the file or directory. These attributes include the time of last modification, creation time, last access time, name, size, absolute path, parent directory, whether it's a directory or file or link, whether it exists, and its extension (if it's a file).
+1. `create_directory(path, create_subdirs=True):`: This function is used to create a directory at the specified `path`. If `create_subdirs` is `True`, the function creates all intermediate-level directories needed to contain the leaf directory. If `create_subdirs` is `False`, the function will raise an error if the directory already exists or if any intermediate-level directories in the path do not exist. Default is **`True`**
+<br>If the directories already exist, it does nothing.
 
-2. `get_files(path)`: This function takes a path as input (which can include wildcards), expands any user home directory symbols (`~`), and returns a list of dictionaries containing the attributes of each file or directory that matches the path.
+2. `create_file(file_name, path, text)`: This function opens a file with the name `file_name` in the directory specified by `path` and writes the content of `text` into the file.
 
-3. `enumerate_files(path)`: This function performs a depth-first traversal of the directory tree at the given path (after expanding any user home directory symbols). It returns a list of dictionaries containing the attributes of each file and directory in the tree.
+3. `delete(path, recursive=False)`: This function is designed to delete a directory at a given `path`.
+<br>If `recursive` is set to `True`, the function will delete the directory and all its contents. If it’s `False`, the function will only delete the directory if it’s empty. Default is **`False`**.
 
-4. `makedirs(path)`: This function attempts to create directories at the given path. If the directories already exist, it does nothing.
+4. `enumerate_files(path)`: This function performs a depth-first traversal of the directory tree at the given path (after expanding any user home directory symbols). It returns a list of dictionaries containing the attributes of each file and directory in the tree.
 
-5. `delete(path)`: This function deletes the file or directory at the given path. If the path is a directory, it removes the directory and all its contents.
+5. `get_files(path)`: This function takes a path as input (which can include wildcards), expands any user home directory symbols (`~`), and returns a list of dictionaries containing the attributes of each file or directory that matches the path.
 
-6. `store(path, value)`: This function writes the string `value` to a file at the given path. If the file doesn't exist, it creates it.
+6. `get_path_properties(pathname)`: This function takes a file or directory path as input and returns a dictionary containing various attributes of the file or directory. These attributes include the time of last modification, creation time, last access time, name, size, absolute path, parent directory, whether it's a directory or file or link, whether it exists, and its extension (if it's a file).
+
+7. `list_directories(path)`: This function returns a list of all the directories in a given directory.
+
+8. `list_files(path)`: This function returns a list of all the files in a given directory.
+
 </details>
 
 #
