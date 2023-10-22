@@ -35,8 +35,20 @@ git clone https://github.com/hbisneto/FileSystem.git
 - **Directory Path Identification:** The code identifies and defines the paths to several common user directories based on the operating system. This includes directories like Desktop, Documents, Downloads, Music, Pictures, Public, Videos, and others.
 - **Current Working Directory:** The code uses `os.getcwd()` to get the current working directory.
 - **String Formatting:** The code uses f-string formatting to create directory paths.
+- **Monitoring System:** Wrapper acts as a monitoring system for the file system. It keeps track of all activities within the file system.
+- **Change Tracking:** It records any changes made within the file system. This includes the creation of new files, modification of existing files, and deletion of files.
+- **Real-Time Updates:** The Wrapper provides real-time updates on any changes made within the file system. This ensures that users have the most current information at all times.
+- **Integrity Maintenance:** This feature is particularly useful in scenarios where maintaining the integrity and up-to-date status of the file system is crucial. By tracking all changes, the Wrapper helps ensure that the file system remains accurate and reliable.
 
 #
+
+# Wrapper
+
+Wrapper is a comprehensive toolkit that provides a set of utility functions specifically designed to facilitate file and directory operations. These operations may include creating, reading, updating, and deleting files or directories.
+
+#### Watcher
+
+Wrapper also serves as a monitoring system for the file system. It keeps track of any changes made within the file system, such as the creation of new files, modification of existing files, or deletion of files. This feature allows for real-time updates and can be particularly useful in scenarios where maintaining the integrity and up-to-date status of the file system is crucial.
 
 ## Usage Example
 
@@ -44,7 +56,7 @@ These directories are dynamically generated based on the operating system platfo
 #
 
 <details>
-<summary>Default Variables</summary>
+<summary>**FileSystem:** Default Variables</summary>
 
 ```py
 import filesystem as fs
@@ -102,7 +114,7 @@ print(fs.windows_favorites) # (specific to Windows)
 #
 
 <details>
-<summary>Reaching Desktop Folder</summary>
+<summary>**FileSystem:** Reaching Desktop Folder</summary>
 
 The following example shows how to get the `Desktop` directory path
 
@@ -131,24 +143,9 @@ C:\Users\YOU\Desktop
 #
 
 <details>
-<summary>Creating a Folder</summary>
+<summary>**Wrapper:** Creating a Folder</summary>
 
-The following example shows how to create a new directory named `database` inside the `Documents` directory
-
-```py
-import filesystem as fs
-import os
-
-bd_folder = "database"
-try:
-   os.mkdir(os.path.join(fs.documents, bd_folder))
-except:
-   print("Could`t create the folder")
-```
-#
-
-#### Using Wrapper
-You can also use Wrapper to create a folder. The following example shows how to create a new directory named `database` inside the `Documents` directory using Wrapper.
+The following example shows how to create a new directory named `database` inside the `Documents` directory using **Wrapper**
 
 ```py
 import filesystem as fs
@@ -156,30 +153,16 @@ from filesystem import wrapper as wr
 
 bd_folder = "database"
 try:
-   wr.mkdir(f'{fs.documents}/{bd_folder}')
+   wr.create_directory(f'{fs.documents}/{bd_folder}')
 except:
    print("Could`t create the folder")
 ```
-
-**<p>Learn more about Wrapper reading below.</p>**
 </details>
 
 #
 
-# Wrapper
-
-Wrapper is a comprehensive toolkit that provides a set of utility functions specifically designed to facilitate file and directory operations. These operations may include creating, reading, updating, and deleting files or directories.
-
-Wrapper also serves as a monitoring system for the file system. It keeps track of any changes made within the file system, such as the creation of new files, modification of existing files, or deletion of files. This feature allows for real-time updates and can be particularly useful in scenarios where maintaining the integrity and up-to-date status of the file system is crucial.
-
-## Usage Example
-
-These directories are dynamically generated based on the operating system platform (linux, darwin for Mac, and Windows). Learn more about how to use the library below:
-
-#
-
 <details>
-<summary>Default Functions</summary>
+<summary>**Wrapper:** Default Functions</summary>
 
 1. `create_directory(path, create_subdirs=True):`: This function is used to create a directory at the specified `path`. If `create_subdirs` is `True`, the function creates all intermediate-level directories needed to contain the leaf directory. If `create_subdirs` is `False`, the function will raise an error if the directory already exists or if any intermediate-level directories in the path do not exist. Default is **`True`**
 <br>If the directories already exist, it does nothing.
@@ -204,7 +187,7 @@ These directories are dynamically generated based on the operating system platfo
 #
 
 <details>
-<summary>Watcher</summary>
+<summary>**Wrapper:** Watcher</summary>
 
 Wrapper Watcher is used to monitor changes in a file system.
 
@@ -222,7 +205,7 @@ This class could be useful in scenarios where you need to monitor changes to a f
 #
 
 <details>
-<summary>Sample Codes</summary>
+<summary>**Wrapper:** Sample Codes</summary>
 
 #### Get files
 
