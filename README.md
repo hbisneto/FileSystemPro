@@ -143,25 +143,6 @@ C:\Users\YOU\Desktop
 #
 
 <details>
-<summary>Wrapper: Creating a Folder</summary>
-
-The following example shows how to create a new directory named `database` inside the `Documents` directory using **Wrapper**
-
-```py
-import filesystem as fs
-from filesystem import wrapper as wr
-
-bd_folder = "database"
-try:
-   wr.create_directory(f'{fs.documents}/{bd_folder}')
-except:
-   print("Could`t create the folder")
-```
-</details>
-
-#
-
-<details>
 <summary>Wrapper: Default Functions</summary>
 
 1. `create_directory(path, create_subdirs=True):`: This function is used to create a directory at the specified `path`. If `create_subdirs` is `True`, the function creates all intermediate-level directories needed to contain the leaf directory. If `create_subdirs` is `False`, the function will raise an error if the directory already exists or if any intermediate-level directories in the path do not exist. Default is **`True`**
@@ -201,6 +182,25 @@ Wrapper Watcher is used to monitor changes in a file system.
 </details>
 
 This class could be useful in scenarios where you need to monitor changes to a file system, for example, in a backup system or a live syncing service.
+
+#
+
+<details>
+<summary>Wrapper: Creating a Folder</summary>
+
+The following example shows how to create a new directory named `database` inside the `Documents` directory using **Wrapper**
+
+```py
+import filesystem as fs
+from filesystem import wrapper as wr
+
+bd_folder = "database"
+try:
+   wr.create_directory(f'{fs.documents}/{bd_folder}')
+except:
+   print("Could`t create the folder")
+```
+</details>
 
 #
 
