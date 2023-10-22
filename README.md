@@ -56,7 +56,7 @@ These directories are dynamically generated based on the operating system platfo
 #
 
 <details>
-<summary>**FileSystem:** Default Variables</summary>
+<summary>FileSystem: Default Variables</summary>
 
 ```py
 import filesystem as fs
@@ -114,7 +114,7 @@ print(fs.windows_favorites) # (specific to Windows)
 #
 
 <details>
-<summary>**FileSystem:** Reaching Desktop Folder</summary>
+<summary>FileSystem: Reaching Desktop Folder</summary>
 
 The following example shows how to get the `Desktop` directory path
 
@@ -143,7 +143,7 @@ C:\Users\YOU\Desktop
 #
 
 <details>
-<summary>**Wrapper:** Creating a Folder</summary>
+<summary>Wrapper: Creating a Folder</summary>
 
 The following example shows how to create a new directory named `database` inside the `Documents` directory using **Wrapper**
 
@@ -162,7 +162,7 @@ except:
 #
 
 <details>
-<summary>**Wrapper:** Default Functions</summary>
+<summary>Wrapper: Default Functions</summary>
 
 1. `create_directory(path, create_subdirs=True):`: This function is used to create a directory at the specified `path`. If `create_subdirs` is `True`, the function creates all intermediate-level directories needed to contain the leaf directory. If `create_subdirs` is `False`, the function will raise an error if the directory already exists or if any intermediate-level directories in the path do not exist. Default is **`True`**
 <br>If the directories already exist, it does nothing.
@@ -187,7 +187,7 @@ except:
 #
 
 <details>
-<summary>**Wrapper:** Watcher</summary>
+<summary>Wrapper: Watcher</summary>
 
 Wrapper Watcher is used to monitor changes in a file system.
 
@@ -205,7 +205,7 @@ This class could be useful in scenarios where you need to monitor changes to a f
 #
 
 <details>
-<summary>**Wrapper:** Sample Codes</summary>
+<summary>Wrapper: Sample Codes</summary>
 
 #### Get files
 
