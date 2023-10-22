@@ -145,7 +145,7 @@ C:\Users\YOU\Desktop
 <details>
 <summary>Wrapper: Default Functions</summary>
 
-1. `create_directory(path, create_subdirs=True):`: This function is used to create a directory at the specified `path`. If `create_subdirs` is `True`, the function creates all intermediate-level directories needed to contain the leaf directory. If `create_subdirs` is `False`, the function will raise an error if the directory already exists or if any intermediate-level directories in the path do not exist. Default is **`True`**
+1. `create_directory(path, create_subdirs=True)`: This function is used to create a directory at the specified `path`. If `create_subdirs` is `True`, the function creates all intermediate-level directories needed to contain the leaf directory. If `create_subdirs` is `False`, the function will raise an error if the directory already exists or if any intermediate-level directories in the path do not exist. Default is **`True`**
 <br>If the directories already exist, it does nothing.
 
 2. `create_file(file_name, path, text)`: This function opens a file with the name `file_name` in the directory specified by `path` and writes the content of `text` into the file.
