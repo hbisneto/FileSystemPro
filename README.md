@@ -109,6 +109,7 @@ print(fs.windows_temp) # (specific to Windows)
 # prints Favorites directory folder in Windows Environments
 print(fs.windows_favorites) # (specific to Windows)
 ```
+
 </details>
 
 #
@@ -205,7 +206,7 @@ except:
 #
 
 <details>
-<summary>Wrapper: Sample Codes</summary>
+<summary>Wrapper: Get Files</summary>
 
 #### Get files
 
@@ -213,7 +214,7 @@ The following example shows how to get files information from 'Downloads' folder
 
 ```py
 # Let's use 'Downloads' folder as example
-# That's why I'm import filesystem
+# That's why I'll import filesystem
 import filesystem as fs
 # Let's use Wrapper to get info from files in 'Downloads' folder
 from filesystem import wrapper as wr
@@ -260,8 +261,13 @@ Output:
 ```sh
 ['CLI.py', 'Sample_File.py']
 ```
+</details>
 
-#### Enumerate files (walk recursively) from a directory
+#
+
+<details>
+<summary>Wrapper: Enumerate files (walk recursively) from a directory</summary>
+
 The following code is using a list comprehension to generate a list of all files in the `downloads` directory:
 
 ```py
@@ -274,8 +280,6 @@ Output:
 ```sh
 [{'modified': 1697683292.4821026, 'created': 1697683292.4821026, 'access': 1697683292.484029, 'name': 'Downloads', 'size': 224, 'abspath': '/Users/YOU/Downloads', 'dirname': '/Users/YOU', 'is_dir': True, 'is_file': False, 'is_link': False, 'exists': True, 'ext': ''}, {'modified': 1697683288.8639557, 'created': 1697683288.8639557, 'access': 1697602943.1846778, 'name': '.DS_Store', 'size': 6148, 'abspath': '/Users/YOU/Downloads/.DS_Store', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'ext': 'DS_Store'}, {'modified': 1690685751.342114, 'created': 1690685751.4194765, 'access': 1690685751.342114, 'name': '.localized', 'size': 0, 'abspath': '/Users/YOU/Downloads/.localized', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'ext': 'localized'}, {'modified': 1695535334.1411633, 'created': 1697604128.7045012, 'access': 1697604129.781534, 'name': 'CLI.py', 'size': 3345, 'abspath': '/Users/YOU/Downloads/CLI.py', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'ext': 'py'}, {'modified': 1697605101.6574, 'created': 1697683292.4821024, 'access': 1697683294.46923, 'name': 'Python_Logo.png', 'size': 747809, 'abspath': '/Users/YOU/Downloads/Python_Logo.png', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'ext': 'png'}, {'modified': 1697681746.0940206, 'created': 1697682027.268841, 'access': 1697682292.5433743, 'name': 'Sample_File.py', 'size': 1031, 'abspath': '/Users/YOU/Downloads/Sample_File.py', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'ext': 'py'}]
 ```
-
-</details>
 
 #
 
