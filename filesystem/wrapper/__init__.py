@@ -1,2 +1,2 @@
-from .watcher import *
 from .core import *
+from .watcher import *
