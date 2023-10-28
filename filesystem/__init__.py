@@ -3,7 +3,7 @@ import os
 import getpass
 
 CURRENT_LOCATION = os.getcwd()
-USER_NAME = getpass.getuser()
+USER_NAME = getpass.getuser().capitalize()
 
 if platform == "linux" or platform == "linux2":
     PLATFORM_NAME = "Linux"
