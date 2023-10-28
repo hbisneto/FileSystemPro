@@ -1,7 +1,9 @@
 from sys import platform
 import os
+import getpass
 
 CURRENT_LOCATION = os.getcwd()
+USER_NAME = getpass.getuser()
 
 if platform == "linux" or platform == "linux2":
     PLATFORM_NAME = "Linux"

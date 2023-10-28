@@ -1,12 +1,12 @@
-# FileSystem
+# FileSystem Pro
 
-FileSystem is designed to identify the operating system (OS) on which it’s running and define the paths to various user directories based on the OS.
+FileSystem Pro is designed to identify the operating system (OS) on which it’s running and define the paths to various user directories based on the OS.
 
 ## Getting Started
 
 #### Dependencies
 
-It's recommended Python 3.9 or later to use **FileSystem**. You can download the latest version of Python in [python.org](https://www.python.org/).
+It's recommended Python 3.9 or later to use **FileSystem Pro**. You can download the latest version of Python in [python.org](https://www.python.org/).
 
 #### Installation
 
@@ -16,16 +16,16 @@ Don't forget to upgrade pip:
 pip3 install --upgrade pip
 ```
 
-And install **FileSystem:**
+And install **FileSystem Pro:**
 
 ```
-pip3 install -i https://test.pypi.org/simple/ filesystem
+pip3 install filesystempro
 ```
 
 You can also clone this repo to your local machine using:
 
 ```sh
-git clone https://github.com/hbisneto/FileSystem.git
+git clone https://github.com/hbisneto/FileSystemPro.git
 ```
 
 #
