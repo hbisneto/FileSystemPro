@@ -164,6 +164,8 @@ C:\Users\YOU\Desktop
 
 8. `list_files(path)`: This function returns a list of all the files in a given directory.
 
+9. `make_zip(source, destination)`: This function is used to create a zip archive of a given source directory and move it to a specified destination.
+
 </details>
 
 #
