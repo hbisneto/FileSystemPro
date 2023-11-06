@@ -5,14 +5,14 @@ with open("README.md", "r") as fh:
 
 setup(
     name = 'filesystempro',
-    version = '0.0.0.3',
+    version = '0.0.0.23',
     url = 'https://github.com/hbisneto/FileSystemPro',
     license = 'MIT License',
     
     author = 'Heitor Bisneto',
     author_email = 'heitor.bardemaker@live.com',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: POSIX :: Linux',
