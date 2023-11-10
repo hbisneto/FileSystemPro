@@ -174,24 +174,6 @@ C:\Users\YOU\Desktop
 
 #
 
-<!--<details>
-<summary>Watcher: Default Functions </summary>
-
-Watcher is used to monitor changes in a file system.
-
-- `__init__(self, root)`: This is the constructor method that initializes the `Watcher` object with a root directory to watch. It also saves the current state of the file system in `self.saved_state`.
-
-- `get_state(self, path)`: This method returns a dictionary where the keys are the absolute paths of all files in the given path and the values are file metadata obtained from the `core.enumerate_files(path)` function.
-
-- `diff(self)`: This method compares the current state of the file system with the saved state and identifies any changes (created, updated, or removed files). It returns a list of dictionaries where each dictionary contains the metadata of a changed file and an additional key "change" indicating the type of change.
-
-- `__str__(self)`: This method returns a string representation of the `Watcher` object.
-</details>
-
-This class could be useful in scenarios where you need to monitor changes to a file system, for example, in a backup system or a live syncing service.-->
-
-#
-
 <details>
 <summary>Wrapper: Creating a Folder</summary>
 
