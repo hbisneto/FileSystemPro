@@ -12,7 +12,6 @@ USER_NAME = getpass.getuser()[0].upper() + getpass.getuser()[1:]
 Creates a string that represents the username of the user currently logged in to the system.
 """
 
-### WHERE IS THE PUBLIC FOLDER FROM LINUX???
 if platform == "linux" or platform == "linux2":
     PLATFORM_NAME = "Linux"
     user = f'/home/{os.environ["USER"]}'

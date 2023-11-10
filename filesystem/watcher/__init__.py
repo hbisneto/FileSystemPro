@@ -1,17 +1,17 @@
-from . import core
+from filesystem import wrapper as wr
+
 class Watcher(object):
     def __init__(self, root):
         self.root = root
         self.saved_state = self.get_state(root)
-    
+
     def get_state(self, path):
-        files = core.walk(path)
+        files = wr.enumerate_files(path)
         named_files = dict([(x["abspath"], x,) for x in files])
         return named_files
-    
+
     def diff(self):
         current_state = self.get_state(self.root)
-        
         changed = []
         for k, v1 in current_state.items():
             if k not in self.saved_state:
@@ -46,7 +46,6 @@ class Watcher(object):
         self.saved_state = current_state
         
         return results
-    
+
     def __str__(self):
         return "filesystem.Watcher: %s" % (self.root)
-
