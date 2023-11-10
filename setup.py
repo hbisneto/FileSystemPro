@@ -4,11 +4,8 @@ with open("README.md", "r") as fh:
     readme = fh.read()
 
 setup(
-    # Test
-    name = 'filesystem',
-    # Prod
-    # name = 'filesystempro',
-    version = '0.0.0.13',
+    name = 'filesystempro',
+    version = '1.0.0.0',
     url = 'https://github.com/hbisneto/FileSystemPro',
     license = 'MIT License',
     
