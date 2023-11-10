@@ -4,22 +4,22 @@ FileSystem Pro is designed to identify the operating system (OS) on which it’s
 
 ## Getting Started
 
-#### Dependencies
+#### Recommendation
 
-It's recommended Python 3.9 or later to use **FileSystem Pro**. You can download the latest version of Python in [python.org](https://www.python.org/).
+It's recommended Python 3.8 or later to use **FileSystem Pro**. You can download the latest version of Python in [python.org](https://www.python.org/).
 
 #### Installation
 
 Don't forget to upgrade pip:
 
 ```
-pip3 install --upgrade pip
+pip install --upgrade pip
 ```
 
 And install **FileSystem Pro:**
 
 ```
-pip3 install filesystempro
+pip install filesystempro
 ```
 
 You can also clone this repo to your local machine using:
@@ -46,11 +46,15 @@ git clone https://github.com/hbisneto/FileSystemPro.git
 
 Wrapper is a comprehensive toolkit that provides a set of utility functions specifically designed to facilitate file and directory operations. These operations may include creating, reading, updating, and deleting files or directories.
 
-#### Watcher
+#
 
-Wrapper also serves as a monitoring system for the file system. It keeps track of any changes made within the file system, such as the creation of new files, modification of existing files, or deletion of files. This feature allows for real-time updates and can be particularly useful in scenarios where maintaining the integrity and up-to-date status of the file system is crucial.
+# Watcher
 
-## Usage Example
+Watcher serves as a monitoring system for the file system. It keeps track of any changes made within the file system, such as the creation of new files, modification of existing files, or deletion of files. This feature allows for real-time updates and can be particularly useful in scenarios where maintaining the integrity and up-to-date status of the file system is crucial.
+
+#
+
+# Usage Example
 
 These directories are dynamically generated based on the operating system platform (linux, darwin for Mac, and Windows)
 #
@@ -171,24 +175,6 @@ C:\Users\YOU\Desktop
 #
 
 <details>
-<summary>Wrapper: Watcher</summary>
-
-Wrapper Watcher is used to monitor changes in a file system.
-
-- `__init__(self, root)`: This is the constructor method that initializes the `Watcher` object with a root directory to watch. It also saves the current state of the file system in `self.saved_state`.
-
-- `get_state(self, path)`: This method returns a dictionary where the keys are the absolute paths of all files in the given path and the values are file metadata obtained from the `core.enumerate_files(path)` function.
-
-- `diff(self)`: This method compares the current state of the file system with the saved state and identifies any changes (created, updated, or removed files). It returns a list of dictionaries where each dictionary contains the metadata of a changed file and an additional key "change" indicating the type of change.
-
-- `__str__(self)`: This method returns a string representation of the `Watcher` object.
-</details>
-
-This class could be useful in scenarios where you need to monitor changes to a file system, for example, in a backup system or a live syncing service.
-
-#
-
-<details>
 <summary>Wrapper: Creating a Folder</summary>
 
 The following example shows how to create a new directory named `database` inside the `Documents` directory using **Wrapper**
@@ -282,6 +268,67 @@ Output:
 ```sh
 [{'modified': 1697683292.4821026, 'created': 1697683292.4821026, 'access': 1697683292.484029, 'name': 'Downloads', 'size': 224, 'abspath': '/Users/YOU/Downloads', 'dirname': '/Users/YOU', 'is_dir': True, 'is_file': False, 'is_link': False, 'exists': True, 'ext': ''}, {'modified': 1697683288.8639557, 'created': 1697683288.8639557, 'access': 1697602943.1846778, 'name': '.DS_Store', 'size': 6148, 'abspath': '/Users/YOU/Downloads/.DS_Store', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'ext': 'DS_Store'}, {'modified': 1690685751.342114, 'created': 1690685751.4194765, 'access': 1690685751.342114, 'name': '.localized', 'size': 0, 'abspath': '/Users/YOU/Downloads/.localized', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'ext': 'localized'}, {'modified': 1695535334.1411633, 'created': 1697604128.7045012, 'access': 1697604129.781534, 'name': 'CLI.py', 'size': 3345, 'abspath': '/Users/YOU/Downloads/CLI.py', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'ext': 'py'}, {'modified': 1697605101.6574, 'created': 1697683292.4821024, 'access': 1697683294.46923, 'name': 'Python_Logo.png', 'size': 747809, 'abspath': '/Users/YOU/Downloads/Python_Logo.png', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'ext': 'png'}, {'modified': 1697681746.0940206, 'created': 1697682027.268841, 'access': 1697682292.5433743, 'name': 'Sample_File.py', 'size': 1031, 'abspath': '/Users/YOU/Downloads/Sample_File.py', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'ext': 'py'}]
 ```
+</details>
+
+#
+
+<details>
+<summary>Watcher: Default Functions </summary>
+
+Watcher is used to monitor changes in a file system.
+
+- `__init__(self, root)`: This is the constructor method that initializes the `Watcher` object with a root directory to watch. It also saves the current state of the file system in `self.saved_state`.
+
+- `get_state(self, path)`: This method returns a dictionary where the keys are the absolute paths of all files in the given path and the values are file metadata obtained from the `core.enumerate_files(path)` function.
+
+- `diff(self)`: This method compares the current state of the file system with the saved state and identifies any changes (created, updated, or removed files). It returns a list of dictionaries where each dictionary contains the metadata of a changed file and an additional key "change" indicating the type of change.
+
+- `__str__(self)`: This method returns a string representation of the `Watcher` object.
+</details>
+
+This class could be useful in scenarios where you need to monitor changes to a file system, for example, in a backup system or a live syncing service.
+
+#
+
+<details>
+<summary>Watcher: Monitoring Documents Folder</summary>
+
+This Watcher example is designed to monitor changes in **Documents** directory and print out the changes as they occur.
+
+```
+import os                               # Native library
+import time                             # Native library
+from datetime import datetime           # Native library
+
+import filesystem as fs                 # FileSystemPro
+from filesystem import wrapper as wr    # FileSystemPro
+
+class core:
+    @staticmethod
+    def enumerate_files(path):
+        for dirpath, dirnames, filenames in wr.enumerate_files(path):
+            for filename in filenames:
+                abspath = os.path.join(dirpath, filename)
+                modified = os.path.getmtime(abspath)
+                yield {
+                "abspath": abspath,
+                "modified": modified
+                }
+
+# Create a new instance of Watcher class
+watcher = wr.Watcher(f'{fs.documents}')
+
+# Run `diff` method to get directory changes
+while True:
+    changes = watcher.diff()
+    if changes:
+        print(f"Changes detected at: {datetime.now()}:")
+        for change in changes:
+            print(f"{change['abspath']} was {change['change']}")
+    time.sleep(10)  # Awaits for 10 seconds before a new verification
+
+```
+</details>
 
 #
 
