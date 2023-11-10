@@ -4,7 +4,7 @@ FileSystem Pro is designed to identify the operating system (OS) on which it’s
 
 ## Getting Started
 
-#### Dependencies
+#### Recommendation
 
 It's recommended Python 3.8 or later to use **FileSystem Pro**. You can download the latest version of Python in [python.org](https://www.python.org/).
 
