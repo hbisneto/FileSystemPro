@@ -1,6 +1,6 @@
-from sys import platform
-import os
 import getpass
+import os
+from sys import platform
 
 CURRENT_LOCATION = os.getcwd()
 """
