@@ -56,7 +56,7 @@ Watcher serves as a monitoring system for the file system. It keeps track of any
 
 # Usage Example
 
-These directories are dynamically generated based on the operating system platform (linux, darwin for Mac, and Windows)
+These directories are dynamically generated based on the operating system platform (Linux, Mac and Windows)
 #
 
 <details>
