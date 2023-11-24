@@ -3,6 +3,25 @@ import glob
 import os
 import shutil
 
+def combine(path1=None, path2=None, paths=[]):
+    # In cases of paths list is in use
+    if path1 is None or path2 is None:
+        if len(paths) >= 2:
+            url = ""
+            for i in paths:
+                url += i + os.sep
+            url = url.replace("//", os.sep)
+            return url
+    
+    # In cases of combining 2 folders
+    if path2.startswith(os.sep):
+        return path2
+    else:
+        # fullpath = join(path1, path2)
+        # fullpath = fullpath.replace("//", os.sep)
+        # return fullpath
+        return join(path1, path2)
+    
 def create_directory(path, create_subdirs=True):
     """
     This function is used to create a directory at the specified `path`.
@@ -19,6 +38,7 @@ def create_directory(path, create_subdirs=True):
         os.makedirs(path, exist_ok=True)
     else:
         os.mkdir(path)
+    return get_object(path)
 
 def create_file(file_name, path, text):
     """
@@ -79,6 +99,7 @@ def create_file(file_name, path, text):
             custom_file.close()
     except:
         pass
+    return get_object(f'{path}/{file_name}')
 
 def delete(path, recursive=False):
     """
@@ -108,8 +129,9 @@ def enumerate_files(path):
     results = []
     path = os.path.expanduser(path)
     for root, dirs, files in os.walk(path):
-        results.append(get_path_properties(root))
-        results.extend([get_path_properties(os.path.join(root,x)) for x in files])
+        results.append(get_object(root))
+        # results.extend([get_path_properties(os.path.join(root,x)) for x in files])
+        results.extend([get_object(join(root,x)) for x in files])
     return results
 
 def get_files(path):
@@ -120,10 +142,10 @@ def get_files(path):
     print(path)
     result = []
     for x in glob.glob(path):
-        result.append(get_path_properties(x))
+        result.append(get_object(x))
     return result
 
-def get_path_properties(pathname):
+def get_object(pathname):
     """
     This function takes a file or directory path as input and returns a dictionary containing various attributes of the file or directory. These attributes include the time of last modification, creation time, last access time, name, size, absolute path, parent directory, whether it's a directory or file or link, whether it exists, and its extension (if it's a file).
     """
@@ -136,20 +158,45 @@ def get_path_properties(pathname):
     head, tail = os.path.split(pathname)
 
     result = {}
-    result["modified"] = path_properties(pathname, os.path.getmtime)
-    result["created"] = path_properties(pathname, os.path.getctime)
-    result["access"] = path_properties(pathname, os.path.getatime)
+    result["exists"] = os.path.exists(pathname)
     result["name"] = tail
-    result["name"] = tail
-    result["size"] = path_properties(pathname, os.path.getsize)
-    result["abspath"] = os.path.abspath(pathname)
-    result["dirname"] = os.path.dirname(pathname)
     result["is_dir"] = os.path.isdir(pathname)
     result["is_file"] = os.path.isfile(pathname)
     result["is_link"] = os.path.islink(pathname)
-    result["exists"] = os.path.exists(pathname)
+    result["size"] = path_properties(pathname, os.path.getsize)
+    result["created"] = path_properties(pathname, os.path.getctime)
+    result["modified"] = path_properties(pathname, os.path.getmtime)
+    result["access"] = path_properties(pathname, os.path.getatime)
+    result["abspath"] = os.path.abspath(pathname)
+    result["dirname"] = os.path.dirname(pathname)
     result["ext"] = tail.split(".")[-1] if result["is_file"] else ""
     return result
+
+def join(path1='', path2='', path3='', path4=''):
+    # if path1 is None or path2 is None:
+    #     return ""
+
+    if path1.endswith(os.sep):
+        pass
+    else:
+        path1 = path1 + os.sep
+
+    # if path2.endswith(os.sep):
+    #     pass
+    # else:
+    #     path2 = path2 + os.sep
+
+    # if path3.endswith(os.sep):
+    #     pass
+    # else:
+    #     path3 = path3 + os.sep
+
+    # if path4.endswith(os.sep):
+    #     pass
+    # else:
+    #     path4 = path4 + os.sep
+
+    return path1 + path2 + path3 + path4
 
 def list_directories(path):
     """
@@ -157,7 +204,8 @@ def list_directories(path):
     """
     directory_list = []
     for dir in os.listdir(path):
-        if os.path.isdir(os.path.join(path, dir)):
+        # if os.path.isdir(os.path.join(path, dir)):
+        if os.path.isdir(join(path, dir)):
             directory_list.append(dir)
     
     return directory_list
@@ -168,7 +216,8 @@ def list_files(path):
     """
     file_list = []
     for file in os.listdir(path):
-        if os.path.isfile(os.path.join(path, file)):
+        # if os.path.isfile(os.path.join(path, file)):
+        if os.path.isfile(join(path, file)):
             file_list.append(file)
     return file_list
 
@@ -183,4 +232,3 @@ def make_zip(source, destination):
     archive_to = os.path.basename(source.strip(os.sep))
     shutil.make_archive(name, format, archive_from, archive_to)
     shutil.move('%s.%s'%(name,format), destination)
-

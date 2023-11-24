@@ -12,13 +12,13 @@ It's recommended Python 3.8 or later to use **FileSystem Pro**. You can download
 
 Don't forget to upgrade pip:
 
-```
+```sh
 pip install --upgrade pip
 ```
 
 And install **FileSystem Pro:**
 
-```
+```sh
 pip install filesystempro
 ```
 
@@ -42,21 +42,10 @@ git clone https://github.com/hbisneto/FileSystemPro.git
 
 #
 
-# Wrapper
-
-Wrapper is a comprehensive toolkit that provides a set of utility functions specifically designed to facilitate file and directory operations. These operations may include creating, reading, updating, and deleting files or directories.
-
-#
-
-# Watcher
-
-Watcher serves as a monitoring system for the file system. It keeps track of any changes made within the file system, such as the creation of new files, modification of existing files, or deletion of files. This feature allows for real-time updates and can be particularly useful in scenarios where maintaining the integrity and up-to-date status of the file system is crucial.
-
-#
-
-# Usage Example
+### Usage Example
 
 These directories are dynamically generated based on the operating system platform (Linux, Mac and Windows)
+
 #
 
 <details>
@@ -147,6 +136,16 @@ C:\Users\YOU\Desktop
 
 #
 
+# Wrapper
+
+Wrapper is a comprehensive toolkit that provides a set of utility functions specifically designed to facilitate file and directory operations. These operations may include creating, reading, updating, and deleting files or directories.
+
+#
+
+### Usage Example
+
+#
+
 <details>
 <summary>Wrapper: Default Functions</summary>
 
@@ -155,6 +154,9 @@ C:\Users\YOU\Desktop
 
 2. `create_file(file_name, path, text)`: This function opens a file with the name `file_name` in the directory specified by `path` and writes the content of `text` into the file.
 
+11. **combine(path1=None, path2=None, paths=[]):**
+<br>Function description
+
 3. `delete(path, recursive=False)`: This function is designed to delete a directory at a given `path`.
 <br>If `recursive` is set to `True`, the function will delete the directory and all its contents. If it’s `False`, the function will only delete the directory if it’s empty. Default is **`False`**.
 
@@ -162,7 +164,10 @@ C:\Users\YOU\Desktop
 
 5. `get_files(path)`: This function takes a path as input (which can include wildcards), expands any user home directory symbols (`~`), and returns a list of dictionaries containing the attributes of each file or directory that matches the path.
 
-6. `get_path_properties(pathname)`: This function takes a file or directory path as input and returns a dictionary containing various attributes of the file or directory. These attributes include the time of last modification, creation time, last access time, name, size, absolute path, parent directory, whether it's a directory or file or link, whether it exists, and its extension (if it's a file).
+6. `get_object(pathname)`: This function takes a file or directory path as input and returns a dictionary containing various attributes of the file or directory. These attributes include the time of last modification, creation time, last access time, name, size, absolute path, parent directory, whether it's a directory or file or link, whether it exists, and its extension (if it's a file).
+
+10. **join(path1=None, path2=None, path3='', path4=''):**
+<br>Function description
 
 7. `list_directories(path)`: This function returns a list of all the directories in a given directory.
 
@@ -272,6 +277,16 @@ Output:
 
 #
 
+# Watcher
+
+Watcher serves as a monitoring system for the file system. It keeps track of any changes made within the file system, such as the creation of new files, modification of existing files, or deletion of files. This feature allows for real-time updates and can be particularly useful in scenarios where maintaining the integrity and up-to-date status of the file system is crucial.
+
+#
+
+### Usage Example
+
+#
+
 <details>
 <summary>Watcher: Default Functions </summary>
 
@@ -295,7 +310,7 @@ This class could be useful in scenarios where you need to monitor changes to a f
 
 This Watcher example is designed to monitor changes in **Documents** directory and print out the changes as they occur.
 
-```
+```py
 import os                               # Native library
 import time                             # Native library
 from datetime import datetime           # Native library
