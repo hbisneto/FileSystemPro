@@ -1,110 +1,106 @@
 
 ### pip install filesystempro
 import filesystem as fs
+import os
 from filesystem import wrapper as wr
+from filesystem import storage as st
 
-obj_folder = wr.create_directory(f'{fs.documents}/FolderOBJ')
-print(obj_folder)
+# p1 = fs.documents
+# p2 = "media"
+# p3 = "images"
 
-print("\n")
+# Combine paths
+result = wr.join('home', 'user', 'directory', 'file.txt')
+print(result)  # Outputs: 'home/user/directory/file.txt'
 
-obj_file = wr.create_file("Shopping.txt", fs.documents, "Gone")
-print(obj_file["name"])
+# Use the paths parameter
+result = wr.join(paths=['home', 'user', 'directory', 'file.txt'])
+print(result)  # Outputs: 'home/user/directory/file.txt'
 
+f = wr.get_files
+combined = wr.combine(fs.documents)
+print(combined)
+combined = wr.combine(fs.documents, "media")
+print(combined)
+combined = wr.combine(fs.documents, "media", "images")
+print(combined)
+combined = wr.combine(fs.documents, "media", "images", "France")
+print(combined)
+combined = wr.combine(fs.documents, "media", "images", "France", "1")
+print(combined)
+combined = wr.combine(fs.documents, "media", "images", "France", "1", "2")
+print(combined)
+combined = wr.combine(fs.documents, "media", "images", "France", "1", "2", "3")
+print(combined)
+combined = wr.combine(fs.documents, "media", "images", "France", "1", "2", "3", "4")
+print(combined)
 
-# ### Creates a database folder
-# db_folder = f'{fs.documents}/database'
-# wr.create_directory(db_folder) # If folder already exists, it does nothing
+combined = wr.combine(paths=["/home/You/Documents", "A", "B", "C"])
+print(combined)
+combined = wr.combine(fs.documents, "", "media", "images")
+print(combined)
+combined = wr.combine(fs.documents, "2001", "media", "images")
+print(combined)
+combined = wr.combine(fs.documents, "subdir\\file.txt")
+print(combined)
+combined = wr.combine(fs.documents, "2001", "media", "images", "AAA")
+print(combined)
+combined = wr.combine(fs.documents, "/2001", "/2002")
+print(combined)
+combined = wr.combine("users/YOU/Documents", "Summer23")
+print(combined)
 
-# ### Creates zipfiles folder
-# zip_folder = f'{fs.documents}/zipfiles'
-# wr.create_directory(zip_folder) # If folder already exists, it does nothing
+list_dir = [fs.documents, "1", "2", "3"]
+combined = wr.combine(paths = list_dir)
+print(combined)
 
-# ### Gets reference to the folder that will be compressed
-# source = db_folder
-# ### Sets the destination to the file after compression
-# destination = f'{zip_folder}/testfile.zip'
+print("Arr Func1")
+# doc_work = wr.join(paths = [fs.documents, "Work", "shopping.xlsx"])
+# print(doc_work)
 
-# ### Makes a ".zip" file
-# wr.make_zip(source, destination)
+# print("Func 1")
+# var = wr.join(path1 = "System", paths = ["1", "2", "3"])
+# print(var)
 
-# myJoin = wr.join(f'{fs.documents}/', "MinhaPastaEmDocuments")
-# doc_folders = wr.list_directories(f'{fs.documents}/')
-# download_files = wr.list_files(f'{fs.downloads}/')
+# print("Func 2")
+# var = wr.join(path1 = "System", path2="Ameixa/",paths = ["1", "2", "3"])
+# print(var)
 
-# print(myJoin)
-# print(doc_folders)
-# print(download_files)
+# print("Func 3")
+# var = wr.join(path1 = "System", path2="Ameixa/", path3="Jose", paths = ["1", "2", "3"])
+# print(var)
 
-# print(wr.combine_path('c:\\temp', 'subdir\\file.txt'))
-# print(wr.combine_path('', 'subdir\\file.txt'))
-# print(wr.combine_path(fs.documents, fs.desktop))
-# print(wr.combine_path(f'{fs.documents}/', f'{fs.desktop}/'))
-
-# print(wr.combine_path('c:\\temp.txt', 'subdir\\file.txt'))
-# print(wr.combine_path('c:\\temp.txt', 'subdir\\file.txt'))  # Saída: 'c:\\temp.txt\\subdir\\file.txt'
-# print(wr.combine_path(f'{fs.documents}', 'subdir\\file.txt'))
-
-# saved_games = wr.combine_path(f'{fs.documents}', "Saved")
-# print(saved_games)
-# wr.create_directory(saved_games)
-
-# lib = wr.combine_path(paths=[fs.documents, "Saved", "folder1", "folder2"])
-# lib = wr.combine_path(paths=[f'{fs.documents}/', "Saved", "folder1", "folder2"])
-# print(lib)
-# aaa = wr.combine_path(f'{fs.pictures}', "Path1")
-# print(aaa)
-# aaa = wr.combine_path(f'{fs.pictures}/', "Path2")
-# print(aaa)
-# aaa = wr.combine_path(f'{fs.pictures}', "/Path3")
-# print(aaa)
-# aaa = wr.combine_path(f'{fs.pictures}/', "/Path4")
-# print(aaa)
-
-# wr.create_directory(aaa)
-
-# print(lib)
-
-
-
-
-
-
-# ### pip install filesystempro
-# import filesystem as fs
-# from filesystem import wrapper as wr
-
-# ### Creates a database folder
-# db_folder = f'{fs.documents}/database'
-# wr.create_directory(db_folder) # If folder already exists, it does nothing
-
-# ### Creates zipfiles folder
-# zip_folder = f'{fs.documents}/zipfiles'
-# wr.create_directory(zip_folder) # If folder already exists, it does nothing
-
-# ### Makes a ".zip" file
-# wr.make_zip(source = db_folder, destination = f'{zip_folder}/testfile.zip')
+# print("Func 4")
+# var = wr.join(path1 = "System", path2="Ameixa/", path3="Jose", path4="Japao", paths = ["1", "2", "3"])
+# print(var)
 
 
+# Create a file
 
+# bytes_to_mb = st.convert_file_size(obj_file["size"], "mb")
+# print(bytes_to_mb)
+# bytes_to_gb = st.convert_file_size(obj_file["size"], "MB", True)
+# print(bytes_to_gb)
+# print(wr.convert_file_size(obj_file["size"]))
+# Get attribute values into variables
 
+# Name = ""
+# name_and_extension = ""
+# size = ""
+# abspath = ""
+# dir_name = ""
+# access = ""
+# created = ""
+# AAAA = ""
+# AAAA = ""
+# AAAA = ""
 
+# print("File Name:", obj_file["name_without_extension"])
+# print("File Name and Extension:", obj_file["name"])
+# print("File Size:", obj_file["size"])
+# print("File Absolute Path:", obj_file["abspath"])
+# print("File Directory Name:", obj_file["dirname"])
+# print("File Access:", obj_file["access"])
+# print("File Created:", obj_file["created"])
 
-
-
-
-
-# ### pip install filesystempro
-# import filesystem as fs
-# from filesystem import wrapper as wr
-
-# ### Creates a database folder
-# db_folder = f'{fs.documents}/database'
-# wr.create_directory(db_folder) # If folder already exists, it does nothing
-
-# ### Creates zipfiles folder
-# zip_folder = f'{fs.documents}/zipfiles'
-# wr.create_directory(zip_folder) # If folder already exists, it does nothing
-
-# ### Makes a ".zip" file
-# wr.make_zip(db_folder, f'{zip_folder}/testfile.zip')
+# Get info from a file

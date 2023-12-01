@@ -2,6 +2,8 @@ import getpass
 import os
 from sys import platform
 
+__version__ = "1.1.0.0"
+
 CURRENT_LOCATION = os.getcwd()
 """
 Creates a string that represents the path to the current directory. (Where the application is running)

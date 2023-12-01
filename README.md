@@ -42,14 +42,12 @@ git clone https://github.com/hbisneto/FileSystemPro.git
 
 #
 
-### Usage Example
-
-These directories are dynamically generated based on the operating system platform (Linux, Mac and Windows)
+## Main Variables
 
 #
 
 <details>
-<summary>FileSystem: Default Variables</summary>
+<summary>List Of Variables</summary>
 
 ```py
 import filesystem as fs
@@ -107,6 +105,10 @@ print(fs.windows_favorites) # (specific to Windows)
 
 #
 
+## Examples
+
+#
+
 <details>
 <summary>FileSystem: Reaching Desktop Folder</summary>
 
@@ -142,20 +144,24 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
 
 #
 
-### Usage Example
+## Main Functions
 
 #
 
 <details>
-<summary>Wrapper: Default Functions</summary>
+<summary>List Of Functions</summary>
 
 1. `create_directory(path, create_subdirs=True)`: This function is used to create a directory at the specified `path`. If `create_subdirs` is `True`, the function creates all intermediate-level directories needed to contain the leaf directory. If `create_subdirs` is `False`, the function will raise an error if the directory already exists or if any intermediate-level directories in the path do not exist. Default is **`True`**
 <br>If the directories already exist, it does nothing.
 
 2. `create_file(file_name, path, text)`: This function opens a file with the name `file_name` in the directory specified by `path` and writes the content of `text` into the file.
 
-11. **combine(path1=None, path2=None, paths=[]):**
-<br>Function description
+11. `combine(*args, paths=[]):`
+This function is designed to combine file or directory paths. It takes any number of arguments `*args` and an optional parameter paths which is a list of paths. The function returns a combined path based on the inputs.
+<br>If the paths list is provided, the function uses it to combine paths. It starts with the first path in the list and checks if it’s an absolute path. If it’s not, it raises a `ValueError` with a detailed error message. Then, it iterates over the rest of the paths in the list. If a path is absolute, it replaces the current result with this path. If a path is relative, it joins this path to the current result. Finally, it returns the combined path.
+<br> If the paths list is not provided or is empty, the function uses the arguments passed `*args`. It starts with the first argument and checks if it’s an absolute path. If it’s not, it raises a `ValueError` with a detailed error message. Then, it iterates over the rest of the arguments. If an argument is an absolute path, it replaces the current result with this path. If an argument is a relative path and not an empty string, it adds this path to the current result. If the current result doesn’t end with a separator (os.sep), it adds one before adding the path. Finally, it returns the combined path.
+<br><br> **Please note**: This function does not check if the paths exist or are valid, it only combines them based on the rules described. It’s up to the caller to ensure that the paths are valid and exist if necessary.
+>This method is intended to concatenate individual strings into a single string that represents a file path. However, if an argument other than the first contains a rooted path, any previous path components are ignored, and the returned string begins with that rooted path component. As an alternative to the `combine` method, consider using the `join` method.
 
 3. `delete(path, recursive=False)`: This function is designed to delete a directory at a given `path`.
 <br>If `recursive` is set to `True`, the function will delete the directory and all its contents. If it’s `False`, the function will only delete the directory if it’s empty. Default is **`False`**.
@@ -166,8 +172,15 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
 
 6. `get_object(pathname)`: This function takes a file or directory path as input and returns a dictionary containing various attributes of the file or directory. These attributes include the time of last modification, creation time, last access time, name, size, absolute path, parent directory, whether it's a directory or file or link, whether it exists, and its extension (if it's a file).
 
-10. **join(path1=None, path2=None, path3='', path4=''):**
-<br>Function description
+10. `join(path1='', path2='', path3='', path4='', paths=[]):`
+This function is designed to concatenate directory paths. It takes four optional string parameters `path1`, `path2`, `path3`, `path4` and an optional list of paths `paths`. The function returns a single string that represents the concatenated path.
+<br> For each of the parameters `path1`, `path2`, `path3`, and `path4`, the function checks if the path ends with a separator. If it doesn’t, and the path is not an empty string, it adds a separator to the end of the path.
+<br>If the paths list is provided and is not empty, the function iterates over each item in the list. For each item, it checks if the item ends with a separator. If it doesn’t, it adds a separator to the end of the item.
+<br>Finally, the function returns the concatenated path.
+<br><br> **Please note**: This function does not check if the paths exist or are valid, it only combines them based on the rules described. It’s up to the caller to ensure that the paths are valid and exist if necessary.
+> Unlike the `combine` method, the `join` method does not attempt to root the returned path. (That is, if `path2` or `path3` or `path4` is an absolute path, the `join` method does not discard the previous paths as the `combine` method does.)
+
+
 
 7. `list_directories(path)`: This function returns a list of all the directories in a given directory.
 
@@ -176,6 +189,10 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
 9. `make_zip(source, destination)`: This function is used to create a zip archive of a given source directory and move it to a specified destination.
 
 </details>
+
+#
+
+## Examples
 
 #
 
@@ -203,7 +220,7 @@ except:
 
 #### Get files
 
-The following example shows how to get files information from 'Downloads' folder.
+The following example shows how to get files information from **Downloads** folder.
 
 ```py
 # Let's use 'Downloads' folder as example
@@ -261,7 +278,7 @@ Output:
 <details>
 <summary>Wrapper: Enumerate files (walk recursively) from a directory</summary>
 
-The following code is using a list comprehension to generate a list of all files in the `downloads` directory:
+The following code is using a list comprehension to generate a list of all files in the **Downloads** directory:
 
 ```py
 tree = [x for x in wr.enumerate_files(fs.downloads)]
@@ -283,12 +300,12 @@ Watcher serves as a monitoring system for the file system. It keeps track of any
 
 #
 
-### Usage Example
+## Main Functions
 
 #
 
 <details>
-<summary>Watcher: Default Functions </summary>
+<summary>List Of Functions </summary>
 
 Watcher is used to monitor changes in a file system.
 
@@ -302,6 +319,10 @@ Watcher is used to monitor changes in a file system.
 </details>
 
 This class could be useful in scenarios where you need to monitor changes to a file system, for example, in a backup system or a live syncing service.
+
+#
+
+## Examples
 
 #
 

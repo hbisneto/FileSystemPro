@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 
 filesystem/info
+filesystem/storage
 
 # C extensions
 *.so

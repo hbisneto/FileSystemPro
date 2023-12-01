@@ -3,32 +3,100 @@ import glob
 import os
 import shutil
 
-def combine(path1=None, path2=None, paths=[]):
-    # In cases of paths list is in use
-    if path1 is None or path2 is None:
-        if len(paths) >= 2:
-            url = ""
-            for i in paths:
-                url += i + os.sep
-            url = url.replace("//", os.sep)
-            return url
+def combine(*args, paths=[]):
+    """
+    This function is designed to combine file or directory paths. 
+    It takes any number of arguments `*args` and an optional parameter paths which is a list of paths.
+    The function returns a combined path based on the inputs.
     
-    # In cases of combining 2 folders
-    if path2.startswith(os.sep):
-        return path2
-    else:
-        # fullpath = join(path1, path2)
-        # fullpath = fullpath.replace("//", os.sep)
-        # return fullpath
-        return join(path1, path2)
+    If the paths list is provided, the function uses it to combine paths. 
+    It starts with the first path in the list and checks if it's an absolute path. 
+    If it's not, it raises a `ValueError` with a detailed error message. 
+    Then, it iterates over the rest of the paths in the list. 
+    If a path is absolute, it replaces the current result with this path. 
+    If a path is relative, it joins this path to the current result. Finally, it returns the combined path.
+    
+    If the paths list is not provided or is empty, the function uses the arguments passed `*args`.
+    It starts with the first argument and checks if it's an absolute path.
+    If it's not, it raises a `ValueError` with a detailed error message. 
+    Then, it iterates over the rest of the arguments.
+    If an argument is an absolute path, it replaces the current result with this path. 
+    If an argument is a relative path and not an empty string, it adds this path to the current result. 
+    If the current result doesn't end with a separator (os.sep), it adds one before adding the path.
+    Finally, it returns the combined path.
+    
+    Please note: This function does not check if the paths exist or are valid, it only combines them based
+    on the rules described.
+    It's up to the caller to ensure that the paths are valid and exist if necessary.
+
+    ```py
+    from filesystem import wrapper as wr
+
+    # Combine absolute and relative paths
+    result = wr.combine('/home/user', 'directory', 'file.txt')
+    print(result)  
+    # Outputs: '/home/user/directory/file.txt'
+
+    # Use an absolute path in the middle
+    result = wr.combine('/home/user', '/otheruser', 'file.txt')
+    print(result)
+    # Outputs: '/otheruser/file.txt'
+
+    # Use the paths parameter
+    result = wr.combine(paths=['/home/user', 'directory', 'file.txt'])
+    print(result)
+    # Outputs: '/home/user/directory/file.txt'
+    ```
+
+    """
+    if paths:
+        result = paths[0]
+        if not os.path.isabs(result):
+            raise ValueError(
+f'''Invalid argument: The path "{result}" is not an absolute path.
+- The first argument inside paths list must to be an absolute path.
+
+For example, "/home/user/directory" is a valid absolute path. Please provide a valid absolute path.
+
+'''
+)
+        for path in paths:
+            if os.path.isabs(path):
+                result = path
+            else:
+                result = join(result, path)
+        return result
+
+    result = args[0]
+    if not os.path.isabs(result):
+        raise ValueError(
+f'''Invalid argument: The path "{result}" is not an absolute path.
+- The first argument must to be an absolute path.
+
+For example, "/home/user/directory" is a valid absolute path. Please provide a valid absolute path.
+
+'''
+)
+    for path in args[1:]:
+        if path == '':
+            continue
+        if os.path.isabs(path):
+            result = path
+        else:
+            if not result.endswith(os.sep):
+                result += os.sep
+            result += path
+    return result
     
 def create_directory(path, create_subdirs=True):
     """
     This function is used to create a directory at the specified `path`.
     
-    If `create_subdirs` is `True`, the function creates all intermediate-level directories needed to contain the leaf directory. 
+    If `create_subdirs` is `True`, the function creates all intermediate-level directories needed to contain 
+    the leaf directory. 
     
-    If `create_subdirs` is `False`, the function will raise an error if the directory already exists or if any intermediate-level directories in the path do not exist.
+    If `create_subdirs` is `False`, the function will raise an error if the directory already exists or if any
+    intermediate-level directories in the path do not exist.
     
     Default is `True`
     
@@ -122,7 +190,8 @@ def delete(path, recursive=False):
 
 def enumerate_files(path):
     """
-    This function performs a depth-first traversal of the directory tree at the given path (after expanding any user home directory symbols).
+    This function performs a depth-first traversal of the directory tree at the given path 
+    (after expanding any user home directory symbols).
     
     It returns a list of dictionaries containing the attributes of each file and directory in the tree.
     """
@@ -130,13 +199,14 @@ def enumerate_files(path):
     path = os.path.expanduser(path)
     for root, dirs, files in os.walk(path):
         results.append(get_object(root))
-        # results.extend([get_path_properties(os.path.join(root,x)) for x in files])
         results.extend([get_object(join(root,x)) for x in files])
     return results
 
 def get_files(path):
     """
-    This function takes a path as input (which can include wildcards), expands any user home directory symbols (~), and returns a list of dictionaries containing the attributes of each file or directory that matches the path.
+    This function takes a path as input (which can include wildcards), 
+    expands any user home directory symbols (~), and returns a list of dictionaries containing 
+    the attributes of each file or directory that matches the path.
     """
     path = os.path.expanduser(path)
     print(path)
@@ -147,7 +217,11 @@ def get_files(path):
 
 def get_object(pathname):
     """
-    This function takes a file or directory path as input and returns a dictionary containing various attributes of the file or directory. These attributes include the time of last modification, creation time, last access time, name, size, absolute path, parent directory, whether it's a directory or file or link, whether it exists, and its extension (if it's a file).
+    This function takes a file or directory path as input and returns a dictionary containing various attributes 
+    of the file or directory. 
+    These attributes include the time of last modification, creation time, last access time, name, size,
+    absolute path, parent directory, whether it's a directory or file or link, whether it exists, and its extension
+    (if it's a file).
     """
     def path_properties(pathname, fun, default=-1):
         try:
@@ -158,45 +232,81 @@ def get_object(pathname):
     head, tail = os.path.split(pathname)
 
     result = {}
+    result["abspath"] = os.path.abspath(pathname)
+    result["access"] = path_properties(pathname, os.path.getatime)
+    result["created"] = path_properties(pathname, os.path.getctime)
+    result["dirname"] = os.path.dirname(pathname)
     result["exists"] = os.path.exists(pathname)
-    result["name"] = tail
     result["is_dir"] = os.path.isdir(pathname)
     result["is_file"] = os.path.isfile(pathname)
     result["is_link"] = os.path.islink(pathname)
-    result["size"] = path_properties(pathname, os.path.getsize)
-    result["created"] = path_properties(pathname, os.path.getctime)
+    result["extension"] = tail.split(".")[-1] if result["is_file"] else ""
     result["modified"] = path_properties(pathname, os.path.getmtime)
-    result["access"] = path_properties(pathname, os.path.getatime)
-    result["abspath"] = os.path.abspath(pathname)
-    result["dirname"] = os.path.dirname(pathname)
-    result["ext"] = tail.split(".")[-1] if result["is_file"] else ""
+    result["name"] = tail
+    result["name_without_extension"] = tail.split('.')[0]
+    result["size"] = path_properties(pathname, os.path.getsize)
     return result
 
-def join(path1='', path2='', path3='', path4=''):
-    # if path1 is None or path2 is None:
-    #     return ""
+def join(path1='', path2='', path3='', path4='', paths=[]):
+    """
+    This function is designed to concatenate directory paths. 
+    It takes four optional string parameters `path1`, `path2`, `path3`, `path4` and an optional list of paths paths. 
+    The function returns a single string that represents the concatenated path. 
+    For each of the parameters `path1`, `path2`, `path3`, and `path4`,
+    the function checks if the path ends with a separator.
+    If it doesn't, and the path is not an empty string, it adds a separator to the end of the path. 
+    If the `paths` list is provided and is not empty, the function iterates over each item in the list.
+    For each item, it checks if the item ends with a separator.
+    If it doesn't, it adds a separator to the end of the item. 
+    Finally, the function returns the concatenated path. 
 
-    if path1.endswith(os.sep):
-        pass
-    else:
-        path1 = path1 + os.sep
+    Please note: This function does not check if the paths exist or are valid, 
+    it only combines them based on the rules described. 
+    It's up to the caller to ensure that the paths are valid and exist if necessary.
 
-    # if path2.endswith(os.sep):
-    #     pass
-    # else:
-    #     path2 = path2 + os.sep
+    Unlike the `combine` method, the `join` method does not attempt to root the returned path. 
+    (That is, if `path2` or `path3` or `path4` is an absolute path, the `join` method does not discard the previous paths 
+    as the `combine` method does.)
+    
+    ```py
+    from filesystem import wrapper as wr
 
-    # if path3.endswith(os.sep):
-    #     pass
-    # else:
-    #     path3 = path3 + os.sep
+    # Combine paths
+    result = wr.join('home', 'user', 'directory', 'file.txt')
+    print(result)
+    # Outputs: 'home/user/directory/file.txt'
 
-    # if path4.endswith(os.sep):
-    #     pass
-    # else:
-    #     path4 = path4 + os.sep
+    # Use the paths parameter
+    result = wr.join(paths=['home', 'user', 'directory', 'file.txt'])
+    print(result)
+    # Outputs: 'home/user/directory/file.txt'
+    ```
 
-    return path1 + path2 + path3 + path4
+    """
+    key_dir = ""
+    if not path1.endswith(os.sep):
+        if path1 != "":
+            path1 = path1 + os.sep
+    key_dir += path1
+    if not path2.endswith(os.sep):
+        if path2 != "":
+            path2 = path2 + os.sep
+    key_dir += path2
+    if not path3.endswith(os.sep):
+        if path3 != "":
+            path3 = path3 + os.sep
+    key_dir += path3
+    if not path4.endswith(os.sep):
+        if path4 != "":
+            path4 = path4 + os.sep
+    key_dir += path4
+
+    if paths:
+        for item in paths:
+            if not item.endswith(os.sep):
+                item = item + os.sep
+            key_dir += item
+    return key_dir[:-1]
 
 def list_directories(path):
     """
@@ -204,7 +314,6 @@ def list_directories(path):
     """
     directory_list = []
     for dir in os.listdir(path):
-        # if os.path.isdir(os.path.join(path, dir)):
         if os.path.isdir(join(path, dir)):
             directory_list.append(dir)
     
@@ -212,11 +321,10 @@ def list_directories(path):
 
 def list_files(path):
     """
-    Lists all the files inside of a given path
+    Returns a list containing all the files inside of a given path
     """
     file_list = []
     for file in os.listdir(path):
-        # if os.path.isfile(os.path.join(path, file)):
         if os.path.isfile(join(path, file)):
             file_list.append(file)
     return file_list
