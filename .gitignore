@@ -3,8 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+filesystem/convert
 filesystem/info
 filesystem/storage
+filesystem/psutil
 
 # C extensions
 *.so

@@ -1,8 +1,9 @@
 import getpass
 import os
-from sys import platform
+from sys import platform as PLATFORM
 
-__version__ = "1.1.0.0"
+__version__ = "1.0.1.0"
+OS_SEPARATOR = os.sep
 
 CURRENT_LOCATION = os.getcwd()
 """
@@ -14,7 +15,7 @@ USER_NAME = getpass.getuser()[0].upper() + getpass.getuser()[1:]
 Creates a string that represents the username of the user currently logged in to the system.
 """
 
-if platform == "linux" or platform == "linux2":
+if PLATFORM == "linux" or PLATFORM == "linux2":
     PLATFORM_NAME = "Linux"
     user = f'/home/{os.environ["USER"]}'
     """
@@ -48,7 +49,7 @@ if platform == "linux" or platform == "linux2":
     """
     Creates a string that represents the path to the current user's Videos folder.
     """
-elif platform == "darwin":
+elif PLATFORM == "darwin":
     PLATFORM_NAME = "Mac"
     user = f'/Users/{os.environ["USER"]}'
     """
@@ -82,7 +83,7 @@ elif platform == "darwin":
     """
     Creates a string that represents the path to the current user's Videos folder.
     """
-elif platform == "win32" or platform == "win64":
+elif PLATFORM == "win32" or PLATFORM == "win64":
     PLATFORM_NAME = "Windows"
     user = os.environ['USERPROFILE']
     """

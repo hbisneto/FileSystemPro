@@ -108,7 +108,7 @@ def create_directory(path, create_subdirs=True):
         os.mkdir(path)
     return get_object(path)
 
-def create_file(file_name, path, text):
+def create_file(file_name, path, text, encoding="utf-8-sig"):
     """
     ### Create a file in UTF-8 encode and write a string of text to this file.
 
@@ -162,9 +162,8 @@ def create_file(file_name, path, text):
     """
 
     try:
-        with codecs.open(f'{path}/{file_name}', "w", "utf-8-sig") as custom_file:
+        with codecs.open(f'{path}/{file_name}', "w", encoding=encoding) as custom_file:
             custom_file.write(text)
-            custom_file.close()
     except:
         pass
     return get_object(f'{path}/{file_name}')
@@ -209,13 +208,12 @@ def get_files(path):
     the attributes of each file or directory that matches the path.
     """
     path = os.path.expanduser(path)
-    print(path)
     result = []
     for x in glob.glob(path):
         result.append(get_object(x))
     return result
 
-def get_object(pathname):
+def get_object(path):
     """
     This function takes a file or directory path as input and returns a dictionary containing various attributes 
     of the file or directory. 
@@ -223,34 +221,35 @@ def get_object(pathname):
     absolute path, parent directory, whether it's a directory or file or link, whether it exists, and its extension
     (if it's a file).
     """
-    def path_properties(pathname, fun, default=-1):
+    def path_properties(path, fun, default=-1):
         try:
-            return fun(pathname)
+            return fun(path)
         except:
             return default
         
-    head, tail = os.path.split(pathname)
+    head, tail = os.path.split(path)
 
     result = {}
-    result["abspath"] = os.path.abspath(pathname)
-    result["access"] = path_properties(pathname, os.path.getatime)
-    result["created"] = path_properties(pathname, os.path.getctime)
-    result["dirname"] = os.path.dirname(pathname)
-    result["exists"] = os.path.exists(pathname)
-    result["is_dir"] = os.path.isdir(pathname)
-    result["is_file"] = os.path.isfile(pathname)
-    result["is_link"] = os.path.islink(pathname)
+    result["abspath"] = os.path.abspath(path)
+    result["access"] = path_properties(path, os.path.getatime)
+    result["created"] = path_properties(path, os.path.getctime)
+    result["dirname"] = os.path.dirname(path)
+    result["exists"] = os.path.exists(path)
+    result["is_dir"] = os.path.isdir(path)
+    result["is_file"] = os.path.isfile(path)
+    result["is_link"] = os.path.islink(path)
     result["extension"] = tail.split(".")[-1] if result["is_file"] else ""
-    result["modified"] = path_properties(pathname, os.path.getmtime)
+    result["modified"] = path_properties(path, os.path.getmtime)
     result["name"] = tail
     result["name_without_extension"] = tail.split('.')[0]
-    result["size"] = path_properties(pathname, os.path.getsize)
+    result["size"] = path_properties(path, os.path.getsize)
     return result
 
 def join(path1='', path2='', path3='', path4='', paths=[]):
     """
     This function is designed to concatenate directory paths. 
-    It takes four optional string parameters `path1`, `path2`, `path3`, `path4` and an optional list of paths paths. 
+    It takes four optional string parameters `path1`, `path2`, `path3`, `path4`
+    and an optional list of paths `paths`. 
     The function returns a single string that represents the concatenated path. 
     For each of the parameters `path1`, `path2`, `path3`, and `path4`,
     the function checks if the path ends with a separator.

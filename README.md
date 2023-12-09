@@ -151,17 +151,17 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
 <details>
 <summary>List Of Functions</summary>
 
-1. `create_directory(path, create_subdirs=True)`: This function is used to create a directory at the specified `path`. If `create_subdirs` is `True`, the function creates all intermediate-level directories needed to contain the leaf directory. If `create_subdirs` is `False`, the function will raise an error if the directory already exists or if any intermediate-level directories in the path do not exist. Default is **`True`**
-<br>If the directories already exist, it does nothing.
-
-2. `create_file(file_name, path, text)`: This function opens a file with the name `file_name` in the directory specified by `path` and writes the content of `text` into the file.
-
 11. `combine(*args, paths=[]):`
 This function is designed to combine file or directory paths. It takes any number of arguments `*args` and an optional parameter paths which is a list of paths. The function returns a combined path based on the inputs.
 <br>If the paths list is provided, the function uses it to combine paths. It starts with the first path in the list and checks if it’s an absolute path. If it’s not, it raises a `ValueError` with a detailed error message. Then, it iterates over the rest of the paths in the list. If a path is absolute, it replaces the current result with this path. If a path is relative, it joins this path to the current result. Finally, it returns the combined path.
 <br> If the paths list is not provided or is empty, the function uses the arguments passed `*args`. It starts with the first argument and checks if it’s an absolute path. If it’s not, it raises a `ValueError` with a detailed error message. Then, it iterates over the rest of the arguments. If an argument is an absolute path, it replaces the current result with this path. If an argument is a relative path and not an empty string, it adds this path to the current result. If the current result doesn’t end with a separator (os.sep), it adds one before adding the path. Finally, it returns the combined path.
 <br><br> **Please note**: This function does not check if the paths exist or are valid, it only combines them based on the rules described. It’s up to the caller to ensure that the paths are valid and exist if necessary.
 >This method is intended to concatenate individual strings into a single string that represents a file path. However, if an argument other than the first contains a rooted path, any previous path components are ignored, and the returned string begins with that rooted path component. As an alternative to the `combine` method, consider using the `join` method.
+
+1. `create_directory(path, create_subdirs=True)`: This function is used to create a directory at the specified `path`. If `create_subdirs` is `True`, the function creates all intermediate-level directories needed to contain the leaf directory. If `create_subdirs` is `False`, the function will raise an error if the directory already exists or if any intermediate-level directories in the path do not exist. Default is **`True`**
+<br>If the directories already exist, it does nothing.
+
+2. `create_file(file_name, path, text)`: The function attempts to open a file at the specified `path` with the given `file_name`, in write mode with the specified `encoding`. It then writes the provided `text` into the file.
 
 3. `delete(path, recursive=False)`: This function is designed to delete a directory at a given `path`.
 <br>If `recursive` is set to `True`, the function will delete the directory and all its contents. If it’s `False`, the function will only delete the directory if it’s empty. Default is **`False`**.
@@ -170,7 +170,7 @@ This function is designed to combine file or directory paths. It takes any numbe
 
 5. `get_files(path)`: This function takes a path as input (which can include wildcards), expands any user home directory symbols (`~`), and returns a list of dictionaries containing the attributes of each file or directory that matches the path.
 
-6. `get_object(pathname)`: This function takes a file or directory path as input and returns a dictionary containing various attributes of the file or directory. These attributes include the time of last modification, creation time, last access time, name, size, absolute path, parent directory, whether it's a directory or file or link, whether it exists, and its extension (if it's a file).
+6. `get_object(path)`: This function takes a file or directory path as input and returns a dictionary containing various attributes of the file or directory. These attributes include the time of last modification, creation time, last access time, name, size, absolute path, parent directory, whether it's a directory or file or link, whether it exists, and its extension (if it's a file).
 
 10. `join(path1='', path2='', path3='', path4='', paths=[]):`
 This function is designed to concatenate directory paths. It takes four optional string parameters `path1`, `path2`, `path3`, `path4` and an optional list of paths `paths`. The function returns a single string that represents the concatenated path.
