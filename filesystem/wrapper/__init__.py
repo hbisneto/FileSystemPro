@@ -239,6 +239,8 @@ def get_object(path):
     result["is_file"] = os.path.isfile(path)
     result["is_link"] = os.path.islink(path)
     result["extension"] = tail.split(".")[-1] if result["is_file"] else ""
+    ### EXT kept to cover version support. Remove on (MAJOR UPDATE ONLY)
+    result["ext"] = tail.split(".")[-1] if result["is_file"] else ""
     result["modified"] = path_properties(path, os.path.getmtime)
     result["name"] = tail
     result["name_without_extension"] = tail.split('.')[0]

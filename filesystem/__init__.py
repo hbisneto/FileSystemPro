@@ -3,13 +3,17 @@ import os
 from sys import platform as PLATFORM
 
 __version__ = "1.0.1.0"
-OS_SEPARATOR = os.sep
-
 CURRENT_LOCATION = os.getcwd()
 """
 Creates a string that represents the path to the current directory. (Where the application is running)
 """
+OS_SEPARATOR = os.sep
+"""
+The os.sep is an attribute in the os module in Python. It represents the character that is used by the operating system to separate pathname components, and it varies between different operating systems.
 
+For instance, on Windows, it would return a backslash (\\), while on Unix or Linux, it would return a forward slash (/). So, OS_SEPARATOR will contain the appropriate file path separator for the operating system on which the Python script is running. This is useful for creating file paths in a cross-platform compatible way.
+
+"""
 USER_NAME = getpass.getuser()[0].upper() + getpass.getuser()[1:]
 """
 Creates a string that represents the username of the user currently logged in to the system.
