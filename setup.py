@@ -10,7 +10,7 @@ setup(
     ## 0.X.0.0: Versão somente com novas funcionalidades; 
     ## 0.0.X.0: Funcionalidades obsoletas que geram novas versões; 
     ## 0.0.0.X: Uma versão única é imutável e qualquer alteração nela deve gerar uma nova versão, com um novo nome.
-    version = '1.1.0.0',
+    version = '1.0.1.0',
     url = 'https://github.com/hbisneto/FileSystemPro',
     license = 'MIT License',
     
