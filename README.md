@@ -397,6 +397,17 @@ wra.make_zip(source, destination)
 This function is used to create a zip archive of a given source directory and move it to a specified destination.
 </details>
 
+<details>
+<summary>make_structure():</summary>
+
+```py
+wra.make_structure()
+```
+
+This function is designed to create a set of default directories on a filesystem if they do not already exist.
+
+</details>
+
 ## Sample Codes
 
 <details>

@@ -1,4 +1,5 @@
 import codecs
+import filesystem
 import glob
 import os
 import shutil
@@ -108,7 +109,16 @@ def create_directory(path, create_subdirs=True):
         os.mkdir(path)
     return get_object(path)
 
-def create_file(file_name, path, text, encoding="utf-8-sig"):
+def create_binary_file(filename, data):
+    if type(data) != bytes:
+        b_data = bytes(data.encode())
+        with open(filename, 'wb') as binary_file:
+            binary_file.write(b_data)
+    else:
+        with open(filename, 'wb') as binary_file:
+            binary_file.write(data)
+
+def create_file(filename, data, encoding="utf-8-sig"):
     """
     ### Create a file in UTF-8 encode and write a string of text to this file.
 
@@ -162,11 +172,11 @@ def create_file(file_name, path, text, encoding="utf-8-sig"):
     """
 
     try:
-        with codecs.open(f'{path}/{file_name}', "w", encoding=encoding) as custom_file:
-            custom_file.write(text)
+        with codecs.open(f'{filename}', "w", encoding=encoding) as custom_file:
+            custom_file.write(data)
     except:
         pass
-    return get_object(f'{path}/{file_name}')
+    return get_object(f'{filename}')
 
 def delete(path, recursive=False):
     """
@@ -200,6 +210,12 @@ def enumerate_files(path):
         results.append(get_object(root))
         results.extend([get_object(join(root,x)) for x in files])
     return results
+
+def get_basename(path):
+    name = os.path.basename(path)
+
+    return name
+    # print(name)  # Outputs: file.txt
 
 def get_files(path):
     """
@@ -329,6 +345,35 @@ def list_files(path):
         if os.path.isfile(join(path, file)):
             file_list.append(file)
     return file_list
+
+def make_structure():
+    """
+    This function creates a predefined set of directories on the filesystem if they do not already exist.
+    It supports a variety of common directories for Linux, Mac, and Windows operating systems.
+    """
+    default_dirs = [
+        filesystem.desktop,
+        filesystem.documents,
+        filesystem.downloads,
+        filesystem.linux_templates,
+        filesystem.mac_applications,
+        filesystem.mac_movies,
+        filesystem.music,
+        filesystem.pictures,
+        filesystem.public,
+        filesystem.user,
+        filesystem.videos,
+        filesystem.windows_applicationData,
+        filesystem.windows_favorites,
+        filesystem.windows_localappdata,
+        filesystem.windows_temp
+    ]
+
+    for i in default_dirs:
+        if os.path.exists(i):
+            continue
+        else:
+            create_directory(i)
 
 def make_zip(source, destination):
     """

@@ -2,7 +2,11 @@ import getpass
 import os
 from sys import platform as PLATFORM
 
-__version__ = "1.0.1.0"
+def __checkupdates__():
+    print(">> Checking for new versions...")
+    print(">> You are up to date!")
+
+__version__ = "1.1.0.0"
 CURRENT_LOCATION = os.getcwd()
 """
 Creates a string that represents the path to the current directory. (Where the application is running)
@@ -54,7 +58,7 @@ if PLATFORM == "linux" or PLATFORM == "linux2":
     Creates a string that represents the path to the current user's Videos folder.
     """
 elif PLATFORM == "darwin":
-    PLATFORM_NAME = "Mac"
+    PLATFORM_NAME = "macOS"
     user = f'/Users/{os.environ["USER"]}'
     """
     Creates a string that represents the path to the current user's home directory.
