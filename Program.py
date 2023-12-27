@@ -1,6 +1,6 @@
 import filesystem as fs
 # from filesystem import wrapper as wra
-fs.__checkupdates__()
+# fs.__checkupdates__()
 
 # doc_name = wra.get_basename(fs.documents)
 # desk_name = wra.get_basename(fs.desktop)
