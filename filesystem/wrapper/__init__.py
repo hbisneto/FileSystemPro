@@ -189,13 +189,12 @@ def delete(path, recursive=False):
     Default is `False`.
     """
     if not os.path.exists(path):
-        print(f'\n\n>> The directory "{path}" does not exist.')
-        return
+        raise Exception(f'\n\n>> The directory "{path}" does not exist.')
 
     if not os.listdir(path) or recursive:
         shutil.rmtree(path)
     else:
-        print(f'\n\n>> The directory "{path}" is not empty.\n>> Use delete(path, True) to remove anyway.')
+        raise Exception(f'\n\n>> The directory "{path}" is not empty.\n>> Use delete(path, True) to remove anyway.')
 
 def enumerate_files(path):
     """
@@ -214,8 +213,8 @@ def enumerate_files(path):
 def get_basename(path):
     name = os.path.basename(path)
 
-    return name
     # print(name)  # Outputs: file.txt
+    return name
 
 def get_files(path):
     """

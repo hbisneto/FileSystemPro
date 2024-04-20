@@ -1,9 +1,11 @@
 import getpass
 import os
-# import requests
 from sys import platform as PLATFORM
 
-__version__ = "1.1.0.0"
+## VERIFY IF THE LIBRARY HAS SOME AVAILABLE UPDATE
+from filesystem import __core__
+__core__.__checkupdates__("Hbisneto","FileSystemPro")
+## VERIFY IF THE LIBRARY HAS SOME AVAILABLE UPDATE
 
 CURRENT_LOCATION = os.getcwd()
 """
@@ -159,30 +161,3 @@ windows_temp = f'{windows_localappdata}/Temp'
 """
 Creates a string that represents the path to the current user's Temp folder inside LocalAppData in Windows environment.
 """
-
-# def __checkupdates__(user, repo):
-#     ### TAG PATTERN: v1.2.3.4
-#     current_version_string = ''.join(filter(str.isdigit, __version__))
-#     current_version = int(current_version_string)
-#     update_version = 0
-
-#     ### Check updates online using 'requests'
-#     url = f'https://api.github.com/repos/{user}/{repo}/releases'
-#     response = requests.get(url)
-#     releases = response.json()
-    
-#     for release in releases:
-#         if update_version == 0:
-#             tag_name = f'{release["tag_name"]}'
-#             update_version_string = ''.join(filter(str.isdigit, tag_name))
-#             update_version = int(update_version_string)
-
-#     if int(update_version_string[0]) > int(current_version_string[0]):
-#         print("="*80)
-#         print(">> FileSystem Pro: New update is available!")
-#         print("="*80)
-#         print(f">> You are running version (v{__version__}), but a new version ({tag_name}) is available!")
-#         print(">> You can run pip install --upgrade filesystempro")
-#         print("="*80)
-
-# __checkupdates__("hbisneto","FileSystemPro")

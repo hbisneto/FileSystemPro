@@ -16,6 +16,12 @@ Don't forget to upgrade pip:
 pip install --upgrade pip
 ```
 
+Upgrade setuptools, and wheel:
+
+```sh
+pip install --upgrade setuptools wheel
+```
+
 And install **FileSystem Pro:**
 
 ```sh

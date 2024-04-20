@@ -3,10 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# FileSystem Pro
 filesystem/convert
-filesystem/info
 filesystem/storage
-filesystem/psutil
 
 # C extensions
 *.so

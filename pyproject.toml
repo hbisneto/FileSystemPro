@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel"]
 
 [tool.poetry]
 name = "FileSystemPro"
-version = "1.0.0.0"
+version = "1.1.0.0"
 description = "FileSystem Pro is designed to identify the operating system (OS) on which it`s running and define the paths to various user directories based on the OS."
 authors = ["Heitor Bisneto <heitor.bardemaker@live.com>"]
 

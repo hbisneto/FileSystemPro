@@ -1,26 +1,48 @@
-import filesystem as fs
-# from filesystem import wrapper as wra
-# fs.__checkupdates__()
+from filesystem import hardware
 
-# doc_name = wra.get_basename(fs.documents)
-# desk_name = wra.get_basename(fs.desktop)
-# print(doc_name)
-# print(desk_name)
+# print(hardware.GET_BRAND_NAME())
+# print(hardware.GET_MAC_SERIAL_NUMBER())
+
+# print()
+# var = hardware.disks.storage_metrics('/')
+
+# print()
 
 
-# data = 'This is some binary data'  # binary data
-# filename = f'{fs.documents}/Test.txt'  # name of the file to be created
-# b_data = 'This is some binary data'  # binary data
-# b_filename = f'{fs.documents}/Test.bin'  # name of the file to be created
-# print(type(data))
-# print(type(b_data))
-# wra.create_file(filename, data)
-# wra.create_binary_file(b_filename, b_data)
 
-# if type(data) != 'bytes':
-#     b_data = bytes(data.encode())
-#     print(type(b_data))
-    # Open the file in binary write mode
-# with open(filename, 'wb') as file:
-#     # Write data to the file
-#     file.write(data)
+# print(hardware.disks.disk_info())
+print(f'[FileSystem Pro]: Disk Partitions')
+print(hardware.disks.get_disk_partitions())
+print()
+print(f'[FileSystem Pro]: Storage Metrics')
+print(hardware.disks.storage_metrics("/"))
+print()
+print(f'[FileSystem Pro]: Current Disk FileSystem Name')
+print(hardware.disks.current_disk_filesystem_name())
+print()
+print(f'[FileSystem Pro]: Disk Info')
+print(hardware.disks.disk_info())
+print()
+print(f'[FileSystem Pro]: Disk IO Counters')
+print(hardware.disks.disk_io_counters())
+print()
+print(f'[FileSystem Pro]: Disk Filtered By Mointpoint')
+print(hardware.disks.get_disk_partition_filteredby_mountpoint("/"))
+print()
+print(f'[FileSystem Pro]: Disk Filtered By Device')
+print(hardware.disks.get_disk_partition_filteredby_device('/dev/disk1s2'))
+print()
+print(f'[FileSystem Pro]: Disk Filtered By FileSystem Name')
+print(hardware.disks.get_disk_partition_filteredby_fstype("apfs"))
+print()
+print(f'[FileSystem Pro]: Disk Filtered By Max File')
+print(hardware.disks.get_disk_partition_filteredby_maxfile(255))
+print()
+print(f'[FileSystem Pro]: Disk Filtered By Max Path')
+print(hardware.disks.get_disk_partition_filteredby_maxpath(1024))
+print()
+print(f'[FileSystem Pro]: Disk Filtered By OPTS')
+print(hardware.disks.get_disk_partition_filteredby_opts("rw,local,dovolfs,dontbrowse,journaled,multilabel"))
+print()
+
+# print(hardware.disks.get_disk_partition_filtered_device("/dev/disk1s1s1"))
