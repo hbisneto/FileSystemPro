@@ -35,10 +35,10 @@ git clone https://github.com/hbisneto/FileSystemPro.git
 - **Directory Path Identification:** The code identifies and defines the paths to several common user directories based on the operating system. This includes directories like Desktop, Documents, Downloads, Music, Pictures, Public, Videos, and others.
 - **Current Working Directory:** The code uses `os.getcwd()` to get the current working directory.
 - **String Formatting:** The code uses f-string formatting to create directory paths.
-- **Monitoring System:** Wrapper acts as a monitoring system for the file system. It keeps track of all activities within the file system.
+- **Monitoring System:** Watcher acts as a monitoring system for the file system. It keeps track of all activities within the file system.
 - **Change Tracking:** It records any changes made within the file system. This includes the creation of new files, modification of existing files, and deletion of files.
-- **Real-Time Updates:** The Wrapper provides real-time updates on any changes made within the file system. This ensures that users have the most current information at all times.
-- **Integrity Maintenance:** This feature is particularly useful in scenarios where maintaining the integrity and up-to-date status of the file system is crucial. By tracking all changes, the Wrapper helps ensure that the file system remains accurate and reliable.
+- **Real-Time Updates:** The Watcher provides real-time updates on any changes made within the file system. This ensures that users have the most current information at all times.
+- **Integrity Maintenance:** This feature is particularly useful in scenarios where maintaining the integrity and up-to-date status of the file system is crucial. By tracking all changes, the Watcher helps ensure that the file system remains accurate and reliable.
 
 ---
 

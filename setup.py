@@ -1,11 +1,11 @@
-from setuptools import setup
+from setuptools import setup, Extension, find_packages
 
 with open("README.md", "r") as fh:
     readme = fh.read()
 
 setup(
     name = 'filesystempro',
-    version = '1.0.1.0',
+    version = '1.0.2.0',
     url = 'https://github.com/hbisneto/FileSystemPro',
     license = 'MIT License',
     
@@ -32,12 +32,8 @@ setup(
     install_requires = [''],
     long_description = readme,
     long_description_content_type = "text/markdown",
-    keywords = ['FileSystem', 'Linux', 'macOS', 'Windows', 'File', 'System'],
-    packages = [
-        'filesystem', 
-        'filesystem/watcher',
-        'filesystem/wrapper',
-        ],
+    keywords = ['FileSystem', 'Linux', 'macOS', 'Windows', 'File', 'System', 'Terminals'],
+    packages=find_packages(),
     platforms = 'any',
     python_requires= '>=3.8',
 )
