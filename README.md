@@ -22,10 +22,40 @@ And install **FileSystem Pro:**
 pip install filesystempro
 ```
 
-You can also clone this repo to your local machine using:
+---
+
+#### To Developers / Contributors
+
+Clone this repository to your local machine using:
 
 ```sh
 git clone https://github.com/hbisneto/FileSystemPro.git
+```
+
+Install setuptools
+
+```sh
+pip install setuptools
+```
+
+Upgrade setuptools
+
+```sh
+pip install --upgrade setuptools
+```
+> Note: FileSystem Pro requires setuptools 69.5.1 or later.
+><br> Python environment typically targets setuptools version 49.x.
+
+Install wheel
+
+```sh
+pip install wheel
+```
+
+Upgrade wheel
+
+```sh
+pip install --upgrade wheel
 ```
 
 ---
@@ -47,195 +77,220 @@ git clone https://github.com/hbisneto/FileSystemPro.git
 ```py
 import filesystem as fs
 ```
-
-<details>
-<summary>fs.CURRENT_LOCATION</summary>
-
-> Creates a string that represents the path to the current directory. (Where the application is running)
-
-```py
-print(fs.CURRENT_LOCATION)
-```
-
-</details>
-
-<details>
-<summary>fs.OS_SEPARATOR</summary>
-
-> prints the OS separator 
-<br>'`/`' for macOS and Linux
-<br>'`\\`' for Windows
-
-```py
-print(fs.OS_SEPARATOR)
-```
-
-</details>
-
-<details>
-<summary>fs.USER_NAME</summary>
-
-> Creates a string that represents the username of the user currently logged in to the system.
-
-```py
-print(fs.USER_NAME)
-```
-
-</details>
-
-<details>
-<summary>fs.user</summary>
-
-> Creates a string that represents the path to the current user's home directory.
-
-```py
-print(fs.user)
-```
-
-</details>
-
-<details>
-<summary>fs.desktop</summary>
-
-> Creates a string that represents the path to the current user's Desktop folder.
-
-```py
-print(fs.desktop)
-```
-
-</details>
-
-<details>
-<summary>fs.documents</summary>
-
-> Creates a string that represents the path to the current user's Documents folder.
-
-```py
-print(fs.documents)
-```
-
-</details>
-
-<details>
-<summary>fs.downloads</summary>
-
-> Creates a string that represents the path to the current user's Downloads folder.
-
-```py
-print(fs.downloads)
-```
-
-</details>
-
-<details>
-<summary>fs.music</summary>
-
-> Creates a string that represents the path to the current user's Music folder.
-
-```py
-print(fs.music)
-```
-
-</details>
-
-<details>
-<summary>fs.pictures</summary>
-
-> Creates a string that represents the path to the current user's Pictures folder.
-
-```py
-print(fs.pictures)
-```
-
-</details>
-
-<details>
-<summary>fs.public</summary>
-
-> Creates a string that represents the path to the current user's Public folder.
-
-```py
-print(fs.public)
-```
-
-</details>
-
-<details>
-<summary>fs.videos</summary>
-
-> Creates a string that represents the path to the current user's Videos folder.
-
-```py
-print(fs.videos)
-```
-
-</details>
-
-<details>
-<summary>fs.linux_templates</summary>
-
-> Creates a string that represents the path to the current user's Templates folder in Linux environment.
-
-```py
-print(fs.linux_templates)
-```
-
-</details>
-
-<details>
-<summary>fs.mac_applications</summary>
-
-> Creates a string that represents the path to the current user's Applications folder in macOS environment.
-
-```py
-print(fs.mac_applications)
-```
-
-</details>
-
-<details>
-<summary>fs.windows_applicationData</summary>
-
-> Creates a string that represents the path to the current user's Roaming folder inside AppData in Windows environment.
-
-```py
-print(fs.windows_applicationData)
-```
-
-</details>
-
-<details>
-<summary>fs.windows_favorites</summary>
-
-> Creates a string that represents the path to the current user's Favorites folder in Windows environment.
-
-```py
-print(fs.windows_favorites)
-```
-
-</details>
-
-<details>
-<summary>fs.windows_localappdata</summary>
-
-> Creates a string that represents the path to the current user's Local folder inside AppData in Windows environment.
-
-```py
-print(fs.windows_localappdata)
-```
-
-</details>
-
-<details>
-<summary>fs.windows_temp</summary>
-
-> Creates a string that represents the path to the current user's Temp folder inside LocalAppData in Windows environment.
-
-```py
-print(fs.windows_temp)
-```
-
-</details>
+<table>
+  <tr>
+    <th>Method</th>
+    <th>Description</th>
+    <!-- <th>Code Sample</th> -->
+  </tr>
+  
+  <tr>
+    <td>
+    	CURRENT_LOCATION
+    </td>
+    <td>
+	    Creates a string that represents the path to the current directory. (Where the application is running)
+    </td>
+    <!-- <td>
+	    print(fs.CURRENT_LOCATION)
+    </td> -->
+  </tr>
+  
+  <tr>
+    <td>
+    	OS_SEPARATOR
+    </td>
+    <td>
+	    prints the OS separator
+		<br>'/' for macOS and Linux 
+		<br>'\\' for Windows
+    </td>
+    <!-- <td>
+	    print(fs.OS_SEPARATOR)
+    </td> -->
+  </tr>
+
+  <tr>
+    <td>
+    	USER_NAME
+    </td>
+    <td>
+	    Creates a string that represents the username of the user currently logged in to the system.
+    </td>
+    <!-- <td>
+	    print(fs.USER_NAME)
+    </td> -->
+  </tr>
+  
+  <tr>
+    <td>
+    	user
+    </td>
+    <td>
+	    Creates a string that represents the path to the current user's home directory.
+    </td>
+    <!-- <td>
+	    print(fs.user)
+    </td> -->
+  </tr>
+
+  <tr>
+    <td>
+    	desktop
+    </td>
+    <td>
+	    Creates a string that represents the path to the current user's Desktop folder.
+    </td>
+    <!-- <td>
+	    print(fs.desktop)
+    </td> -->
+  </tr>
+  
+  <tr>
+    <td>
+    	documents
+    </td>
+    <td>
+	    Creates a string that represents the path to the current user's Documents folder.
+    </td>
+    <!-- <td>
+	    print(fs.documents)
+    </td> -->
+  </tr>
+
+  <tr>
+    <td>
+    	downloads
+    </td>
+    <td>
+	    Creates a string that represents the path to the current user's Downloads folder.
+    </td>
+    <!-- <td>
+	    print(fs.downloads)
+    </td> -->
+  </tr>
+  
+  <tr>
+    <td>
+    	music
+    </td>
+    <td>
+	    Creates a string that represents the path to the current user's Music folder.
+    </td>
+    <!-- <td>
+	    print(fs.music)
+    </td> -->
+  </tr>
+
+  <tr>
+    <td>
+    	pictures
+    </td>
+    <td>
+	    Creates a string that represents the path to the current user's Pictures folder.
+    </td>
+    <!-- <td>
+	    print(fs.pictures)
+    </td> -->
+  </tr>
+  
+  <tr>
+    <td>
+    	public
+    </td>
+    <td>
+	    Creates a string that represents the path to the current user's Public folder.
+    </td>
+    <!-- <td>
+	    print(fs.public)
+    </td> -->
+  </tr>
+
+  <tr>
+    <td>
+    	videos
+    </td>
+    <td>
+	    Creates a string that represents the path to the current user's Videos folder.
+    </td>
+    <!-- <td>
+	    print(fs.videos)
+    </td> -->
+  </tr>
+  
+  <tr>
+    <td>
+    	linux_templates
+    </td>
+    <td>
+	    Creates a string that represents the path to the current user's Templates folder in Linux environment.
+    </td>
+    <!-- <td>
+	    print(fs.linux_templates)
+    </td> -->
+  </tr>
+
+  <tr>
+    <td>
+    	mac_applications
+    </td>
+    <td>
+	    Creates a string that represents the path to the current user's Applications folder in macOS environment.
+    </td>
+    <!-- <td>
+	    print(fs.mac_applications)
+    </td> -->
+  </tr>
+  
+  <tr>
+    <td>
+    	windows_applicationData
+    </td>
+    <td>
+	    Creates a string that represents the path to the current user's Roaming folder inside AppData in Windows environment.
+    </td>
+    <!-- <td>
+	    print(fs.windows_applicationData)
+    </td> -->
+  </tr>
+
+  <tr>
+    <td>
+    	windows_favorites
+    </td>
+    <td>
+	    Creates a string that represents the path to the current user's Favorites folder in Windows environment.
+    </td>
+    <!-- <td>
+	    print(fs.windows_favorites)
+    </td> -->
+  </tr>
+  
+  <tr>
+    <td>
+    	windows_localappdata
+    </td>
+    <td>
+	    Creates a string that represents the path to the current user's Local folder inside AppData in Windows environment.
+    </td>
+    <!-- <td>
+	    print(fs.windows_localappdata)
+    </td> -->
+  </tr>
+
+  <tr>
+    <td>
+    	windows_temp
+    </td>
+    <td>
+	    Creates a string that represents the path to the current user's Temp folder inside LocalAppData in Windows environment.
+    </td>
+    <!-- <td>
+	    print(fs.windows_temp)
+    </td> -->
+  </tr>
+
+</table>
 
 ## Sample Codes
 
@@ -276,126 +331,124 @@ from filesystem import wrapper as wra
 
 Wrapper is a comprehensive toolkit that provides a set of utility functions specifically designed to facilitate file and directory operations. These operations may include creating, reading, updating, and deleting files or directories.
 
-<details>
-<summary>combine(*args, paths=[]):</summary>
+<table>
+  <tr>
+    <th>Method</th>
+    <th>Description</th>
+  </tr>
 
-```py
-wra.combine(*args, paths=[]):
-```
+  <tr>
+    <td>combine(*args, paths=[])</td>
+    <td>
+      This function is designed to combine file or directory paths. It takes any number of arguments *args and an optional parameter paths which is a list of paths. The function returns a combined path based on the inputs.
+      If the paths list is provided, the function uses it to combine paths. It starts with the first path in the list and checks if it’s an absolute path. If it’s not, it raises a ValueError with a detailed error message. Then, it iterates over the rest of the paths in the list. If a path is absolute, it replaces the current result with this path. If a path is relative, it joins this path to the current result. Finally, it returns the combined path.
+      If the paths list is not provided or is empty, the function uses the arguments passed *args. It starts with the first argument and checks if it’s an absolute path. If it’s not, it raises a ValueError with a detailed error message. Then, it iterates over the rest of the arguments. If an argument is an absolute path, it replaces the current result with this path. If an argument is a relative path and not an empty string, it adds this path to the current result. If the current result doesn’t end with a separator (os.sep), it adds one before adding the path. Finally, it returns the combined path.
+      <br><br><strong>Please note:</strong> This function does not check if the paths exist or are valid, it only combines them based on the rules described. It’s up to the caller to ensure that the paths are valid and exist if necessary.
+      <br><br>This method is intended to concatenate individual strings into a single string that represents a file path. However, if an argument other than the first contains a rooted path, any previous path components are ignored, and the returned string begins with that rooted path component. As an alternative to the combine method, consider using the join method.
+    </td>
+  </tr>
 
-This function is designed to combine file or directory paths. It takes any number of arguments `*args` and an optional parameter paths which is a list of paths. The function returns a combined path based on the inputs.
-<br>If the paths list is provided, the function uses it to combine paths. It starts with the first path in the list and checks if it’s an absolute path. If it’s not, it raises a `ValueError` with a detailed error message. Then, it iterates over the rest of the paths in the list. If a path is absolute, it replaces the current result with this path. If a path is relative, it joins this path to the current result. Finally, it returns the combined path.
-<br> If the paths list is not provided or is empty, the function uses the arguments passed `*args`. It starts with the first argument and checks if it’s an absolute path. If it’s not, it raises a `ValueError` with a detailed error message. Then, it iterates over the rest of the arguments. If an argument is an absolute path, it replaces the current result with this path. If an argument is a relative path and not an empty string, it adds this path to the current result. If the current result doesn’t end with a separator (os.sep), it adds one before adding the path. Finally, it returns the combined path.
-<br><br> **Please note**: This function does not check if the paths exist or are valid, it only combines them based on the rules described. It’s up to the caller to ensure that the paths are valid and exist if necessary.
->This method is intended to concatenate individual strings into a single string that represents a file path. However, if an argument other than the first contains a rooted path, any previous path components are ignored, and the returned string begins with that rooted path component. As an alternative to the `combine` method, consider using the `join` method.
-</details>
 
-<details>
-<summary>create_directory(path, create_subdirs=True)</summary>
+  <tr>
+    <td>
+      create_directory(path, create_subdirs=True)
+    </td>
+    <td>
+      This function is used to create a directory at the specified <strong>path</strong>. If <strong>create_subdirs</strong> is <strong>True</strong>, the function creates all intermediate-level directories needed to contain the leaf directory. If <strong>create_subdirs</strong> is <strong>False</strong>, the function will raise an error if the directory already exists or if any intermediate-level directories in the path do not exist. 
+      <br>Default is <strong>True</strong>
+      <br>If the directories already exist, it does nothing.
+    </td>
+  </tr>
 
-```py
-wra.create_directory(path, create_subdirs=True)
-```
+  <tr>
+    <td>
+      create_file(file_name, path, text, encoding="utf-8-sig")
+    </td>
+    <td>
+      The function attempts to open a file at the specified <strong>path</strong> with the given <strong>file_name</strong> (with extension), in write mode with the specified <strong>encoding</strong>. It then writes the provided <strong>text</strong> into the file.
+      <br>Finally, it calls Wrapper <strong>get_object</strong> with the full path to the newly created file and returns the resulting dictionary.
+    </td>
+  </tr>
 
-This function is used to create a directory at the specified `path`. If `create_subdirs` is `True`, the function creates all intermediate-level directories needed to contain the leaf directory. If `create_subdirs` is `False`, the function will raise an error if the directory already exists or if any intermediate-level directories in the path do not exist. Default is **`True`**
-<br>If the directories already exist, it does nothing.
-</details>
+  <tr>
+    <td>
+      delete(path, recursive=False)
+    </td>
+    <td>
+      This function is designed to delete a directory at a given <strong>path</strong>.
+      If <strong>recursive</strong> is set to <strong>True</strong>, the function will delete the directory and all its contents. If it’s <strong>False</strong>, the function will only delete the directory if it’s empty. Default is <strong>False</strong>.
+    </td>
+  </tr>
 
-<details>
-<summary>create_file(file_name, path, text, encoding="utf-8-sig"):</summary>
+  <tr>
+    <td>
+      enumerate_files(path)
+    </td>
+    <td>
+      This function performs a depth-first traversal of the directory tree at the given path (after expanding any user home directory symbols). It returns a list of dictionaries containing the attributes of each file and directory in the tree.
+    </td>
+  </tr>
 
-```py
-wra.create_file(file_name, path, text, encoding="utf-8-sig")
-```
+  <tr>
+    <td>
+      get_files(path)
+    </td>
+    <td>
+      This function takes a path as input (which can include wildcards), expands any user home directory symbols (~), and returns a list of dictionaries containing the attributes of each file or directory that matches the path.
+    </td>
+  </tr>
 
-The function attempts to open a file at the specified `path` with the given `file_name` (with extension), in write mode with the specified `encoding`. It then writes the provided `text` into the file.
-</details>
+  <tr>
+    <td>
+      get_object(path)
+    </td>
+    <td>
+      This function takes a file or directory path as input and returns a dictionary containing various attributes of the file or directory. These attributes include the time of last modification, creation time, last access time, name, size, absolute path, parent directory, whether it's a directory or file or link, whether it exists, and its extension (if it's a file).
+    </td>
+  </tr>
 
-<details>
-<summary>delete(path, recursive=False)</summary>
+  <tr>
+    <td>
+      join(path1='', path2='', path3='', path4='', paths=[])
+    </td>
+    <td>
+      This function is designed to concatenate directory paths. It takes four optional string parameters <strong>path1</strong>, <strong>path2</strong>, <strong>path3</strong>, <strong>path4</strong> and an optional list of paths paths. The function returns a single string that represents the concatenated path.
+      <br>For each of the parameters <strong>path1</strong>, <strong>path2</strong>, <strong>path3</strong> and <strong>path4</strong>, the function checks if the path ends with a separator. If it doesn’t, and the path is not an empty string, it adds a separator to the end of the path.
+      If the paths list is provided and is not empty, the function iterates over each item in the list. For each item, it checks if the item ends with a separator. If it doesn’t, it adds a separator to the end of the item.
+      Finally, the function returns the concatenated path.
+      <br><br><strong>Please note:</strong> This function does not check if the paths exist or are valid, it only combines them based on the rules described. It’s up to the caller to ensure that the paths are valid and exist if necessary.
+      <br><br>Unlike the <strong>combine</strong> method, the <strong>join</strong> method does not attempt to root the returned path. (That is, if <strong>path2</strong> or <strong>path3</strong> or <strong>path4</strong> is an absolute path, the <strong>join</strong> method does not discard the previous paths as the <strong>combine</strong> method does).
+    </td>
+  </tr>
 
-```py
-wra.delete(path, recursive=False)
-```
+  <tr>
+    <td>
+      list_directories(path)
+    </td>
+    <td>
+      This function returns a list of all the directories in a given directory.
+    </td>
+  </tr>
 
-This function is designed to delete a directory at a given `path`.
-<br>If `recursive` is set to `True`, the function will delete the directory and all its contents. If it’s `False`, the function will only delete the directory if it’s empty. Default is **`False`**.
-</details>
+  <tr>
+    <td>
+      list_files(path)
+    </td>
+    <td>
+      This function returns a list of all the files in a given directory.
+    </td>
+  </tr>
 
-<details>
-<summary>enumerate_files(path)</summary>
+  <tr>
+    <td>
+      make_zip(source, destination)
+    </td>
+    <td>
+      This function is used to create a zip archive of a given source directory and move it to a specified destination.
+    </td>
+  </tr>
 
-```py
-wra.enumerate_files(path)
-```
-
-This function performs a depth-first traversal of the directory tree at the given path (after expanding any user home directory symbols). It returns a list of dictionaries containing the attributes of each file and directory in the tree.
-</details>
-
-<details>
-<summary>get_files(path):</summary>
-
-```py
-wra.get_files(path)
-```
-
-This function takes a path as input (which can include wildcards), expands any user home directory symbols (`~`), and returns a list of dictionaries containing the attributes of each file or directory that matches the path.
-</details>
-
-<details>
-<summary>get_object(path):</summary>
-
-```py
-wra.get_object(path)
-```
-
-This function takes a file or directory path as input and returns a dictionary containing various attributes of the file or directory. These attributes include the time of last modification, creation time, last access time, name, size, absolute path, parent directory, whether it's a directory or file or link, whether it exists, and its extension (if it's a file).
-</details>
-
-<details>
-<summary>join(path1='', path2='', path3='', path4='', paths=[]):</summary>
-
-```py
-wra.join(path1='', path2='', path3='', path4='', paths=[])
-```
-
-This function is designed to concatenate directory paths. It takes four optional string parameters `path1`, `path2`, `path3`, `path4` and an optional list of paths `paths`. The function returns a single string that represents the concatenated path.
-<br> For each of the parameters `path1`, `path2`, `path3`, and `path4`, the function checks if the path ends with a separator. If it doesn’t, and the path is not an empty string, it adds a separator to the end of the path.
-<br>If the paths list is provided and is not empty, the function iterates over each item in the list. For each item, it checks if the item ends with a separator. If it doesn’t, it adds a separator to the end of the item.
-<br>Finally, the function returns the concatenated path.
-<br><br> **Please note**: This function does not check if the paths exist or are valid, it only combines them based on the rules described. It’s up to the caller to ensure that the paths are valid and exist if necessary.
-> Unlike the `combine` method, the `join` method does not attempt to root the returned path. (That is, if `path2` or `path3` or `path4` is an absolute path, the `join` method does not discard the previous paths as the `combine` method does.)
-</details>
-
-<details>
-<summary>list_directories(path):</summary>
-
-```py
-wra.list_directories(path)
-```
-
-This function returns a list of all the directories in a given directory.
-</details>
-
-<details>
-<summary>list_files(path):</summary>
-
-```py
-wra.list_files(path)
-```
-
-This function returns a list of all the files in a given directory.
-</details>
-
-<details>
-<summary>make_zip(source, destination):</summary>
-
-```py
-wra.make_zip(source, destination)
-```
-
-This function is used to create a zip archive of a given source directory and move it to a specified destination.
-</details>
+</table>
 
 ## Sample Codes
 
@@ -495,40 +548,41 @@ from filesystem import watcher as wat
 
 Watcher serves as a monitoring system for the file system. It keeps track of any changes made within the file system, such as the creation of new files, modification of existing files, or deletion of files. This feature allows for real-time updates and can be particularly useful in scenarios where maintaining the integrity and up-to-date status of the file system is crucial.
 
-<details>
-<summary>__init__(self, root):</summary>
+<table>
+  <tr>
+    <th>Method</th>
+    <th>Description</th>
+  </tr>
 
-This is the constructor method that initializes the `Watcher` object with a root directory to watch. It also saves the current state of the file system in `self.saved_state`.
-</details>
-<details>
-<summary>get_state(self, path):</summary>
+  <tr>
+    <td>init(self, root)</td>
+    <td>
+      This is the constructor method that initializes the Watcher object with a root directory to watch. It also saves the current state of the file system in <strong>self.saved_state</strong>.
+    </td>
+  </tr>
 
-This method returns a dictionary where the keys are the absolute paths of all files in the given path and the values are file metadata obtained from the `wrapper.enumerate_files(path)` function.
-</details>
-<details>
-<summary>diff(self):</summary>
+  <tr>
+    <td>get_state(self, path):</td>
+    <td>
+      This method returns a dictionary where the keys are the absolute paths of all files in the given path and the values are file metadata obtained from the <strong>wrapper.enumerate_files(path)</strong> function.
+    </td>
+  </tr>
 
-This method compares the current state of the file system with the saved state and identifies any changes (created, updated, or removed files). It returns a list of dictionaries where each dictionary contains the metadata of a changed file and an additional key "change" indicating the type of change.
-</details>
-<details>
-<summary>__str__(self):</summary>
+  <tr>
+    <td>diff(self)</td>
+    <td>
+      This method compares the current state of the file system with the saved state and identifies any changes (created, updated, or removed files). It returns a list of dictionaries where each dictionary contains the metadata of a changed file and an additional key "change" indicating the type of change.
+    </td>
+  </tr>
 
-This method returns a string representation of the `Watcher` object.
-</details>
-
-<!-- <details>
-<summary>List Of Functions </summary>
-
-Watcher is used to monitor changes in a file system.
-
-- `__init__(self, root)`: This is the constructor method that initializes the `Watcher` object with a root directory to watch. It also saves the current state of the file system in `self.saved_state`.
-
-- `get_state(self, path)`: This method returns a dictionary where the keys are the absolute paths of all files in the given path and the values are file metadata obtained from the `core.enumerate_files(path)` function.
-
-- `diff(self)`: This method compares the current state of the file system with the saved state and identifies any changes (created, updated, or removed files). It returns a list of dictionaries where each dictionary contains the metadata of a changed file and an additional key "change" indicating the type of change.
-
-- `__str__(self)`: This method returns a string representation of the `Watcher` object.
-</details> -->
+  <tr>
+    <td>str(self)</td>
+    <td>
+      This method returns a string representation of the <strong>Watcher</strong> object.
+    </td>
+  </tr>
+  
+</table>
 
 This class could be useful in scenarios where you need to monitor changes to a file system, for example, in a backup system or a live syncing service.
 
@@ -565,4 +619,4 @@ while True:
 
 ---
 
-Copyright © 2023 Bisneto Inc. All rights reserved.
+Copyright © 2024 Bisneto Inc. All rights reserved.

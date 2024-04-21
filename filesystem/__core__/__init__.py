@@ -1,6 +1,5 @@
 import ast
 import requests
-# from filesystem.console import Back, Fore, Style
 from filesystem import console
 
 setup_file = "setup.py"
