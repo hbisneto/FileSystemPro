@@ -29,7 +29,9 @@ setup(
         'Programming Language :: Python :: 3.12',
     ],
     description = u'FileSystem Pro is designed to identify the operating system (OS) on which it`s running and define the paths to various user directories based on the OS.',
-    install_requires = [''],
+    install_requires = [
+        'requests',
+    ],
     long_description = readme,
     long_description_content_type = "text/markdown",
     keywords = ['FileSystem', 'Linux', 'macOS', 'Windows', 'File', 'System', 'Terminals'],

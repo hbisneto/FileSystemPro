@@ -1,18 +1,10 @@
-import ast
 import requests
 from filesystem import console
 
-setup_file = "setup.py"
+__version__ = "1.0.2.0"
+
 def __checkupdates__(user, repo):
     ### TAG PATTERN: v1.2.3.4
-    with open(setup_file, "r") as file:
-        tree = ast.parse(file.read())
-    
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Call) and hasattr(node.func, 'id') and node.func.id == 'setup':
-            for keyword in node.keywords:
-                if keyword.arg == 'version':
-                    __version__ = keyword.value.s
     current_version_string = ''.join(filter(str.isdigit, __version__))
     current_version = int(current_version_string)
     update_version = 0
