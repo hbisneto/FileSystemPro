@@ -619,4 +619,147 @@ while True:
 
 ---
 
+# Console
+
+```
+from filesystem import console as fsconsole
+```
+
+Console is a robust library designed to enable ANSI escape character sequences, which are used for generating colored terminal text and cursor positioning, to function seamlessly on MS Windows.
+This library is a key addition to FileSystemPro as a third-party library, enhancing the toolkit for developers who require consistent terminal styling across different operating systems.
+
+## Features
+
+- **Universal Compatibility:** Console ensures that applications or libraries utilizing ANSI sequences for colored output on Unix or Macs can now operate identically on Windows systems.
+- **Simplified Integration:** With no dependencies other than the standard library, integrating Console into your projects is straightforward. It’s tested across multiple Python versions, ensuring reliability.
+- **Enhanced Terminal Experience:** By converting ANSI sequences into appropriate win32 calls, Console allows Windows terminals to emulate the behavior of Unix terminals, providing a consistent user experience.
+- **Effortless Transition:** For developers transitioning to FileSystemPro, incorporating Console into your workflow is effortless, enabling you to maintain the visual aspects of your terminal applications without platform constraints.
+
+<table>
+  <tr>
+    <th>Constants</th>
+    <th>Colors</th>
+  </tr>
+  
+  <tr>
+    <td>foreground</td>
+    <td>
+      BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE, RESET.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>background</td>
+    <td>
+      BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE, RESET.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>style</td>
+    <td>
+     DIM, NORMAL, BRIGHT, RESET_ALL
+  </td>
+  </tr>
+  
+</table>
+
+## Sample Codes
+
+> Please note that **GitHub does not support colored text** in README files. This is due to the limitations of the markdown language used in GitHub READMEs, which does not have built-in support for text color changes.
+
+> However, if you wish to view a colored version of this content, we have a version available on PyPI. You can access it by clicking [here](https://pypi.org/project/filesystempro/). This version provides a more visually engaging experience with the use of colored text.
+
+
+<details>
+<summary>Console: Printing a red foreground text message</summary>
+
+The following example shows how to print some red foreground texts using Console
+
+```py
+from filesystem import console as fsconsole
+
+# This will print a spaced text to your print message
+print(fsconsole.foreground.RED, "This is a warn message")
+
+# This will print a no space text to your print message
+print(fsconsole.foreground.RED + "This is another warn message")
+
+# You can use f-string format to assign the color to your print
+print(f'{fsconsole.foreground.RED}This is a new warn message{fsconsole.foreground.RESET}')
+
+# This text will be printed without color (default)
+print("This is a normal text")
+```
+
+Output:
+
+<pre><code><span style="color: red;"> This is a warn message
+This is another warn message
+This is a new warn message</span>
+<span">This is a normal text</span></code></pre>
+
+</details>
+
+
+<details>
+<summary>Console: Printing a blue background text message</summary>
+
+The following example shows how to print some blue background texts using Console
+
+```py
+from filesystem import console as fsconsole
+
+# This will print a spaced text to your print message
+print(fsconsole.foreground.RED, "This is a warn message")
+
+# This will print a no space text to your print message
+print(fsconsole.foreground.RED + "This is another warn message")
+
+# You can use f-string format to assign the color to your print
+print(f'{fsconsole.foreground.RED}This is a new warn message{fsconsole.foreground.RESET}')
+
+# This text will be printed without color (default)
+print("This is a normal text")
+```
+
+Output:
+
+<pre><code><span style="background-color: #ADD8E6;"> This is a blue background message
+This is another blue background warn message
+This is a new blue background message</span>
+<span">This is a normal text</span></code></pre>
+
+</details>
+
+<details>
+<summary>Console: Different foregrounds, backgrounds and styles</summary>
+
+The following example shows how to print some texts with different backgrounds, foregrounds and styles using Console
+
+```py
+# Prints a red foreground text
+print(f'{fsconsole.foreground.RED}Some red text')
+# Prints a red foreground text with a green background
+print(f'{fsconsole.background.GREEN}And with a green background{fsconsole.style.RESET_ALL}')
+# Prints a dim normal text with no background
+print(f'{fsconsole.style.DIM}And in dim text{fsconsole.style.RESET_ALL}')
+# Prints a normal text
+print('Back to normal color')
+```
+
+Output:
+
+<pre><code><span style="color: red;">Some red text</span>
+<span style="background-color: #90EE90; color: red">And with a green background</span>
+<span style="color: #A9A9A9">And in dim text</span>
+<span>Back to normal color</span>
+</code></pre>
+
+</details>
+
+Remember, for the color changes to work, your console must support ANSI escape sequences, which are used to set the color. Not all consoles do, so if you’re not seeing the colors as expected, that could be why. 
+
+---
+
 Copyright © 2024 Bisneto Inc. All rights reserved.

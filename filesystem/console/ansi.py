@@ -96,7 +96,7 @@ class AnsiStyle(AnsiCodes):
     NORMAL    = 22
     RESET_ALL = 0
 
-fore   = AnsiFore()
-back   = AnsiBack()
+foreground   = AnsiFore()
+background   = AnsiBack()
 style  = AnsiStyle()
 cursor = AnsiCursor()

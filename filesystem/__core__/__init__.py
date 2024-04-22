@@ -1,5 +1,5 @@
 import requests
-from filesystem import console
+from filesystem import console as fsconsole
 
 __version__ = "1.0.2.0"
 
@@ -26,5 +26,5 @@ def __checkupdates__(user, repo):
             update_version = int(update_version_string)
 
     if current_version < update_version:
-        print(f"[{console.fore.BLUE}Notice{console.style.RESET_ALL}]: A new release of FileSystemPro is available: {console.fore.RED}v{__version__}{console.style.RESET_ALL} -> {console.fore.GREEN}{tag_name}{console.style.RESET_ALL}")
-        print(f"[{console.fore.BLUE}Notice{console.style.RESET_ALL}]: To update, run: {console.fore.GREEN}pip install --upgrade filesystempro{console.style.RESET_ALL}")
+        print(f"[{fsconsole.foreground.BLUE}Notice{fsconsole.style.RESET_ALL}]: A new release of FileSystemPro is available: {fsconsole.foreground.RED}v{__version__}{fsconsole.style.RESET_ALL} -> {fsconsole.foreground.GREEN}{tag_name}{fsconsole.style.RESET_ALL}")
+        print(f"[{fsconsole.foreground.BLUE}Notice{fsconsole.style.RESET_ALL}]: To update, run: {fsconsole.foreground.GREEN}pip install --upgrade filesystempro{fsconsole.style.RESET_ALL}")
