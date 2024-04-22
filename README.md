@@ -708,16 +708,16 @@ The following example shows how to print some blue background texts using Consol
 from filesystem import console as fsconsole
 
 # This will print a spaced text to your print message
-print(fsconsole.foreground.RED, "This is a warn message")
+print(fsconsole.background.BLUE, 'This is a blue background message')
 
 # This will print a no space text to your print message
-print(fsconsole.foreground.RED + "This is another warn message")
+print(fsconsole.background.BLUE + 'This is another blue background warn message')
 
 # You can use f-string format to assign the color to your print
-print(f'{fsconsole.foreground.RED}This is a new warn message{fsconsole.foreground.RESET}')
+print(f'{fsconsole.background.BLUE}This is a new blue background message{fsconsole.background.RESET}')
 
 # This text will be printed without color (default)
-print("This is a normal text")
+print('This is a normal text')
 ```
 
 Output:
