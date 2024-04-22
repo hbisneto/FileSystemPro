@@ -486,7 +486,7 @@ print(pointers)
 
 Output:
 
-```py
+```sh
 [{'modified': 1695535334.1411633, 'created': 1697604128.7045012, 'access': 1697604129.781534, 'name': 'CLI.py', 'size': 3345, 'abspath': '/Users/YOU/Downloads/CLI.py', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'extension': 'py'}, {'modified': 1697605101.6574, 'created': 1697683292.4821024, 'access': 1697683294.46923, 'name': 'Python_Logo.png', 'size': 747809, 'abspath': '/Users/YOU/Downloads/Python_Logo.png', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'extension': 'png'}, {'modified': 1697681746.0940206, 'created': 1697682027.268841, 'access': 1697682292.5433743, 'name': 'Sample_File.py', 'size': 1031, 'abspath': '/Users/YOU/Downloads/Sample_File.py', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'extension': 'py'}]
 ```
 
@@ -501,7 +501,7 @@ py_files = [x for x in pointers if x["extension"] == "py"]
 print(py_files)
 ```
 
-```py
+```sh
 [{'modified': 1695535334.1411633, 'created': 1697604128.7045012, 'access': 1697604129.781534, 'name': 'CLI.py', 'size': 3345, 'abspath': '/Users/YOU/Downloads/CLI.py', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'extension': 'py'}, {'modified': 1697681746.0940206, 'created': 1697682027.268841, 'access': 1697681829.0075543, 'name': 'Sample_File.py', 'size': 1031, 'abspath': '/Users/YOU/Downloads/Sample_File.py', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'extension': 'py'}]
 ```
 
@@ -533,7 +533,7 @@ print(tree)
 
 Output:
 
-```py
+```sh
 [{'modified': 1697683292.4821026, 'created': 1697683292.4821026, 'access': 1697683292.484029, 'name': 'Downloads', 'size': 224, 'abspath': '/Users/YOU/Downloads', 'dirname': '/Users/YOU', 'is_dir': True, 'is_file': False, 'is_link': False, 'exists': True, 'extension': ''}, {'modified': 1697683288.8639557, 'created': 1697683288.8639557, 'access': 1697602943.1846778, 'name': '.DS_Store', 'size': 6148, 'abspath': '/Users/YOU/Downloads/.DS_Store', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'extension': 'DS_Store'}, {'modified': 1690685751.342114, 'created': 1690685751.4194765, 'access': 1690685751.342114, 'name': '.localized', 'size': 0, 'abspath': '/Users/YOU/Downloads/.localized', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'extension': 'localized'}, {'modified': 1695535334.1411633, 'created': 1697604128.7045012, 'access': 1697604129.781534, 'name': 'CLI.py', 'size': 3345, 'abspath': '/Users/YOU/Downloads/CLI.py', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'extension': 'py'}, {'modified': 1697605101.6574, 'created': 1697683292.4821024, 'access': 1697683294.46923, 'name': 'Python_Logo.png', 'size': 747809, 'abspath': '/Users/YOU/Downloads/Python_Logo.png', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'extension': 'png'}, {'modified': 1697681746.0940206, 'created': 1697682027.268841, 'access': 1697682292.5433743, 'name': 'Sample_File.py', 'size': 1031, 'abspath': '/Users/YOU/Downloads/Sample_File.py', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'extension': 'py'}]
 ```
 </details>
@@ -625,7 +625,7 @@ while True:
 from filesystem import console as fsconsole
 ```
 
-Console is a robust library designed to enable ANSI escape character sequences, which are used for generating colored terminal text and cursor positioning, to function seamlessly on MS Windows.
+Console is a robust library designed to enable ANSI escape character sequences, which are used for generating colored terminal text and cursor positioning.
 This library is a key addition to FileSystemPro as a third-party library, enhancing the toolkit for developers who require consistent terminal styling across different operating systems.
 
 ## Features
@@ -666,12 +666,13 @@ This library is a key addition to FileSystemPro as a third-party library, enhanc
 
 ## Sample Codes
 
+> [!NOTE]
 > Please note that **GitHub (and PYPI) does not support colored text** in README files. This is due to the limitations of the markdown language used in GitHub (and PYPI) READMEs, which does not have built-in support for text color changes.
 
 <details>
 <summary>Console: Printing a red foreground text message</summary>
 
-The following example shows how to print some red foreground texts using Console
+The following example shows how to print some red foreground texts using **Console**
 
 ```py
 from filesystem import console as fsconsole
@@ -702,7 +703,7 @@ This is a new warn message</span>
 <details>
 <summary>Console: Printing a blue background text message</summary>
 
-The following example shows how to print some blue background texts using Console
+The following example shows how to print some blue background texts using **Console**
 
 ```py
 from filesystem import console as fsconsole
@@ -711,7 +712,7 @@ from filesystem import console as fsconsole
 print(fsconsole.background.BLUE, 'This is a blue background message')
 
 # This will print a no space text to your print message
-print(fsconsole.background.BLUE + 'This is another blue background warn message')
+print(fsconsole.background.BLUE + 'This is another blue background message')
 
 # You can use f-string format to assign the color to your print
 print(f'{fsconsole.background.BLUE}This is a new blue background message{fsconsole.background.RESET}')
@@ -732,7 +733,7 @@ This is a new blue background message</span>
 <details>
 <summary>Console: Different foregrounds, backgrounds and styles</summary>
 
-The following example shows how to print some texts with different backgrounds, foregrounds and styles using Console
+The following example shows how to print some texts with different backgrounds, foregrounds and styles using **Console**
 
 ```py
 # Prints a red foreground text
@@ -755,8 +756,8 @@ Output:
 
 </details>
 
-Remember, for the color changes to work, your console must support ANSI escape sequences, which are used to set the color. Not all consoles do, so if you’re not seeing the colors as expected, that could be why. 
+Remember, for the color changes to work, your Terminal must support ANSI escape sequences, which are used to set the color. Not all Terminals do, so if you’re not seeing the colors as expected, that could be why. 
 
 ---
 
-Copyright © 2024 Bisneto Inc. All rights reserved.
+Copyright © 2023–2024 Bisneto Inc. All rights reserved.
