@@ -666,10 +666,7 @@ This library is a key addition to FileSystemPro as a third-party library, enhanc
 
 ## Sample Codes
 
-> Please note that **GitHub does not support colored text** in README files. This is due to the limitations of the markdown language used in GitHub READMEs, which does not have built-in support for text color changes.
-
-> However, if you wish to view a colored version of this content, we have a version available on PyPI. You can access it by clicking [here](https://pypi.org/project/filesystempro/). This version provides a more visually engaging experience with the use of colored text.
-
+> Please note that **GitHub (and PYPI) does not support colored text** in README files. This is due to the limitations of the markdown language used in GitHub (and PYPI) READMEs, which does not have built-in support for text color changes.
 
 <details>
 <summary>Console: Printing a red foreground text message</summary>
