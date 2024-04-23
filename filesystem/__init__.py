@@ -2,7 +2,11 @@ import getpass
 import os
 from sys import platform as PLATFORM
 
-__version__ = "1.0.1.0"
+## VERIFY IF THE LIBRARY HAS SOME AVAILABLE UPDATE
+from filesystem import __core__
+__core__.__checkupdates__("Hbisneto","FileSystemPro")
+## VERIFY IF THE LIBRARY HAS SOME AVAILABLE UPDATE
+
 CURRENT_LOCATION = os.getcwd()
 """
 Creates a string that represents the path to the current directory. (Where the application is running)
