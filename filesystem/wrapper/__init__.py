@@ -1,4 +1,5 @@
 import codecs
+import filesystem
 import glob
 import os
 import shutil
@@ -108,7 +109,16 @@ def create_directory(path, create_subdirs=True):
         os.mkdir(path)
     return get_object(path)
 
-def create_file(file_name, path, text, encoding="utf-8-sig"):
+def create_binary_file(filename, data):
+    if type(data) != bytes:
+        b_data = bytes(data.encode())
+        with open(filename, 'wb') as binary_file:
+            binary_file.write(b_data)
+    else:
+        with open(filename, 'wb') as binary_file:
+            binary_file.write(data)
+
+def create_file(filename, data, encoding="utf-8-sig"):
     """
     ### Create a file in UTF-8 encode and write a string of text to this file.
 
@@ -162,13 +172,42 @@ def create_file(file_name, path, text, encoding="utf-8-sig"):
     """
 
     try:
-        with codecs.open(f'{path}/{file_name}', "w", encoding=encoding) as custom_file:
-            custom_file.write(text)
+        with codecs.open(f'{filename}', "w", encoding=encoding) as custom_file:
+            custom_file.write(data)
     except:
         pass
-    return get_object(f'{path}/{file_name}')
+    return get_object(f'{filename}')
 
 def delete(path, recursive=False):
+    """
+    This function is designed to delete a directory at a given `path`.
+    
+    If `recursive` is set to `True`, the function will delete the directory and all its contents. 
+    
+    If `recursive` is set to `False`, the function will only delete the directory if it's empty. 
+    
+    Default is `False`.
+    """
+    if not os.path.exists(path):
+        raise Exception(f'\n\n>> The directory "{path}" does not exist.')
+
+    if not os.listdir(path) or recursive:
+        shutil.rmtree(path)
+    else:
+        raise Exception(f'\n\n>> The directory "{path}" is not empty.\n>> Use delete(path, True) to remove anyway.')
+
+def delete_file(file):
+    """
+    Delete a file at the specified path.
+    """
+    if file_exists(file):
+        os.remove(file)
+        # print(file_path)
+        print(f"File '{file}' has been deleted.")
+    else:
+        print(f"No file found at '{file}'.")
+
+def delete_path(path, recursive=False):
     """
     This function is designed to delete a directory at a given `path`.
     
@@ -199,6 +238,16 @@ def enumerate_files(path):
         results.append(get_object(root))
         results.extend([get_object(join(root,x)) for x in files])
     return results
+
+def file_exists(file):
+    """
+    The function essentially returns `True` if the file exists and `False` if it does not. 
+    It's a straightforward way to verify file existence before performing file operations.
+    """
+    is_file = os.path.isfile(file)
+    if is_file:
+        return True
+    return False
 
 def get_files(path):
     """
@@ -340,3 +389,74 @@ def make_zip(source, destination):
     archive_to = os.path.basename(source.strip(os.sep))
     shutil.make_archive(name, format, archive_from, archive_to)
     shutil.move('%s.%s'%(name,format), destination)
+
+def make_structure():
+    """
+    This function creates a predefined set of directories on the filesystem if they do not already exist.
+    It supports a variety of common directories for Linux, Mac, and Windows operating systems.
+    """
+    default_dirs = [
+        filesystem.desktop,
+        filesystem.documents,
+        filesystem.downloads,
+        filesystem.linux_templates,
+        filesystem.mac_applications,
+        filesystem.mac_movies,
+        filesystem.music,
+        filesystem.pictures,
+        filesystem.public,
+        filesystem.user,
+        filesystem.videos,
+        filesystem.windows_applicationData,
+        filesystem.windows_favorites,
+        filesystem.windows_localappdata,
+        filesystem.windows_temp
+    ]
+
+    for i in default_dirs:
+        if os.path.exists(i):
+            continue
+        else:
+            create_directory(i)
+
+def reassemble_file(large_file, new_file):
+    """
+    This function is designed to reassemble a large file that has been split into smaller parts:
+    It reassembles a large file that was previously split into parts,
+    writes the reassembled content into a new file, and then deletes the part files.
+    """
+    parts = []
+    i = 0
+    while os.path.exists(f'{large_file}.fsp{str(i)}'):
+        parts.append(f'{large_file}.fsp{str(i)}')
+        i += 1
+
+    if len(parts) != 0:
+        with open(new_file, 'wb') as output_file:
+            for part in parts:
+                with open(part, 'rb') as part_file:
+                    output_file.write(part_file.read())
+            
+        for part in parts:
+            delete_file(part)
+
+def split_file(file, chunk_size = 1048576):
+    """
+    The function `split_file` is designed to split a file into smaller chunks. 
+    The default `chunk_size` is set to 1 megabyte (1 MB = 1048576 bytes), but it can be adjusted by providing a different value when calling the function.
+    The function does not return any value. 
+    It's a straightforward way to handle large files by breaking them down into more manageable pieces.
+    """
+    if file_exists(file) == False:
+        print("The file does not exists")
+        return
+
+    with open(file, 'rb') as f:
+        chunk = f.read(chunk_size)
+        i = 0
+        while chunk:
+            # with open(file + ".fsp" + str(i), 'wb') as chunk_file:
+            with open(f'{file}.fsp{str(i)}', 'wb') as chunk_file:
+                chunk_file.write(chunk)
+            i += 1
+            chunk = f.read(chunk_size)
