@@ -1,11 +1,17 @@
 import requests
 import io
+import os
 
 def download_data(url):
     response = requests.get(url)
     return bytearray(response.content)
 
-def download_file(url, download_file_path, chunk_size = 1048576):
+def download_file(url, download_file_path, create_subdirs = True, chunk_size = 1048576):
+    if create_subdirs:   
+        directory = os.path.dirname(download_file_path)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        
     response = requests.get(url, stream=True)
     with open(download_file_path, 'wb') as f:
         int_progress = 0
