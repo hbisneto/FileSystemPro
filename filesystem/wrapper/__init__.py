@@ -30,6 +30,14 @@ def combine(*args, paths=[]):
     on the rules described.
     It's up to the caller to ensure that the paths are valid and exist if necessary.
 
+    ---
+    #### Parameters:
+
+    *args: ADD SOME TEXT
+    paths: ADD SOME TEXT
+    ---
+    
+    #### Example:
     ```py
     from filesystem import wrapper as wr
 
@@ -92,7 +100,10 @@ For example, "/home/user/directory" is a valid absolute path. Please provide a v
 def create_directory(path, create_subdirs=True):
     """
     This function is used to create a directory at the specified `path`.
-    
+
+    path: Where the directory will be created (Change this text)
+    create_subdirs: ADD TEXT HERE
+
     If `create_subdirs` is `True`, the function creates all intermediate-level directories needed to contain 
     the leaf directory. 
     
@@ -120,11 +131,11 @@ def create_binary_file(filename, data):
 
 def create_file(filename, data, encoding="utf-8-sig"):
     """
-    ### Create a file in UTF-8 encode and write a string of text to this file.
+    This function is designed to create a file with a specified filename and write data into it.
 
-    filename: The name of the file you want to create, including its extension.
-    path: The directory where the file will be created.
-    text: The content that will be written into the file.
+    filename: The directory where the file will be created, including the name of the file and its extension.
+    data: The content that will be written into the file.
+    encoding: Specifies the character encoding for the file that is being created
 
     ---
 
@@ -330,8 +341,8 @@ def join(path1='', path2='', path3='', path4='', paths=[]):
     print(result)
     # Outputs: 'home/user/directory/file.txt'
     ```
-
     """
+
     key_dir = ""
     if not path1.endswith(os.sep):
         if path1 != "":
@@ -359,7 +370,7 @@ def join(path1='', path2='', path3='', path4='', paths=[]):
 
 def list_directories(path):
     """
-    Lists all the directories in a given path
+    Returns a list containing all the directories inside of a given path
     """
     directory_list = []
     for dir in os.listdir(path):
