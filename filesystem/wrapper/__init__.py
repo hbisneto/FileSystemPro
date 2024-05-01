@@ -109,6 +109,7 @@ def create_directory(path, create_subdirs=True):
         os.mkdir(path)
     return get_object(path)
 
+### create_file kept to cover version support. Remove on (MAJOR UPDATE ONLY)
 def create_file(file_name, path, text, encoding="utf-8-sig"):
     """
     ### Create a file in UTF-8 encode and write a string of text to this file.
@@ -169,6 +170,7 @@ def create_file(file_name, path, text, encoding="utf-8-sig"):
         pass
     return get_object(f'{path}/{file_name}')
 
+### delete kept to cover version support. Remove on (MAJOR UPDATE ONLY)
 def delete(path, recursive=False):
     """
     This function is designed to delete a directory at a given `path`.
