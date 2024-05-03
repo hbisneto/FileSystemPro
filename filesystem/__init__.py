@@ -58,7 +58,7 @@ if PLATFORM == "linux" or PLATFORM == "linux2":
     Creates a string that represents the path to the current user's Videos folder.
     """
 elif PLATFORM == "darwin":
-    PLATFORM_NAME = "Mac"
+    PLATFORM_NAME = "macOS"
     user = f'/Users/{os.environ["USER"]}'
     """
     Creates a string that represents the path to the current user's home directory.
