@@ -154,6 +154,11 @@ def exists(file):
         return True
     return False
 
+### Implementarion
+def is_file(path):
+    return path
+
+
 def list(path):
     """
     Returns a list containing all the files inside of a given path

@@ -295,6 +295,18 @@ def get_object(path):
     result["size"] = path_properties(path, os.path.getsize)
     return result
 
+def has_extension(file_path):
+    """
+    This function checks if a given file path has an extension.
+
+    Parameters:
+    file_path (str): The file path to check.
+
+    Returns:
+    bool: True if the file path has an extension, False otherwise.
+    """
+    return os.path.splitext(file_path)[1] != ''
+
 ### wrapper.join() kept to cover version support. Remove on (MAJOR UPDATE ONLY)
 def join(path1='', path2='', path3='', path4='', paths=[]):
     """

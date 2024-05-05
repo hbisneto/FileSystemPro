@@ -144,42 +144,46 @@ def get_files(path):
         result.append(wra.get_object(x))
     return result
 
+def get_parent_name(path):
+    if path.endswith('/'):
+        path = path[:-1]
+        return os.path.basename(path)
+    return os.path.basename(os.path.dirname(path))
+
+def get_parent(path):
+        """
+        This function returns the parent directory of the given path.
+        
+        Parameters:
+        path (str): The path of which to find the parent directory. Can be absolute or relative.
+
+        Returns:
+        str: The parent directory of the given path.
+        """
+        return os.path.dirname(path)
+
+def get_name(path):
+    if wra.has_extension(path):
+        return f'{get_parent_name(path)}'
+    else:
+        return os.path.basename(os.path.dirname(path + '/'))
+
 def join(path1='', path2='', path3='', path4='', paths=[]):
     """
-    This function is designed to concatenate directory paths. 
-    It takes four optional string parameters `path1`, `path2`, `path3`, `path4`
-    and an optional list of paths `paths`. 
-    The function returns a single string that represents the concatenated path. 
-    For each of the parameters `path1`, `path2`, `path3`, and `path4`,
-    the function checks if the path ends with a separator.
-    If it doesn't, and the path is not an empty string, it adds a separator to the end of the path. 
-    If the `paths` list is provided and is not empty, the function iterates over each item in the list.
-    For each item, it checks if the item ends with a separator.
-    If it doesn't, it adds a separator to the end of the item. 
-    Finally, the function returns the concatenated path. 
+    This function concatenates multiple directory paths into a single path string.
 
-    Please note: This function does not check if the paths exist or are valid, 
-    it only combines them based on the rules described. 
-    It's up to the caller to ensure that the paths are valid and exist if necessary.
+    Parameters:
+    - path1, path2, path3, path4 (str): Individual directory paths. Default is an empty string.
+    - paths (list): A list of additional directory paths. Default is an empty list.
 
-    Unlike the `combine` method, the `join` method does not attempt to root the returned path. 
-    (That is, if `path2` or `path3` or `path4` is an absolute path, the `join` method does not discard the previous paths 
-    as the `combine` method does.)
-    
-    ```py
-    from filesystem import wrapper as wr
+    The function checks each path and if the path does not end with an OS-specific separator (`os.sep`),
+    it appends the separator to the path. This is done for `path1`, `path2`, `path3`, `path4`,
+    and each path in the `paths` list.
 
-    # Combine paths
-    result = wr.join('home', 'user', 'directory', 'file.txt')
-    print(result)
-    # Outputs: 'home/user/directory/file.txt'
+    The function then concatenates all the paths into a single string `key_dir`.
 
-    # Use the paths parameter
-    result = wr.join(paths=['home', 'user', 'directory', 'file.txt'])
-    print(result)
-    # Outputs: 'home/user/directory/file.txt'
-    ```
-
+    Returns:
+    - key_dir (str): The concatenated directory path string. The trailing separator is removed before returning.
     """
     key_dir = ""
     if not path1.endswith(os.sep):
@@ -226,6 +230,3 @@ def rename(old_directory_path, new_directory_path):
     else:
         # print(f"The directory '{old_directory_path}' does not exist.")
         return False
-
-# Example usage:
-# success = rename_directory("/path/to/old_directory", "/path/to/new_directory")
