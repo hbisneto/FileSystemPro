@@ -1,11 +1,8 @@
-import codecs
 import glob
 import os
 import shutil
-from filesystem import file as fsfile
-from filesystem import directory as dir
+from filesystem import wrapper as wra
 
-### wrapper.combine() kept to cover version support. Remove on (MAJOR UPDATE ONLY)
 def combine(*args, paths=[]):
     """
     This function is designed to combine file or directory paths. 
@@ -91,8 +88,7 @@ For example, "/home/user/directory" is a valid absolute path. Please provide a v
             result += path
     return result
 
-### wrapper.create_directory() kept to cover version support. Remove on (MAJOR UPDATE ONLY)
-def create_directory(path, create_subdirs=True):
+def create(path, create_subdirs=True):
     """
     This function is used to create a directory at the specified `path`.
     
@@ -110,70 +106,8 @@ def create_directory(path, create_subdirs=True):
         os.makedirs(path, exist_ok=True)
     else:
         os.mkdir(path)
-    return get_object(path)
+    # return get_object(path)
 
-### wrapper.create_file() kept to cover version support. Remove on (MAJOR UPDATE ONLY)
-def create_file(file_name, path, text, encoding="utf-8-sig"):
-    """
-    ### Create a file in UTF-8 encode and write a string of text to this file.
-
-    filename: The name of the file you want to create, including its extension.
-    path: The directory where the file will be created.
-    text: The content that will be written into the file.
-
-    ---
-
-    ### Example
-    - Creating a text file in Downloads folder
-
-    ```
-    import filesystem as fs
-    from filesystem import wrapper as wr
-
-    downlods_folder = fs.downloads
-    wr.create_file("Marketlist.txt", downlods_folder, "This is an inline text")
-    ```
-
-    - Creating a JSON file in Documents folder
-
-    ```
-    import filesystem as fs
-    from filesystem import wrapper as wr
-
-    person = '''
-    {
-        "name": "John Doe",
-        "age": 30,
-        "gender": "Male",
-        "nationality": "American",
-        "profession": "Software Engineer",
-        "address": {
-            "street": "Flower Street",
-            "number": 123,
-            "city": "New York",
-            "state": "New York",
-            "country": "USA"
-        },
-        "contact": {
-            "phone": "(123) 456-7890",
-            "email": "john.doe@example.com"
-        },
-        "hobbies": ["Reading", "Traveling", "Running"]
-    }
-    '''
-    
-    wr.create_file("data_person.json", "/Users/YOU/Documents", person)
-    ```
-    """
-
-    try:
-        with codecs.open(f'{path}/{file_name}', "w", encoding=encoding) as custom_file:
-            custom_file.write(text)
-    except:
-        pass
-    return get_object(f'{path}/{file_name}')
-
-### wrapper.delete() kept to cover version support. Remove on (MAJOR UPDATE ONLY)
 def delete(path, recursive=False):
     """
     This function is designed to delete a directory at a given `path`.
@@ -192,63 +126,12 @@ def delete(path, recursive=False):
     else:
         raise Exception(f'\n\n>> The directory "{path}" is not empty.\n>> Use delete(path, True) to remove anyway.')
 
-### wrapper.enumerate_files() kept to cover version support. Remove on (MAJOR UPDATE ONLY)   
-def enumerate_files(path):
-    """
-    This function performs a depth-first traversal of the directory tree at the given path 
-    (after expanding any user home directory symbols).
-    
-    It returns a list of dictionaries containing the attributes of each file and directory in the tree.
-    """
-    results = []
-    path = os.path.expanduser(path)
-    for root, dirs, files in os.walk(path):
-        results.append(get_object(root))
-        results.extend([get_object(join(root,x)) for x in files])
-    return results
+def exists(directory_path):
+    if os.path.isdir(directory_path):
+        return True
+    else:
+        return False
 
-def find_duplicates(directory_path):
-    """
-    This function is designed to find and return duplicate files in a given directory.
-
-    directory_path: The path to search for duplicate files.
-
-    It takes one argument, directory_path, which is the path of the directory where you want to find duplicate files.
-    
-    It initializes three lists: 
-    - checksums (a dictionary to store the checksums of the files), 
-    - original_files (a list to store the paths of the original files), and
-    - duplicate_files (a list to store the paths of the duplicate files).
-    
-    It then walks through the directory and its subdirectories.
-    For each file in these directories, it calculates the checksum of the file.
-    
-    If the calculated checksum is already in the checksums dictionary, it means that the file is a duplicate.
-    The function then appends the original file (the one that has the same checksum and was found earlier)
-    to the original_files list and the current file to the duplicate_files list.
-    
-    If the checksum is not in the checksums dictionary, it means that the file is unique (so far). 
-    The function then adds the checksum and the file path to the checksums dictionary.
-    After going through all the files, the function returns two lists: original_files and duplicate_files. 
-    These lists contain the paths of the original files and their duplicates, respectively.
-
-    """
-    checksums = {}
-    original_files = []
-    duplicate_files = []
-
-    for root, dirs, files in os.walk(directory_path):
-        for file in files:
-            file_path = dir.join(root, file)
-            checksum = fsfile.calculate_checksum(file_path)
-            if checksum in checksums:
-                original_files.append(checksums[checksum])
-                duplicate_files.append(file_path)
-            else:
-                checksums[checksum] = file_path
-    return original_files, duplicate_files
-
-### wrapper.get_files() kept to cover version support. Remove on (MAJOR UPDATE ONLY)   
 def get_files(path):
     """
     This function takes a path as input (which can include wildcards), 
@@ -258,44 +141,9 @@ def get_files(path):
     path = os.path.expanduser(path)
     result = []
     for x in glob.glob(path):
-        result.append(get_object(x))
+        result.append(wra.get_object(x))
     return result
 
-def get_object(path):
-    """
-    This function takes a file or directory path as input and returns a dictionary containing various attributes 
-    of the file or directory. 
-    These attributes include the time of last modification, creation time, last access time, name, size,
-    absolute path, parent directory, whether it's a directory or file or link, whether it exists, and its extension
-    (if it's a file).
-    """
-    def path_properties(path, fun, default=-1):
-        try:
-            return fun(path)
-        except:
-            return default
-        
-    head, tail = os.path.split(path)
-
-    result = {}
-    result["abspath"] = os.path.abspath(path)
-    result["access"] = path_properties(path, os.path.getatime)
-    result["created"] = path_properties(path, os.path.getctime)
-    result["dirname"] = os.path.dirname(path)
-    result["exists"] = os.path.exists(path)
-    result["is_dir"] = os.path.isdir(path)
-    result["is_file"] = os.path.isfile(path)
-    result["is_link"] = os.path.islink(path)
-    result["extension"] = tail.split(".")[-1] if result["is_file"] else ""
-    ### EXT kept to cover version support. Remove on (MAJOR UPDATE ONLY)
-    result["ext"] = tail.split(".")[-1] if result["is_file"] else ""
-    result["modified"] = path_properties(path, os.path.getmtime)
-    result["name"] = tail
-    result["name_without_extension"] = tail.split('.')[0]
-    result["size"] = path_properties(path, os.path.getsize)
-    return result
-
-### wrapper.join() kept to cover version support. Remove on (MAJOR UPDATE ONLY)
 def join(path1='', path2='', path3='', path4='', paths=[]):
     """
     This function is designed to concatenate directory paths. 
@@ -357,9 +205,8 @@ def join(path1='', path2='', path3='', path4='', paths=[]):
                 item = item + os.sep
             key_dir += item
     return key_dir[:-1]
-
-### wrapper.list_directories() kept to cover version support. Remove on (MAJOR UPDATE ONLY)
-def list_directories(path):
+    
+def list(path):
     """
     Lists all the directories in a given path
     """
@@ -370,25 +217,15 @@ def list_directories(path):
     
     return directory_list
 
-### wrapper.list_files() kept to cover version support. Remove on (MAJOR UPDATE ONLY)
-def list_files(path):
-    """
-    Returns a list containing all the files inside of a given path
-    """
-    file_list = []
-    for file in os.listdir(path):
-        if os.path.isfile(join(path, file)):
-            file_list.append(file)
-    return file_list
+def rename(old_directory_path, new_directory_path):
+    # Check if the old directory exists
+    if os.path.isdir(old_directory_path):
+        os.rename(old_directory_path, new_directory_path)
+        # print(f"Directory '{old_directory_path}' has been renamed to '{new_directory_path}'.")
+        return True
+    else:
+        # print(f"The directory '{old_directory_path}' does not exist.")
+        return False
 
-def make_zip(source, destination):
-    """
-    This function is used to create a zip archive of a given source directory and move it to a specified destination.
-    """
-    base = os.path.basename(destination)
-    name = base.split('.')[0]
-    format = base.split('.')[1]
-    archive_from = os.path.dirname(source)
-    archive_to = os.path.basename(source.strip(os.sep))
-    shutil.make_archive(name, format, archive_from, archive_to)
-    shutil.move('%s.%s'%(name,format), destination)
+# Example usage:
+# success = rename_directory("/path/to/old_directory", "/path/to/new_directory")
