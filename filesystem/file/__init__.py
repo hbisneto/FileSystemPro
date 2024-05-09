@@ -1,99 +1,169 @@
+"""
+# File
+
+---
+
+## Overview
+The File module is a comprehensive utility toolset that forms part of the FileSystemPro library. 
+It provides a suite of functions designed to handle various file operations such as integrity checks,
+file creation, deletion, enumeration, and file splitting and reassembling.
+
+## Features
+- `Checksum Calculation:` Utilizes SHA-256 hashing to calculate file checksums for integrity verification.
+- `Integrity Check:` Compares checksums of two files to verify their integrity.
+- `File Creation:` Supports creating both text and binary files with specified data.
+- `File Deletion:` Safely deletes files by checking for their existence before removal.
+- `File Enumeration:` Enumerates all files in a given directory, providing detailed file information.
+- `File Existence Check:` Determines if a file exists at a given path.
+- `File Listing:` Lists all files in a specified directory.
+- `File Renaming:` Renames files within a directory after checking for their existence.
+- `File Reassembling:` Reassembles split files back into a single file.
+- `File Splitting:` Splits a file into smaller parts based on a specified chunk size.
+
+## Detailed Functionality
+The module's functions are designed to be robust and easy to use, 
+providing a high level of abstraction from the underlying file system operations.
+
+### Checksum Calculation and Integrity Check
+The `calculate_checksum` function reads a file in binary mode and calculates its SHA-256 hash, 
+returning the hexadecimal digest. The `check_integrity` function uses this to compare the checksums of 
+two files, which is essential for verifying that files have not been tampered with or corrupted.
+
+### File Creation, Deletion, and Enumeration
+File creation is handled by two functions: `create` for text files, 
+which uses codecs to handle different encodings, and `create_binary_file` for binary files. 
+The `delete` function removes a file after confirming its existence, 
+while `enumerate_files` provides a comprehensive list of all files in a directory, including their metadata.
+
+### File Existence, Listing, and Renaming
+The `exists` function checks if a file is present at a specified path. 
+The `list` function returns a list of all files in a directory. 
+The `rename` function allows for renaming a file if it exists.
+
+### File Reassembling and Splitting
+The `reassemble_file` function is used to combine parts of a 
+previously split file back into its original form. 
+Conversely, the `split_file` function divides a file into smaller parts, 
+each with a size defined by the `chunk_size` parameter.
+
+## Usage
+To use the functions provided by this module, 
+import the module and call the desired function with the appropriate parameters:
+
+```python
+from filesystem import file as fsfile
+```
+"""
+
 import codecs
 import hashlib
 import os
 from filesystem import directory as dir
 from filesystem import wrapper as wra
 
-def calculate_checksum(file_path):
+def calculate_checksum(file):
     """
-    This function calculates the SHA-256 checksum of a file. 
-    It takes a file path as an argument and returns the SHA-256 hash of the file's content. 
-    
-    It first creates a new SHA-256 hash object and opens the file in binary mode for reading.
-    It reads the file in chunks of 4096 bytes (or 4KB), updating the hash object with each chunk.
-    This is done until there are no more bytes to read from the file.
-    Finally, it returns the hexadecimal representation of the hash.
+    # file.calculate_checksum(file)
+
+    ---
+
+    ### Overview
+    Calculates the SHA-256 checksum of a file. This function reads the file in binary mode and updates the hash in chunks to efficiently handle large files.
+
+    ### Parameters:
+    file (str): The path to the file for which the checksum is to be calculated.
+
+    ### Returns:
+    str: The calculated hexadecimal SHA-256 checksum of the file.
+
+    ### Raises:
+    - FileNotFoundError: If the file does not exist at the specified path.
+    - IOError: If there is an error reading the file.
+
+    ### Examples:
+    - Calculate and return the checksum of a file:
+
+    ```python
+    checksum = calculate_checksum("/path/to/file")
+    print(checksum)
+    ```
     """
     sha256_hash = hashlib.sha256()
-    with open(file_path, "rb") as f:
+    with open(file, "rb") as f:
         # Read and update hash in chunks of 4K
         for byte_block in iter(lambda: f.read(4096), b""):
             sha256_hash.update(byte_block)
     return sha256_hash.hexdigest()
 
-def check_integrity(file_check, reference_file):
+def check_integrity(file, reference_file):
     """
-    This function verifies whether the checksum of two files are the same. 
-    It takes two arguments:
+    # file.check_integrity(file, reference_file)
+
+    ---
     
-    file_check: The path of the file to be compared
-    reference_file: The path of the reference file to be compared
-    
-    It calculates the checksum of both files using the calculate_checksum function.
-    It then checks if the checksums of both files are equal.
-    It returns `True` if the checksums are equal (indicating that the files are identical), 
-    and `False` otherwise.
+    ### Overview
+    Compares the SHA-256 checksums of two files to verify their integrity. This function is useful for ensuring that a file has not been altered or corrupted by comparing it to a reference file.
+
+    ### Parameters:
+    file (str): The path to the file whose integrity is being checked.
+    reference_file (str): The path to the reference file against which the checksum comparison is made.
+
+    ### Returns:
+    bool: Returns True if the checksums match, indicating the files are identical in content; False otherwise.
+
+    ### Raises:
+    - FileNotFoundError: If either the `file` or `reference_file` does not exist at the specified paths.
+    - IOError: If there is an error reading either file during the checksum calculation.
+
+    ### Examples:
+    - Check the integrity of a file against a reference file and print the result:
+
+    ```python
+    integrity = check_integrity("/path/to/file", "/path/to/reference_file")
+    print("Files are identical:", integrity)
+    ```
     """
-    file_to_check = calculate_checksum(file_check)
+    file_to_check = calculate_checksum(file)
     reference_check = calculate_checksum(reference_file)
 
     return file_to_check == reference_check
 
-def create(filename, data, encoding="utf-8-sig"):
+def create(file, data, encoding="utf-8-sig"):
     """
-    This function is designed to create a file with a specified filename and write data into it.
-
-    filename: The directory where the file will be created, including the name of the file and its extension.
-    data: The content that will be written into the file.
-    encoding (Optional): It specifies the encoding to be used when opening the file for writing.
+    # file.create(file, data, encoding="utf-8-sig")
 
     ---
-
-    ### Example
-    - Creating a text file in Downloads folder
-
-    ```
-    import filesystem as fs
-    from filesystem import file as fsfile
-
-    downlods_folder = fs.downloads
-    fsfile.create("Marketlist.txt", downlods_folder, "This is an inline text")
-    ```
-
-    - Creating a JSON file in Documents folder
-
-    ```
-    import filesystem as fs
-    from filesystem import file as fsfile
-
-    person = '''
-    {
-        "name": "John Doe",
-        "age": 30,
-        "gender": "Male",
-        "nationality": "American",
-        "profession": "Software Engineer",
-        "address": {
-            "street": "Flower Street",
-            "number": 123,
-            "city": "New York",
-            "state": "New York",
-            "country": "USA"
-        },
-        "contact": {
-            "phone": "(123) 456-7890",
-            "email": "john.doe@example.com"
-        },
-        "hobbies": ["Reading", "Traveling", "Running"]
-    }
-    '''
     
-    fsfile.create("data_person.json", "/Users/YOU/Documents", person)
+    ### Overview
+    Creates a file at the specified path and writes data into it. The file is opened with the specified encoding.
+
+    ### Parameters:
+    - file (str): The file path to create.
+    - data (str): The data to write into the file.
+    - encoding (str): The encoding to use when opening the file. Defaults to "utf-8-sig".
+
+    ### Returns:
+    None
+
+    ### Raises:
+    - FileExistsError: If the file already exists.
+    - PermissionError: If the permission is denied.
+    - UnicodeEncodeError: If the data cannot be encoded with the specified encoding.
+
+    ### Examples:
+    - Creates a file and writes data into it with the default encoding.
+
+    ```python
+    create("/path/to/file", "Hello, World!")
+    ```
+    - Creates a file and writes data into it with a specified encoding.
+
+    ```python
+    create("/path/to/file", "Hello, World!", "utf-16")
     ```
     """
-
     try:
-        with codecs.open(f'{filename}', "w", encoding=encoding) as custom_file:
+        with codecs.open(f'{file}', "w", encoding=encoding) as custom_file:
             custom_file.write(data)
     except:
         pass
@@ -101,10 +171,36 @@ def create(filename, data, encoding="utf-8-sig"):
 
 def create_binary_file(filename, data):
     """
-    This function is designed to create a binary file with a given filename and data.
+    # file.create_binary_file(filename, data)
 
-    filename: Refers to the specified path where the new file will be created
-    data: Refers to the specific content that will be written into the newly created file.
+    ---
+    
+    ### Overview
+    Creates a binary file at the specified filename and writes data into it. If the data is not of bytes type, it is first encoded to bytes.
+
+    ### Parameters:
+    - filename (str): The filename of the binary file to create.
+    - data (str or bytes): The data to write into the file. If it is a string, it will be encoded to bytes.
+
+    ### Returns:
+    None
+
+    ### Raises:
+    - FileExistsError: If the file already exists.
+    - PermissionError: If the permission is denied.
+    - UnicodeEncodeError: If the data cannot be encoded to bytes.
+
+    ### Examples:
+    - Creates a binary file and writes string data into it, which is first encoded to bytes.
+
+    ```python
+    create_binary_file("/path/to/file", "Hello, World!")
+    ```
+    - Creates a binary file and writes byte data into it.
+
+    ```python
+    create_binary_file("/path/to/file", b"Hello, World!")
+    ```
     """
     if type(data) != bytes:
         b_data = bytes(data.encode())
@@ -116,23 +212,58 @@ def create_binary_file(filename, data):
 
 def delete(file):
     """
-    This function attempts to delete a file specified by the file parameter.
-    
-    It first checks if the file exists by calling the exists function.
-    If the file is present, it is deleted.
-    If the file does not exist, the function does nothing.
+    # file.delete(file)
 
-    file: The path to the file to be deleted.
+    ---
+    
+    ### Overview
+    Deletes a file at the specified path if it exists.
+
+    ### Parameters:
+    - file (str): The file path to delete.
+
+    ### Returns:
+    None
+
+    ### Raises:
+    - FileNotFoundError: If the file does not exist.
+    - PermissionError: If the permission is denied.
+
+    ### Examples:
+    - Deletes a file if it exists.
+
+    ```python
+    delete("/path/to/file")
+    ```
     """
     if exists(file):
         os.remove(file)
 
 def enumerate_files(file):
     """
-    This function performs a depth-first traversal of the directory tree at the given path 
-    (after expanding any user home directory symbols).
+    # file.enumerate_files(file)
+
+    ---
     
-    It returns a list of dictionaries containing the attributes of each file and directory in the tree.
+    ### Overview
+    Enumerates all files in a given directory and its subdirectories. For each file and directory, it retrieves various attributes using the `wra.get_object` function.
+
+    ### Parameters:
+    file (str): The directory path to enumerate files from.
+
+    ### Returns:
+    A list of dictionaries, where each dictionary contains various attributes of a file or directory. These attributes include the time of last modification, creation time, last access time, name, size, absolute path, parent directory, whether it's a directory or file or link, whether it exists, and its extension (if it's a file).
+
+    ### Raises:
+    - FileNotFoundError: If the directory does not exist.
+    - PermissionError: If the permission is denied.
+
+    ### Examples:
+    - Enumerates all files in the home directory and its subdirectories.
+
+    ```python
+    enumerate_files("~/")
+    ```
     """
     results = []
     file = os.path.expanduser(file)
@@ -143,25 +274,60 @@ def enumerate_files(file):
 
 def exists(file):
     """
-    This function checks if a given file exists in the file system.
-    
-    It determines the existence of the file and returns `True` if the file exists, otherwise `False`.
+    # file.exists(file)
 
-    file: The path to the file to be checked.
+    ---
+    
+    ### Overview
+    Checks if a file exists at the specified path.
+
+    ### Parameters:
+    file (str): The file path to check.
+
+    ### Returns:
+    bool: True if the file exists, False otherwise.
+
+    ### Raises:
+    - FileNotFoundError: If the file does not exist.
+    - PermissionError: If the permission is denied.
+
+    ### Examples:
+    - Checks if a file exists at a specific path.
+
+    ```python
+    exists("/path/to/file")
+    ```
     """
     is_file = os.path.isfile(file)
     if is_file:
         return True
     return False
 
-### Implementarion
-def is_file(path):
-    return path
-
-
-def list(path):
+def get_files(path):
     """
-    Returns a list containing all the files inside of a given path
+    # file.get_files(path)
+
+    ---
+    
+    ### Overview
+    Retrieves all files in a given directory.
+
+    ### Parameters:
+    path (str): The directory path to retrieve files from.
+
+    ### Returns:
+    A list of strings, where each string is the name of a file in the directory.
+
+    ### Raises:
+    - FileNotFoundError: If the directory does not exist.
+    - PermissionError: If the permission is denied.
+
+    ### Examples:
+    - Retrieves all files in a specific directory.
+
+    ```python
+    get_files("/path/to/directory")
+    ```
     """
     file_list = []
     for file in os.listdir(path):
@@ -170,25 +336,69 @@ def list(path):
     return file_list
 
 def rename(directory, old_name, new_name):
+    """
+    # file.rename(directory, old_name, new_name)
+
+    ---
+    
+    ### Overview
+    Renames a file in a given directory from `old_name` to `new_name`.
+
+    ### Parameters:
+    directory (str): The directory path where the file is located.
+    old_name (str): The current name of the file.
+    new_name (str): The new name for the file.
+
+    ### Returns:
+    bool: True if the file was successfully renamed, False otherwise.
+
+    ### Raises:
+    - FileNotFoundError: If the file does not exist.
+    - PermissionError: If the permission is denied.
+
+    ### Examples:
+    - Renames a file in a specific directory.
+
+    ```python
+    rename("/path/to/directory", "old_name.txt", "new_name.txt")
+    ```
+    """
     old_file_path = dir.join(directory, old_name)
     new_file_path = dir.join(directory, new_name)
 
-    # Check if the old file exists
     if exists(old_file_path):
         os.rename(old_file_path, new_file_path)
-        # print(f"File '{old_name}' has been renamed to '{new_name}' in the directory '{directory}'.")
-        # return True, new_file_path
         return True
-    else:
-        # print(f"The file '{old_name}' does not exist in the directory '{directory}'.")
-        # return False, None
-        return False
+    return False
 
 def reassemble_file(large_file, new_file):
     """
-    This function is designed to reassemble a large file that has been split into smaller parts:
-    It reassembles a large file that was previously split into parts,
-    writes the reassembled content into a new file, and then deletes the part files.
+    # file.reassemble_file(large_file, new_file)
+
+    ---
+    
+    ### Overview
+    Reassembles a file that was previously split into parts. 
+    The function checks for the existence of the split parts and reads each part, writing it to a new file. 
+    After all parts have been written to the new file, the function deletes the parts.
+
+    ### Parameters:
+    large_file (str): The name of the original large file that was split.
+    new_file (str): The name for the new file that will be created from the parts.
+
+    ### Returns:
+    None
+
+    ### Raises:
+    - FileNotFoundError: If any of the parts do not exist.
+    - PermissionError: If the permission is denied.
+
+    ### Examples:
+    - Reassembles a file that was split into parts.
+
+    ```python
+    reassemble_file("large_file", "new_file")
+    ```
     """
     parts = []
     i = 0
@@ -207,10 +417,35 @@ def reassemble_file(large_file, new_file):
 
 def split_file(file, chunk_size = 1048576):
     """
-    The function `split_file` is designed to split a file into smaller chunks. 
-    The default `chunk_size` is set to 1 megabyte (1 MB = 1048576 bytes), but it can be adjusted by providing a different value when calling the function.
-    The function does not return any value. 
-    It's a straightforward way to handle large files by breaking them down into more manageable pieces.
+    # file.split_file(file, chunk_size = 1048576)
+
+    ---
+    
+    ### Overview
+    Splits a large file into smaller chunks. The function reads the file in chunks of a specified size and writes each chunk to a new file. The new files are named by appending `.fsp` and an index number to the original filename.
+
+    ### Parameters:
+    file (str): The name of the file to split.
+    chunk_size (int): The size of each chunk. Defaults to 1048576 bytes (1 MB).
+
+    ### Returns:
+    True if the file was successfully split, False if the file does not exist.
+
+    ### Raises:
+    - FileNotFoundError: If the file does not exist.
+    - PermissionError: If the permission is denied.
+
+    ### Examples:
+    - Splits a file into 1 MB chunks.
+
+    ```python
+    split_file("large_file")
+    ```
+    - Splits a file into chunks of a specified size.
+
+    ```python
+    split_file("large_file", 512000)  # splits into 500 KB chunks
+    ```
     """
     if exists(file) == False:
         return False
@@ -224,3 +459,4 @@ def split_file(file, chunk_size = 1048576):
             i += 1
             chunk = f.read(chunk_size)
     return True
+

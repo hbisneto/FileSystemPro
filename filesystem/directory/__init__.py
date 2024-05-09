@@ -1,3 +1,58 @@
+"""
+# Directory
+
+---
+
+## Overview
+The Directory module is a component of the FileSystemPro library that provides a collection of functions
+for handling directory-related operations. It simplifies tasks such as path manipulation, 
+directory creation and deletion, and file retrieval within directories.
+
+## Features
+- `Path Combination:` Dynamically combines multiple paths into a single path string.
+- `Directory Creation:` Creates new directories, with an option to create necessary subdirectories.
+- `Directory Deletion:` Deletes directories, with an option for recursive deletion.
+- `Directory Existence Check:` Checks whether a directory exists at a specified path.
+- `File Retrieval:` Retrieves a list of files within a directory using glob patterns.
+- `Parent Directory Information:` Retrieves the name or path of a file's parent directory.
+- `Directory Listing:` Lists all subdirectories within a given directory.
+- `Directory Renaming:` Renames a directory if it exists.
+
+## Detailed Functionality
+The module's functions are designed to be intuitive and provide a high level of abstraction from the
+underlying file system operations.
+
+### Path Combination (`combine`)
+The `combine` function takes multiple path segments and intelligently combines them into a single path. 
+It ensures that the resulting path is valid and absolute, 
+raising an error if the initial segment is not an absolute path.
+
+### Directory Creation and Deletion (`create`, `delete`)
+The `create` function allows for the creation of directories, 
+with the option to create all necessary subdirectories if they do not exist. 
+The `delete` function removes directories, with the ability to recursively delete all contents if specified.
+
+### Directory and File Information (`exists`, `get_files`, `get_parent_name`, `get_parent`, `get_name`)
+The `exists` function checks for the existence of a directory. 
+The `get_files` function uses glob patterns to retrieve files within a directory. 
+The `get_parent_name`, `get_parent`, and `get_name` functions provide information 
+about the parent directory of a given path.
+
+### Directory Operations (`join`, `list`, `rename`)
+The `join` function is a versatile path joiner that can handle multiple path segments. 
+The `list` function returns a list of all subdirectories within a specified directory. 
+The `rename` function allows for renaming a directory, 
+ensuring that the operation only occurs if the directory exists.
+
+## Usage
+To use the functions provided by this module, 
+import the module and call the desired function with the appropriate parameters:
+
+```python
+from filesystem import directory as dir
+```
+"""
+
 import glob
 import os
 import shutil
@@ -5,49 +60,34 @@ from filesystem import wrapper as wra
 
 def combine(*args, paths=[]):
     """
-    This function is designed to combine file or directory paths. 
-    It takes any number of arguments `*args` and an optional parameter paths which is a list of paths.
-    The function returns a combined path based on the inputs.
-    
-    If the paths list is provided, the function uses it to combine paths. 
-    It starts with the first path in the list and checks if it's an absolute path. 
-    If it's not, it raises a `ValueError` with a detailed error message. 
-    Then, it iterates over the rest of the paths in the list. 
-    If a path is absolute, it replaces the current result with this path. 
-    If a path is relative, it joins this path to the current result. Finally, it returns the combined path.
-    
-    If the paths list is not provided or is empty, the function uses the arguments passed `*args`.
-    It starts with the first argument and checks if it's an absolute path.
-    If it's not, it raises a `ValueError` with a detailed error message. 
-    Then, it iterates over the rest of the arguments.
-    If an argument is an absolute path, it replaces the current result with this path. 
-    If an argument is a relative path and not an empty string, it adds this path to the current result. 
-    If the current result doesn't end with a separator (os.sep), it adds one before adding the path.
-    Finally, it returns the combined path.
-    
-    Please note: This function does not check if the paths exist or are valid, it only combines them based
-    on the rules described.
-    It's up to the caller to ensure that the paths are valid and exist if necessary.
+    # directory.combine(*args, paths=[])
 
-    ```py
-    from filesystem import wrapper as wr
+    ---
 
-    # Combine absolute and relative paths
-    result = wr.combine('/home/user', 'directory', 'file.txt')
-    print(result)  
-    # Outputs: '/home/user/directory/file.txt'
+    ### Overview
+    Combines a list of paths or arguments into a single path. If the first argument or the first element in the paths list is not an absolute path, it raises a ValueError.
 
-    # Use an absolute path in the middle
-    result = wr.combine('/home/user', '/otheruser', 'file.txt')
-    print(result)
-    # Outputs: '/otheruser/file.txt'
+    ### Parameters:
+    *args (str): The paths to combine. The first argument must be an absolute path.
+    paths (list): A list of paths to combine. The first element in the list must be an absolute path. Defaults to an empty list.
 
-    # Use the paths parameter
-    result = wr.combine(paths=['/home/user', 'directory', 'file.txt'])
-    print(result)
-    # Outputs: '/home/user/directory/file.txt'
+    ### Returns:
+    str: The combined path.
+
+    ### Raises:
+    - ValueError: If the first argument or the first element in the paths list is not an absolute path.
+
+    ### Examples:
+    - Combines all paths in the list, starting with an absolute path.
+
+    ```python
+    combine(paths=["/home/user/directory", "subdirectory", "file.txt"])
     ```
+    - Combines all arguments, starting with an absolute path.
 
+    ```python
+    combine("/home/user/directory", "subdirectory", "file.txt")
+    ```
     """
     if paths:
         result = paths[0]
@@ -90,18 +130,39 @@ For example, "/home/user/directory" is a valid absolute path. Please provide a v
 
 def create(path, create_subdirs=True):
     """
-    This function is used to create a directory at the specified `path`.
-    
-    If `create_subdirs` is `True`, the function creates all intermediate-level directories needed to contain 
-    the leaf directory. 
-    
-    If `create_subdirs` is `False`, the function will raise an error if the directory already exists or if any
-    intermediate-level directories in the path do not exist.
-    
-    Default is `True`
-    
-    If the directories already exist, it does nothing.
+    # directory.create(path, create_subdirs = True)
+
+    ---
+
+    ### Overview
+    Creates a directory at the specified path. If `create_subdirs` is True, all intermediate-level 
+    directories needed to contain the leaf directory will be created. This function is useful for 
+    setting up directory structures in a file system.
+
+    ### Parameters:
+    - path (str): The directory path to create.
+    - create_subdirs (bool): A flag that indicates whether to create intermediate subdirectories. 
+      Defaults to True.
+
+    ### Returns:
+    None
+
+    ### Raises:
+    - PermissionError: If the permission is denied.
+
+    ### Examples:
+    - Creates all intermediate subdirectories if they don't exist.
+
+    ```python
+    create("/path/to/directory")
+    ```
+    - Creates only the leaf directory, raises an error if any intermediate directory doesn't exist.
+
+    ```python
+    create("/path/to/directory", False)
+    ```
     """
+    
     if create_subdirs:
         os.makedirs(path, exist_ok=True)
     else:
@@ -110,13 +171,34 @@ def create(path, create_subdirs=True):
 
 def delete(path, recursive=False):
     """
-    This function is designed to delete a directory at a given `path`.
-    
-    If `recursive` is set to `True`, the function will delete the directory and all its contents. 
-    
-    If `recursive` is set to `False`, the function will only delete the directory if it's empty. 
-    
-    Default is `False`.
+    # directory.delete(path, recursive=False)
+
+    ---
+
+    ### Overview
+    Deletes a directory at the specified path. If `recursive` is True, the directory and all its contents will be removed.
+
+    ### Parameters:
+    path (str): The directory path to delete.
+    recursive (bool): A flag that indicates whether to delete the directory even if it is not empty. Defaults to False.
+
+    ### Returns:
+    None
+
+    ### Raises:
+    - Exception: If the directory does not exist or if the directory is not empty and `recursive` is False.
+
+    ### Examples:
+    - Deletes an empty directory.
+
+    ```python
+    delete("/path/to/directory")
+    ```
+    - Deletes a directory and all its contents.
+
+    ```python
+    delete("/path/to/directory", True)
+    ```
     """
     if not os.path.exists(path):
         raise Exception(f'\n\n>> The directory "{path}" does not exist.')
@@ -126,43 +208,124 @@ def delete(path, recursive=False):
     else:
         raise Exception(f'\n\n>> The directory "{path}" is not empty.\n>> Use delete(path, True) to remove anyway.')
 
-def exists(directory_path):
-    if os.path.isdir(directory_path):
+def exists(path):
+    """
+    # directory.exists(path)
+
+    ---
+
+    ### Overview
+    Checks if a directory exists at the specified path.
+
+    ### Parameters:
+    path (str): The directory path to check.
+
+    ### Returns:
+    bool: True if the directory exists, False otherwise.
+
+    ### Examples:
+    - Checks if a directory exists.
+
+    ```python
+    exists("/path/to/directory")
+    ```
+    """
+    if os.path.isdir(path):
         return True
     else:
         return False
 
-def get_files(path):
-    """
-    This function takes a path as input (which can include wildcards), 
-    expands any user home directory symbols (~), and returns a list of dictionaries containing 
-    the attributes of each file or directory that matches the path.
-    """
-    path = os.path.expanduser(path)
-    result = []
-    for x in glob.glob(path):
-        result.append(wra.get_object(x))
-    return result
-
 def get_parent_name(path):
+    """
+    # directory.get_parent_name(path)
+
+    ---
+
+    ### Overview
+    Retrieves the parent directory name from the specified path.
+
+    ### Parameters:
+    path (str): The directory path from which to retrieve the parent directory name.
+
+    ### Returns:
+    str: The name of the parent directory.
+
+    ### Examples:
+    - Retrieves the parent directory name when the path ends with a slash.
+
+    ```python
+    get_parent_name("/path/to/directory/")
+    ```
+    - Retrieves the parent directory name when the path does not end with a slash.
+
+    ```python
+    get_parent_name("/path/to/directory")
+    ```
+    """
     if path.endswith('/'):
         path = path[:-1]
         return os.path.basename(path)
     return os.path.basename(os.path.dirname(path))
 
 def get_parent(path):
-        """
-        This function returns the parent directory of the given path.
-        
-        Parameters:
-        path (str): The path of which to find the parent directory. Can be absolute or relative.
+    """
+    # directory.get_parent(path)
+    
+    ---
 
-        Returns:
-        str: The parent directory of the given path.
-        """
-        return os.path.dirname(path)
+    ### Overview
+    Retrieves the parent directory from the specified path.
+
+    ### Parameters:
+    path (str): The directory path from which to retrieve the parent directory.
+
+    ### Returns:
+    str: The parent directory of the specified path.
+
+    ### Examples:
+    - Retrieves the parent directory when the path ends with a slash.
+
+    ```python
+    get_parent("/path/to/directory/")
+    ```
+    - Retrieves the parent directory when the path does not end with a slash.
+
+    ```python
+    get_parent("/path/to/directory")
+    ```
+    """
+    return os.path.dirname(path)
 
 def get_name(path):
+    """
+    # directory.get_name(path)
+
+    ---
+
+    ### Overview
+    Retrieves the name of the directory of the specified path. 
+    If the path has an extension, it is assumed to be a file, and the parent directory name is returned. 
+    If the path does not have an extension, it is assumed to be a directory, 
+    and the directory name is returned.
+
+    ### Parameters:
+    path (str): The directory or file path from which to retrieve the name.
+
+    ### Returns:
+    str: The name of the parent directory or the file.
+
+    ### Examples:
+    - Retrieves the parent directory name when the path is a file.
+
+    ```python
+    get_name("/path/to/directory/file.txt")
+    ```
+    - Retrieves the directory name when the path is a directory.
+
+    ```python
+    get_name("/path/to/directory")
+    ```
+    """
     if wra.has_extension(path):
         return f'{get_parent_name(path)}'
     else:
@@ -170,20 +333,31 @@ def get_name(path):
 
 def join(path1='', path2='', path3='', path4='', paths=[]):
     """
-    This function concatenates multiple directory paths into a single path string.
+    # directory.join(path1='', path2='', path3='', path4='', paths=[])
 
-    Parameters:
-    - path1, path2, path3, path4 (str): Individual directory paths. Default is an empty string.
-    - paths (list): A list of additional directory paths. Default is an empty list.
+    ---
 
-    The function checks each path and if the path does not end with an OS-specific separator (`os.sep`),
-    it appends the separator to the path. This is done for `path1`, `path2`, `path3`, `path4`,
-    and each path in the `paths` list.
+    ### Overview
+    Joins multiple directory paths into a single path. The function ensures that each directory path ends with a separator before joining. If a directory path does not end with a separator, one is added.
 
-    The function then concatenates all the paths into a single string `key_dir`.
+    ### Parameters:
+    path1, path2, path3, path4 (str): The directory paths to join. Defaults to an empty string.
+    paths (list): A list of additional directory paths to join. Defaults to an empty list.
 
-    Returns:
-    - key_dir (str): The concatenated directory path string. The trailing separator is removed before returning.
+    ### Returns:
+    str: The joined directory path.
+
+    ### Examples:
+    - Joins multiple directory paths.
+
+    ```python
+    join("/path/to", "directory", paths=["subdirectory", "file.txt"])
+    ```
+    - Joins multiple directory paths without additional paths.
+
+    ```python
+    join("/path/to", "directory")
+    ```
     """
     key_dir = ""
     if not path1.endswith(os.sep):
@@ -210,9 +384,27 @@ def join(path1='', path2='', path3='', path4='', paths=[]):
             key_dir += item
     return key_dir[:-1]
     
-def list(path):
+def get_directories(path):
     """
-    Lists all the directories in a given path
+    # directory.get_directories(path)
+
+    ---
+
+    ### Overview
+    Lists all directories in the specified path.
+
+    ### Parameters:
+    path (str): The directory path to list.
+
+    ### Returns:
+    list: A list of directory names in the specified path.
+
+    ### Examples:
+    - Lists all directories in a specific path.
+
+    ```python
+    get_directories("/path/to/directory")
+    ```
     """
     directory_list = []
     for dir in os.listdir(path):
@@ -221,12 +413,31 @@ def list(path):
     
     return directory_list
 
-def rename(old_directory_path, new_directory_path):
-    # Check if the old directory exists
-    if os.path.isdir(old_directory_path):
-        os.rename(old_directory_path, new_directory_path)
-        # print(f"Directory '{old_directory_path}' has been renamed to '{new_directory_path}'.")
+def rename(old_path, new_path):
+    """
+    # directory.rename(old_path, new_path)
+
+    ---
+
+    ### Overview
+    Renames a directory from the old directory path to the new directory path. If the old directory path does not exist or is not a directory, the function returns False.
+
+    ### Parameters:
+    old_path (str): The old directory path to rename.
+    new_path (str): The new directory path.
+
+    ### Returns:
+    bool: True if the directory was successfully renamed, False otherwise.
+
+    ### Examples:
+    - Renames a directory.
+
+    ```python
+    rename("/path/to/old_directory", "/path/to/new_directory")
+    ```
+    """
+    if os.path.isdir(old_path):
+        os.rename(old_path, new_path)
         return True
-    else:
-        # print(f"The directory '{old_directory_path}' does not exist.")
-        return False
+    return False
+    

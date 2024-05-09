@@ -43,6 +43,7 @@ Upgrade setuptools
 ```sh
 pip install --upgrade setuptools
 ```
+> [!NOTE]
 > Note: FileSystem Pro requires setuptools 69.5.1 or later.
 ><br> Python environment typically targets setuptools version 49.x.
 
