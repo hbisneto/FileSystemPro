@@ -133,21 +133,21 @@ def create(path, create_subdirs=True):
     # directory.create(path, create_subdirs = True)
 
     ---
-
     ### Overview
     Creates a directory at the specified path. If `create_subdirs` is True, all intermediate-level 
-    directories needed to contain the leaf directory will be created. This function is useful for 
-    setting up directory structures in a file system.
+    directories needed to contain the leaf directory will be created.
 
     ### Parameters:
-    - path (str): The directory path to create.
-    - create_subdirs (bool): A flag that indicates whether to create intermediate subdirectories. 
-      Defaults to True.
+    path (str): The directory path to create.
+    create_subdirs (bool): A flag that indicates whether to create intermediate subdirectories. 
+    Defaults to True.
 
     ### Returns:
     None
 
     ### Raises:
+    - FileExistsError: If the directory already exists when `create_subdirs` is False.
+    - FileNotFoundError: If the directory does not exist and `create_subdirs` is False.
     - PermissionError: If the permission is denied.
 
     ### Examples:
