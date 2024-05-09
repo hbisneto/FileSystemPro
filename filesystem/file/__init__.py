@@ -400,6 +400,8 @@ def reassemble_file(large_file, new_file):
     reassemble_file("large_file", "new_file")
     ```
     """
+    # '/Users/heitor/Documents/BisnetoDev/FileSystemPro/cache/DEPLOY.zip.fsp0'
+    # '/Users/heitor/Documents/BisnetoDev/FileSystemPro/cache/UpdateContent.zip.fsp11'
     parts = []
     i = 0
     while os.path.exists(f'{large_file}.fsp{str(i)}'):
