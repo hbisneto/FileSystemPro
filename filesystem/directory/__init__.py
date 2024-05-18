@@ -53,7 +53,6 @@ from filesystem import directory as dir
 ```
 """
 
-import glob
 import os
 import shutil
 from filesystem import wrapper as wra
@@ -133,9 +132,11 @@ def create(path, create_subdirs=True):
     # directory.create(path, create_subdirs = True)
 
     ---
+
     ### Overview
     Creates a directory at the specified path. If `create_subdirs` is True, all intermediate-level 
-    directories needed to contain the leaf directory will be created.
+    directories needed to contain the leaf directory will be created. After the directory is created, 
+    it returns the details of the created directory.
 
     ### Parameters:
     path (str): The directory path to create.
@@ -143,31 +144,31 @@ def create(path, create_subdirs=True):
     Defaults to True.
 
     ### Returns:
-    None
+    dict: A dictionary containing the details of the created directory.
 
     ### Raises:
     - FileExistsError: If the directory already exists when `create_subdirs` is False.
-    - FileNotFoundError: If the directory does not exist and `create_subdirs` is False.
     - PermissionError: If the permission is denied.
+    - FileNotFoundError: If the path does not exist.
 
     ### Examples:
-    - Creates all intermediate subdirectories if they don't exist.
+    - Creates all intermediate subdirectories if they don't exist and returns their details.
 
     ```python
     create("/path/to/directory")
     ```
-    - Creates only the leaf directory, raises an error if any intermediate directory doesn't exist.
+    - Creates only the leaf directory, raises an error if any intermediate directory doesn't exist, 
+    and returns the details of the created directory.
 
     ```python
     create("/path/to/directory", False)
     ```
     """
-    
     if create_subdirs:
         os.makedirs(path, exist_ok=True)
     else:
         os.mkdir(path)
-    # return get_object(path)
+    return wra.get_object(path)
 
 def delete(path, recursive=False):
     """

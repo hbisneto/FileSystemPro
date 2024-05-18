@@ -135,28 +135,29 @@ def create(file, data, encoding="utf-8-sig"):
     ---
     
     ### Overview
-    Creates a file at the specified path and writes data into it. The file is opened with the specified encoding.
+    Creates a file at the specified path and writes data into it. If the file already exists, 
+    its contents are overwritten. The function then returns the details of the created file.
 
     ### Parameters:
-    - file (str): The file path to create.
-    - data (str): The data to write into the file.
-    - encoding (str): The encoding to use when opening the file. Defaults to "utf-8-sig".
+    file (str): The file path to create.
+    data (str): The data to write into the file.
+    encoding (str): The encoding to use when opening the file. Defaults to "utf-8-sig".
 
     ### Returns:
-    None
+    dict: A dictionary containing the details of the created file.
 
     ### Raises:
-    - FileExistsError: If the file already exists.
+    - FileNotFoundError: If the file does not exist.
     - PermissionError: If the permission is denied.
     - UnicodeEncodeError: If the data cannot be encoded with the specified encoding.
 
     ### Examples:
-    - Creates a file and writes data into it with the default encoding.
+    - Creates a file and writes data into it, then returns the file details.
 
     ```python
     create("/path/to/file", "Hello, World!")
     ```
-    - Creates a file and writes data into it with a specified encoding.
+    - Creates a file with a different encoding, writes data into it, then returns the file details.
 
     ```python
     create("/path/to/file", "Hello, World!", "utf-16")
@@ -167,7 +168,7 @@ def create(file, data, encoding="utf-8-sig"):
             custom_file.write(data)
     except:
         pass
-    # return get_object(f'{filename}')
+    return wra.get_object(f'{file}')
 
 def create_binary_file(filename, data):
     """
@@ -246,13 +247,17 @@ def enumerate_files(file):
     ---
     
     ### Overview
-    Enumerates all files in a given directory and its subdirectories. For each file and directory, it retrieves various attributes using the `wra.get_object` function.
+    Enumerates all files in a given directory and its subdirectories. 
+    For each file and directory, it retrieves various attributes using the `wra.get_object` function.
 
     ### Parameters:
     file (str): The directory path to enumerate files from.
 
     ### Returns:
-    A list of dictionaries, where each dictionary contains various attributes of a file or directory. These attributes include the time of last modification, creation time, last access time, name, size, absolute path, parent directory, whether it's a directory or file or link, whether it exists, and its extension (if it's a file).
+    A list of dictionaries, where each dictionary contains various attributes of a file or directory. 
+    These attributes include the time of last modification, creation time, last access time, name, size, 
+    absolute path, parent directory, whether it's a directory or file or link, whether it exists, 
+    and its extension (if it's a file).
 
     ### Raises:
     - FileNotFoundError: If the directory does not exist.

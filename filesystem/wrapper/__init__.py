@@ -43,6 +43,7 @@ from filesystem import wrapper as wra
 """
 
 import codecs
+import datetime
 import glob
 import os
 import shutil
@@ -369,15 +370,15 @@ def get_object(path):
     ---
 
     ### Overview
-    Returns a dictionary of properties for the specified path. The properties include absolute path, 
-    access time, creation time, directory name, existence, type of path (directory, file, or link), 
-    extension, modification time, name, name without extension, and size.
+    Retrieves various details about the file or directory at the specified path. These details include 
+    the absolute path, access date, creation date, directory name, existence, type (file, directory, 
+    or link), extension, modification date, name, name without extension, and size.
 
     ### Parameters:
-    path (str): The path to get properties for.
+    path (str): The file or directory path to retrieve details of.
 
     ### Returns:
-    A dictionary with the following keys:
+    dict: A dictionary with the following keys:
     - "abspath": The absolute path.
     - "access": The last access time, or -1 if an error occurs.
     - "created": The creation time, or -1 if an error occurs.
@@ -394,32 +395,123 @@ def get_object(path):
     - "size": The size of the file, or -1 if an error occurs.
 
     ### Raises:
-    - OSError: If an error occurs when trying to get the properties.
+    - FileNotFoundError: If the file or directory does not exist.
+    - PermissionError: If the permission is denied.
 
     ### Examples:
-    - Get properties for a file.
+    - Retrieves details of a file.
 
     ```python
-    get_object("/path/to/file.txt")
+    get_object("/path/to/file")
     ```
-    - Get properties for a directory.
+    - Retrieves details of a directory.
 
     ```python
     get_object("/path/to/directory")
     ```
     """
-    def path_properties(path, fun, default=-1):
-        try:
-            return fun(path)
-        except:
-            return default
+    def obj_creation_date(path):
+        """
+        ### Overview
+        Retrieves the creation date of the file or directory at the specified path.
+
+        ### Parameters:
+        path (str): The file or directory path to retrieve the creation date of.
+
+        ### Returns:
+        str: A string representing the creation date of the file or directory, formatted as "YYYY/MM/DD HH:MM:SS:ff".
+
+        ### Raises:
+        - FileNotFoundError: If the file or directory does not exist.
+        - PermissionError: If the permission is denied.
+
+        ### Examples:
+        - Retrieves the creation date of a file.
+
+        ```python
+        obj_creation_date("/path/to/file")
+        ```
+        - Retrieves the creation date of a directory.
+
+        ```python
+        obj_creation_date("/path/to/directory")
+        ```
+        """
+        timestamp = os.path.getctime(path)
+        creation_date = datetime.datetime.fromtimestamp(timestamp)
+        formatted_date = creation_date.strftime("%Y/%m/%d %H:%M:%S:%f")
+        return formatted_date
+    
+    def obj_modification_date(path):
+        """
+        ### Overview
+        Retrieves the last modification date of the file or directory at the specified path.
+
+        ### Parameters:
+        path (str): The file or directory path to retrieve the modification date of.
+
+        ### Returns:
+        str: A string representing the last modification date of the file or directory, formatted as "YYYY/MM/DD HH:MM:SS:ff".
+
+        ### Raises:
+        - FileNotFoundError: If the file or directory does not exist.
+        - PermissionError: If the permission is denied.
+
+        ### Examples:
+        - Retrieves the last modification date of a file.
+
+        ```python
+        obj_modification_date("/path/to/file")
+        ```
+        - Retrieves the last modification date of a directory.
+
+        ```python
+        obj_modification_date("/path/to/directory")
+        ```
+        """
+        timestamp = os.path.getmtime(path)
+        modification_date = datetime.datetime.fromtimestamp(timestamp)
+        formatted_date = modification_date.strftime("%Y/%m/%d %H:%M:%S:%f")
+        return formatted_date
+    
+    def obj_last_access_date(path):
+        """
+        ### Overview
+        Retrieves the last access date of the file or directory at the specified path.
+
+        ### Parameters:
+        path (str): The file or directory path to retrieve the last access date of.
+
+        ### Returns:
+        str: A string representing the last access date of the file or directory, formatted as "YYYY/MM/DD HH:MM:SS:ff".
+
+        ### Raises:
+        - FileNotFoundError: If the file or directory does not exist.
+        - PermissionError: If the permission is denied.
+
+        ### Examples:
+        - Retrieves the last access date of a file.
+
+        ```python
+        obj_last_access_date("/path/to/file")
+        ```
+        - Retrieves the last access date of a directory.
+
+        ```python
+        obj_last_access_date("/path/to/directory")
+        ```
+        """
+        timestamp = os.path.getatime(path)
+        access_date = datetime.datetime.fromtimestamp(timestamp)
+        formatted_date = access_date.strftime("%Y/%m/%d %H:%M:%S:%f")
+        return formatted_date
         
     head, tail = os.path.split(path)
 
     result = {}
     result["abspath"] = os.path.abspath(path)
-    result["access"] = path_properties(path, os.path.getatime)
-    result["created"] = path_properties(path, os.path.getctime)
+    result["access"] = obj_last_access_date(path)
+    result["created"] = obj_creation_date(path)
     result["dirname"] = os.path.dirname(path)
     result["exists"] = os.path.exists(path)
     result["is_dir"] = os.path.isdir(path)
@@ -428,11 +520,59 @@ def get_object(path):
     result["extension"] = tail.split(".")[-1] if result["is_file"] else ""
     ### EXT kept to cover version support. Remove on (MAJOR UPDATE ONLY)
     result["ext"] = tail.split(".")[-1] if result["is_file"] else ""
-    result["modified"] = path_properties(path, os.path.getmtime)
+    result["modified"] = obj_modification_date(path)
     result["name"] = tail
     result["name_without_extension"] = tail.split('.')[0]
-    result["size"] = path_properties(path, os.path.getsize)
+    result["size"] = get_size(path)
     return result
+
+def get_size(file_path):
+    """
+    # wrapper.get_size(path)
+
+    ---
+
+    ### Overview
+    Calculates the size of the file or directory at the specified path. If the path is a directory, 
+    it calculates the total size of all files in the directory. The size is returned in bytes, KB, 
+    MB, GB, or TB, depending on the size.
+
+    ### Parameters:
+    path (str): The file or directory path to calculate the size of.
+
+    ### Returns:
+    str: A string representing the size of the file or directory, formatted as a float followed by 
+    the unit of measurement.
+
+    ### Raises:
+    - FileNotFoundError: If the file or directory does not exist.
+    - PermissionError: If the permission is denied.
+
+    ### Examples:
+    - Calculates the size of a file.
+
+    ```python
+    get_size("/path/to/file")
+    ```
+    - Calculates the total size of all files in a directory.
+
+    ```python
+    get_size("/path/to/directory")
+    ```
+    """
+    if os.path.isfile(file_path):
+        size = os.path.getsize(file_path)
+    else:
+        size = sum(
+            os.path.getsize(os.path.join(dirpath, filename)) 
+                for dirpath, dirnames, filenames in os.walk(file_path)
+                    for filename in filenames
+        )
+    
+    for unit in ['bytes', 'KB', 'MB', 'GB', 'TB']:
+        if size < 1024.0:
+            return f"{size:3.1f} {unit}"
+        size /= 1024.0
 
 def has_extension(file_path):
     """
