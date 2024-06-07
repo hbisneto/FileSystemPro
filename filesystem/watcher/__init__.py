@@ -40,7 +40,7 @@ watcher = wat('/path/to/directory')
 ```
 """
 
-from filesystem import wrapper as wr
+from filesystem import file as fsfile
 
 class Watcher(object):
     """
@@ -57,7 +57,7 @@ class Watcher(object):
         """
         This method returns a dictionary where the keys are the absolute paths of all files in the given path and the values are file metadata obtained from the core.enumerate_files(path) function
         """
-        files = wr.enumerate_files(path)
+        files = fsfile.enumerate_files(path)
         named_files = dict([(x["abspath"], x,) for x in files])
         return named_files
 

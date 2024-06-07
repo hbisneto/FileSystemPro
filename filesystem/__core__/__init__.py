@@ -52,7 +52,7 @@ from filesystem import __core__
 import requests
 from filesystem import console as fsconsole
 
-__version__ = "1.0.2.0"
+__version__ = "1.0.3.0"
 
 def __checkupdates__(user, repo):
     """
@@ -79,9 +79,7 @@ def __checkupdates__(user, repo):
     url = f'https://api.github.com/repos/{user}/{repo}/releases'
     try:
         response = requests.get(url)
-        # response.raise_for_status()
     except requests.exceptions.RequestException as err:
-        # print(f"{Fore.RED} >> [FileSystem Pro] This exception: {Fore.YELLOW}{err}{Style.RESET_ALL}")
         return None, None
     releases = response.json()
     

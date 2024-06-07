@@ -329,7 +329,7 @@ def get_files(path):
     """
     # wrapper.get_files(path)
     - #### Under support
-        - Consider using `wrapper.get_object(path)`
+        - Consider using `file.get_files(path)`
 
     ---
     ### Overview
