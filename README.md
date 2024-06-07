@@ -336,6 +336,7 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
   <tr>
     <th>Method</th>
     <th>Description</th>
+    <th>Status</th>
   </tr>
 
   <tr>
@@ -346,6 +347,9 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
       If the paths list is not provided or is empty, the function uses the arguments passed *args. It starts with the first argument and checks if it’s an absolute path. If it’s not, it raises a ValueError with a detailed error message. Then, it iterates over the rest of the arguments. If an argument is an absolute path, it replaces the current result with this path. If an argument is a relative path and not an empty string, it adds this path to the current result. If the current result doesn’t end with a separator (os.sep), it adds one before adding the path. Finally, it returns the combined path.
       <br><br><strong>Please note:</strong> This function does not check if the paths exist or are valid, it only combines them based on the rules described. It’s up to the caller to ensure that the paths are valid and exist if necessary.
       <br><br>This method is intended to concatenate individual strings into a single string that represents a file path. However, if an argument other than the first contains a rooted path, any previous path components are ignored, and the returned string begins with that rooted path component. As an alternative to the combine method, consider using the join method.
+    </td>
+    <td>
+    	Under support. Consider using directory.combine(*args, paths=[])
     </td>
   </tr>
 
@@ -359,6 +363,9 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
       <br>Default is <strong>True</strong>
       <br>If the directories already exist, it does nothing.
     </td>
+    <td>
+    	Under support. Consider using directory.create(path, create_subdirs = True)
+    </td>
   </tr>
 
   <tr>
@@ -368,6 +375,9 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
     <td>
       The function attempts to open a file at the specified <strong>path</strong> with the given <strong>file_name</strong> (with extension), in write mode with the specified <strong>encoding</strong>. It then writes the provided <strong>text</strong> into the file.
       <br>Finally, it calls Wrapper <strong>get_object</strong> with the full path to the newly created file and returns the resulting dictionary.
+    </td>
+    <td>
+    	Under support. Consider using file.create(file, data, encoding="utf-8-sig")
     </td>
   </tr>
 
@@ -379,6 +389,19 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
       This function is designed to delete a directory at a given <strong>path</strong>.
       If <strong>recursive</strong> is set to <strong>True</strong>, the function will delete the directory and all its contents. If it’s <strong>False</strong>, the function will only delete the directory if it’s empty. Default is <strong>False</strong>.
     </td>
+    <td>
+    	Under support. Consider using directory.delete(path, recursive=False)
+    </td>
+  </tr>
+  
+  <tr>
+  <td>
+ 	find_duplicates(path)
+  </td>
+  <td>
+  some text
+  </td>
+  <td>New implementation</td>
   </tr>
 
   <tr>
@@ -387,6 +410,9 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
     </td>
     <td>
       This function performs a depth-first traversal of the directory tree at the given path (after expanding any user home directory symbols). It returns a list of dictionaries containing the attributes of each file and directory in the tree.
+    </td>
+    <td>
+    	Under support. Consider using file.enumerate_files(path)
     </td>
   </tr>
 
@@ -397,6 +423,9 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
     <td>
       This function takes a path as input (which can include wildcards), expands any user home directory symbols (~), and returns a list of dictionaries containing the attributes of each file or directory that matches the path.
     </td>
+    <td>
+    	Under support. Consider using file.get_files(path)
+    </td>
   </tr>
 
   <tr>
@@ -406,6 +435,29 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
     <td>
       This function takes a file or directory path as input and returns a dictionary containing various attributes of the file or directory. These attributes include the time of last modification, creation time, last access time, name, size, absolute path, parent directory, whether it's a directory or file or link, whether it exists, and its extension (if it's a file).
     </td>
+    <td>
+    	Supported
+    </td>
+  </tr>
+  
+  <tr>
+  <td>
+	get_size(file_path)
+  </td>
+  <td>
+  some text
+  </td>
+  <td>New implementation</td>
+  </tr>
+  
+  <tr>
+  <td>
+	has_extension(file_path)
+  </td>
+  <td>
+  some text
+  </td>
+  <td>New implementation</td>
   </tr>
 
   <tr>
@@ -420,6 +472,9 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
       <br><br><strong>Please note:</strong> This function does not check if the paths exist or are valid, it only combines them based on the rules described. It’s up to the caller to ensure that the paths are valid and exist if necessary.
       <br><br>Unlike the <strong>combine</strong> method, the <strong>join</strong> method does not attempt to root the returned path. (That is, if <strong>path2</strong> or <strong>path3</strong> or <strong>path4</strong> is an absolute path, the <strong>join</strong> method does not discard the previous paths as the <strong>combine</strong> method does).
     </td>
+    <td>
+    	Under support. Consider using directory.join(path1='', path2='', path3='', path4='', paths=[])
+    </td>
   </tr>
 
   <tr>
@@ -428,6 +483,9 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
     </td>
     <td>
       This function returns a list of all the directories in a given directory.
+    </td>
+    <td>
+    	Under support. Consider using directory.get_directories(path)
     </td>
   </tr>
 
@@ -438,6 +496,9 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
     <td>
       This function returns a list of all the files in a given directory.
     </td>
+    <td>
+    	Under support. Consider using file.get_files(path)
+    </td>
   </tr>
 
   <tr>
@@ -446,6 +507,9 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
     </td>
     <td>
       This function is used to create a zip archive of a given source directory and move it to a specified destination.
+    </td>
+    <td>
+    	Supported
     </td>
   </tr>
 
