@@ -82,7 +82,6 @@ import filesystem as fs
   <tr>
     <th>Method</th>
     <th>Description</th>
-    <!-- <th>Code Sample</th> -->
   </tr>
   
   <tr>
@@ -92,9 +91,6 @@ import filesystem as fs
     <td>
 	    Creates a string that represents the path to the current directory. (Where the application is running)
     </td>
-    <!-- <td>
-	    print(fs.CURRENT_LOCATION)
-    </td> -->
   </tr>
   
   <tr>
@@ -106,9 +102,6 @@ import filesystem as fs
 		<br>'/' for macOS and Linux 
 		<br>'\\' for Windows
     </td>
-    <!-- <td>
-	    print(fs.OS_SEPARATOR)
-    </td> -->
   </tr>
 
   <tr>
@@ -118,9 +111,6 @@ import filesystem as fs
     <td>
 	    Creates a string that represents the username of the user currently logged in to the system.
     </td>
-    <!-- <td>
-	    print(fs.USER_NAME)
-    </td> -->
   </tr>
   
   <tr>
@@ -130,9 +120,6 @@ import filesystem as fs
     <td>
 	    Creates a string that represents the path to the current user's home directory.
     </td>
-    <!-- <td>
-	    print(fs.user)
-    </td> -->
   </tr>
 
   <tr>
@@ -142,9 +129,6 @@ import filesystem as fs
     <td>
 	    Creates a string that represents the path to the current user's Desktop folder.
     </td>
-    <!-- <td>
-	    print(fs.desktop)
-    </td> -->
   </tr>
   
   <tr>
@@ -154,9 +138,6 @@ import filesystem as fs
     <td>
 	    Creates a string that represents the path to the current user's Documents folder.
     </td>
-    <!-- <td>
-	    print(fs.documents)
-    </td> -->
   </tr>
 
   <tr>
@@ -166,9 +147,6 @@ import filesystem as fs
     <td>
 	    Creates a string that represents the path to the current user's Downloads folder.
     </td>
-    <!-- <td>
-	    print(fs.downloads)
-    </td> -->
   </tr>
   
   <tr>
@@ -178,9 +156,6 @@ import filesystem as fs
     <td>
 	    Creates a string that represents the path to the current user's Music folder.
     </td>
-    <!-- <td>
-	    print(fs.music)
-    </td> -->
   </tr>
 
   <tr>
@@ -190,9 +165,6 @@ import filesystem as fs
     <td>
 	    Creates a string that represents the path to the current user's Pictures folder.
     </td>
-    <!-- <td>
-	    print(fs.pictures)
-    </td> -->
   </tr>
   
   <tr>
@@ -202,9 +174,6 @@ import filesystem as fs
     <td>
 	    Creates a string that represents the path to the current user's Public folder.
     </td>
-    <!-- <td>
-	    print(fs.public)
-    </td> -->
   </tr>
 
   <tr>
@@ -214,9 +183,6 @@ import filesystem as fs
     <td>
 	    Creates a string that represents the path to the current user's Videos folder.
     </td>
-    <!-- <td>
-	    print(fs.videos)
-    </td> -->
   </tr>
   
   <tr>
@@ -226,9 +192,6 @@ import filesystem as fs
     <td>
 	    Creates a string that represents the path to the current user's Templates folder in Linux environment.
     </td>
-    <!-- <td>
-	    print(fs.linux_templates)
-    </td> -->
   </tr>
 
   <tr>
@@ -238,9 +201,6 @@ import filesystem as fs
     <td>
 	    Creates a string that represents the path to the current user's Applications folder in macOS environment.
     </td>
-    <!-- <td>
-	    print(fs.mac_applications)
-    </td> -->
   </tr>
   
   <tr>
@@ -250,9 +210,6 @@ import filesystem as fs
     <td>
 	    Creates a string that represents the path to the current user's Roaming folder inside AppData in Windows environment.
     </td>
-    <!-- <td>
-	    print(fs.windows_applicationData)
-    </td> -->
   </tr>
 
   <tr>
@@ -262,9 +219,6 @@ import filesystem as fs
     <td>
 	    Creates a string that represents the path to the current user's Favorites folder in Windows environment.
     </td>
-    <!-- <td>
-	    print(fs.windows_favorites)
-    </td> -->
   </tr>
   
   <tr>
@@ -274,9 +228,6 @@ import filesystem as fs
     <td>
 	    Creates a string that represents the path to the current user's Local folder inside AppData in Windows environment.
     </td>
-    <!-- <td>
-	    print(fs.windows_localappdata)
-    </td> -->
   </tr>
 
   <tr>
@@ -286,9 +237,6 @@ import filesystem as fs
     <td>
 	    Creates a string that represents the path to the current user's Temp folder inside LocalAppData in Windows environment.
     </td>
-    <!-- <td>
-	    print(fs.windows_temp)
-    </td> -->
   </tr>
 
 </table>
@@ -395,13 +343,15 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
   </tr>
   
   <tr>
-  <td>
- 	find_duplicates(path)
-  </td>
-  <td>
-  some text
-  </td>
-  <td>New implementation</td>
+    <td>
+      find_duplicates(path)
+    </td>
+    <td>
+      Finds duplicate files in a given directory and its subdirectories. A file is considered a duplicate if it has the same checksum as another file.
+    </td>
+    <td>
+      New implementation
+    </td>
   </tr>
 
   <tr>
@@ -441,23 +391,29 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
   </tr>
   
   <tr>
-  <td>
-	get_size(file_path)
-  </td>
-  <td>
-  some text
-  </td>
-  <td>New implementation</td>
+    <td>
+      get_size(file_path)
+    </td>
+    <td>
+      Calculates the size of the file or directory at the specified path. If the path is a directory, 
+      it calculates the total size of all files in the directory. The size is returned in bytes, KB, 
+      MB, GB, or TB, depending on the size.
+    </td>
+    <td>
+      New implementation
+    </td>
   </tr>
   
   <tr>
-  <td>
-	has_extension(file_path)
-  </td>
-  <td>
-  some text
-  </td>
-  <td>New implementation</td>
+    <td>
+      has_extension(file_path)
+    </td>
+    <td>
+      Checks if the given file path has an extension. This function can return True or False based on the string, even if the file or directory does not exist.
+    </td>
+    <td>
+      New implementation
+    </td>
   </tr>
 
   <tr>
