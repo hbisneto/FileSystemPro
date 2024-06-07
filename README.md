@@ -468,7 +468,6 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
     	Supported
     </td>
   </tr>
-
 </table>
 
 ## Sample Codes
