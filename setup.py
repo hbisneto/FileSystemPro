@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name = 'filesystempro',
-    version = '0.1.3.0',
+    version = '1.0.3.0',
     url = 'https://github.com/hbisneto/FileSystemPro',
     license = 'MIT License',
     

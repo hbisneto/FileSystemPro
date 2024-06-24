@@ -129,7 +129,7 @@ For example, "/home/user/directory" is a valid absolute path. Please provide a v
 
 def create(path, create_subdirs=True):
     """
-    # directory.create(path, create_subdirs = True)
+    # directory.create(path, create_subdirs=True)
 
     ---
 
@@ -236,66 +236,34 @@ def exists(path):
     else:
         return False
 
-def get_parent_name(path):
+def get_directories(path):
     """
-    # directory.get_parent_name(path)
+    # directory.get_directories(path)
 
     ---
 
     ### Overview
-    Retrieves the parent directory name from the specified path.
+    Lists all directories in the specified path.
 
     ### Parameters:
-    path (str): The directory path from which to retrieve the parent directory name.
+    path (str): The directory path to list.
 
     ### Returns:
-    str: The name of the parent directory.
+    list: A list of directory names in the specified path.
 
     ### Examples:
-    - Retrieves the parent directory name when the path ends with a slash.
+    - Lists all directories in a specific path.
 
     ```python
-    get_parent_name("/path/to/directory/")
-    ```
-    - Retrieves the parent directory name when the path does not end with a slash.
-
-    ```python
-    get_parent_name("/path/to/directory")
+    get_directories("/path/to/directory")
     ```
     """
-    if path.endswith('/'):
-        path = path[:-1]
-        return os.path.basename(path)
-    return os.path.basename(os.path.dirname(path))
-
-def get_parent(path):
-    """
-    # directory.get_parent(path)
+    directory_list = []
+    for dir in os.listdir(path):
+        if os.path.isdir(join(path, dir)):
+            directory_list.append(dir)
     
-    ---
-
-    ### Overview
-    Retrieves the parent directory from the specified path.
-
-    ### Parameters:
-    path (str): The directory path from which to retrieve the parent directory.
-
-    ### Returns:
-    str: The parent directory of the specified path.
-
-    ### Examples:
-    - Retrieves the parent directory when the path ends with a slash.
-
-    ```python
-    get_parent("/path/to/directory/")
-    ```
-    - Retrieves the parent directory when the path does not end with a slash.
-
-    ```python
-    get_parent("/path/to/directory")
-    ```
-    """
-    return os.path.dirname(path)
+    return directory_list
 
 def get_name(path):
     """
@@ -331,6 +299,67 @@ def get_name(path):
         return f'{get_parent_name(path)}'
     else:
         return os.path.basename(os.path.dirname(path + '/'))
+
+def get_parent(path):
+    """
+    # directory.get_parent(path)
+    
+    ---
+
+    ### Overview
+    Retrieves the parent directory from the specified path.
+
+    ### Parameters:
+    path (str): The directory path from which to retrieve the parent directory.
+
+    ### Returns:
+    str: The parent directory of the specified path.
+
+    ### Examples:
+    - Retrieves the parent directory when the path ends with a slash.
+
+    ```python
+    get_parent("/path/to/directory/")
+    ```
+    - Retrieves the parent directory when the path does not end with a slash.
+
+    ```python
+    get_parent("/path/to/directory")
+    ```
+    """
+    return os.path.dirname(path)
+
+def get_parent_name(path):
+    """
+    # directory.get_parent_name(path)
+
+    ---
+
+    ### Overview
+    Retrieves the parent directory name from the specified path.
+
+    ### Parameters:
+    path (str): The directory path from which to retrieve the parent directory name.
+
+    ### Returns:
+    str: The name of the parent directory.
+
+    ### Examples:
+    - Retrieves the parent directory name when the path ends with a slash.
+
+    ```python
+    get_parent_name("/path/to/directory/")
+    ```
+    - Retrieves the parent directory name when the path does not end with a slash.
+
+    ```python
+    get_parent_name("/path/to/directory")
+    ```
+    """
+    if path.endswith('/'):
+        path = path[:-1]
+        return os.path.basename(path)
+    return os.path.basename(os.path.dirname(path))
 
 def join(path1='', path2='', path3='', path4='', paths=[]):
     """
@@ -384,36 +413,64 @@ def join(path1='', path2='', path3='', path4='', paths=[]):
                 item = item + os.sep
             key_dir += item
     return key_dir[:-1]
-    
-def get_directories(path):
+
+def move(source, destination, move_root=True):
     """
-    # directory.get_directories(path)
+    # directory.move(source, destination, move_root=True)
 
     ---
 
     ### Overview
-    Lists all directories in the specified path.
+    The move function is designed to move files or directories from a source location to a destination.
+    It provides flexibility by allowing you to specify whether intermediate-level subdirectories should be created during the move operation.
 
     ### Parameters:
-    path (str): The directory path to list.
+    source (str): The path to the file or directory you want to move.
+    destination (str): The target location where the source should be moved.
+    move_root (bool, optional): A flag indicating whether to move the entire directory (including its root)
+    or just its contents. Defaults to True.
 
     ### Returns:
-    list: A list of directory names in the specified path.
+    None
+
+    ### Raises:
+    - FileNotFoundError: If the source path does not exist.
+    - PermissionError: If permission is denied during the move operation.
 
     ### Examples:
-    - Lists all directories in a specific path.
+    - Move the entire directory (including intermediate subdirectories):
 
     ```python
-    get_directories("/path/to/directory")
+    move("/path/to/source", "/path/to/destination")
+    ```
+    - Move only the leaf directory (raise an error if intermediate directories don't exist):
+
+    ```python
+    move("/path/to/source", "/path/to/destination", move_root=False)
     ```
     """
-    directory_list = []
-    for dir in os.listdir(path):
-        if os.path.isdir(join(path, dir)):
-            directory_list.append(dir)
-    
-    return directory_list
-
+    if exists(destination):
+        if move_root:
+            shutil.move(source, destination)
+        else:
+            entries = os.listdir(source)
+            for root, dirs, files in os.walk(source):
+                for d in dirs:
+                    shutil.move(os.path.join(root, d), os.path.join(destination, d))
+                for f in files:
+                    shutil.move(os.path.join(root, f), os.path.join(destination, f))
+    else:
+        if move_root:
+            create(destination)
+            shutil.move(source, destination)
+        else:
+            entries = os.listdir(source)
+            for root, dirs, files in os.walk(source):
+                for d in dirs:
+                    shutil.move(os.path.join(root, d), os.path.join(destination, d))
+                for f in files:
+                    shutil.move(os.path.join(root, f), os.path.join(destination, f))
+   
 def rename(old_path, new_path):
     """
     # directory.rename(old_path, new_path)
@@ -441,4 +498,3 @@ def rename(old_path, new_path):
         os.rename(old_path, new_path)
         return True
     return False
-    

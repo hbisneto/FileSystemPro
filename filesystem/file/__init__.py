@@ -58,6 +58,7 @@ from filesystem import file as fsfile
 import codecs
 import hashlib
 import os
+import shutil
 from filesystem import directory as dir
 from filesystem import wrapper as wra
 
@@ -177,7 +178,8 @@ def create_binary_file(filename, data):
     ---
     
     ### Overview
-    Creates a binary file at the specified filename and writes data into it. If the data is not of bytes type, it is first encoded to bytes.
+    Creates a binary file at the specified filename and writes data into it. If the data is not of bytes type,
+    it is first encoded to bytes.
 
     ### Parameters:
     - filename (str): The filename of the binary file to create.
@@ -340,9 +342,69 @@ def get_files(path):
             file_list.append(file)
     return file_list
 
-def rename(directory, old_name, new_name):
+def move(source, destination, new_filename=None, replace_existing=False):
     """
-    # file.rename(directory, old_name, new_name)
+    # file.move(source, destination, new_filename=None, replace_existing=False)
+
+    ---
+    
+    ### Overview
+    The move function moves a file from a source location to a destination location. 
+    If the destination file already exists, 
+    you can choose whether to replace it or keep the existing file. 
+
+    ### Parameters
+    - source (str): The path to the source file.
+    - destination (str): The path to the destination directory.
+    - new_filename (Optional[str]): The new filename to use in the destination directory. If not provided, the original filename from the source path is used.
+    - replace_existing (Optional[bool]): If `True`, replace the existing file in the destination. If `False`, raise an error if the destination file already exists. Defaults to False.
+
+    ### Returns
+    None
+
+    ### Raises
+    - FileNotFoundError: If the source file does not exist.
+    - PermissionError: If permission is denied during the move operation.
+    - UnicodeEncodeError: If the data cannot be encoded with the specified encoding.
+
+    ### Examples
+    - Move a file:
+
+    ```python
+    move("/path/to/source/file.txt", "/path/to/destination/")
+    ```
+
+    - Move a file with a different filename in the destination:
+
+    ```python
+    move("/path/to/source/file.txt", "/path/to/destination/", new_filename="new_file.txt")
+    ```
+
+    - Replace an existing file in the destination:
+
+    ```python
+    move("/path/to/source/file.txt", "/path/to/destination/", replace_existing=True)
+    ```
+    """
+    if new_filename:
+        destination_file = os.path.join(destination, new_filename)
+    else:
+        destination_file = os.path.join(destination, os.path.basename(source))
+
+    try:
+        if exists(destination_file):
+            if replace_existing:
+                shutil.move(source, destination_file)
+            else:
+                raise FileExistsError(f"[FileSystemPro.move.FileExistsError]: Destination file '{destination_file}' already exists. Use 'replace_existing=True' to replace it.")
+        else:
+            shutil.move(source, destination_file)
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f"[FileSystemPro.move.FileNotFoundError]: {e}")
+
+def rename(old_name, new_name):
+    """
+    # file.rename(old_name, new_name)
 
     ---
     
@@ -350,7 +412,6 @@ def rename(directory, old_name, new_name):
     Renames a file in a given directory from `old_name` to `new_name`.
 
     ### Parameters:
-    directory (str): The directory path where the file is located.
     old_name (str): The current name of the file.
     new_name (str): The new name for the file.
 
@@ -365,14 +426,11 @@ def rename(directory, old_name, new_name):
     - Renames a file in a specific directory.
 
     ```python
-    rename("/path/to/directory", "old_name.txt", "new_name.txt")
+    rename("/path/to/file/old_name.txt", "/path/to/file/new_name.txt")
     ```
     """
-    old_file_path = dir.join(directory, old_name)
-    new_file_path = dir.join(directory, new_name)
-
-    if exists(old_file_path):
-        os.rename(old_file_path, new_file_path)
+    if exists(old_name):
+        os.rename(old_name, new_name)
         return True
     return False
 

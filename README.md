@@ -1,6 +1,6 @@
 # FileSystem Pro 
 
-FileSystem Pro is designed to identify the operating system (OS) on which it’s running and define the paths to various user directories based on the OS.
+FileSystem is a powerful toolkit designed to handle file and directory operations with ease and efficiency across various operating systems.
 
 ## Getting Started
 
@@ -272,6 +272,491 @@ C:\Users\YOU\Desktop
 
 ---
 
+# Console
+
+```py
+from filesystem import console as fsconsole
+```
+
+Console is a robust library designed to enable ANSI escape character sequences, which are used for generating colored terminal text and cursor positioning.
+This library is a key addition to FileSystemPro as a third-party library, enhancing the toolkit for developers who require consistent terminal styling across different operating systems.
+
+## Features
+
+- **Universal Compatibility:** Console ensures that applications or libraries utilizing ANSI sequences for colored output on Unix or Macs can now operate identically on Windows systems.
+- **Simplified Integration:** With no dependencies other than the standard library, integrating Console into your projects is straightforward. It’s tested across multiple Python versions, ensuring reliability.
+- **Enhanced Terminal Experience:** By converting ANSI sequences into appropriate win32 calls, Console allows Windows terminals to emulate the behavior of Unix terminals, providing a consistent user experience.
+- **Effortless Transition:** For developers transitioning to FileSystemPro, incorporating Console into your workflow is effortless, enabling you to maintain the visual aspects of your terminal applications without platform constraints.
+
+<table>
+  <tr>
+    <th>Constants</th>
+    <th>Colors</th>
+  </tr>
+  
+  <tr>
+    <td>foreground</td>
+    <td>
+      BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE, RESET.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>background</td>
+    <td>
+      BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE, RESET.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>style</td>
+    <td>
+     DIM, NORMAL, BRIGHT, RESET_ALL
+  </td>
+  </tr>
+  
+</table>
+
+## Sample Codes
+
+> [!NOTE]
+> Please note that **GitHub (and PYPI) does not support colored text** in README files. This is due to the limitations of the markdown language used in GitHub (and PYPI) READMEs, which does not have built-in support for text color changes.
+
+<details>
+<summary>Console: Printing a red foreground text message</summary>
+
+The following example shows how to print some red foreground texts using **Console**
+
+```py
+from filesystem import console as fsconsole
+
+# This will print a spaced text to your print message
+print(fsconsole.foreground.RED, "This is a warn message")
+
+# This will print a no space text to your print message
+print(fsconsole.foreground.RED + "This is another warn message")
+
+# You can use f-string format to assign the color to your print
+print(f'{fsconsole.foreground.RED}This is a new warn message{fsconsole.foreground.RESET}')
+
+# This text will be printed without color (default)
+print("This is a normal text")
+```
+
+Output:
+
+<pre><code><span style="color: red;"> This is a warn message
+This is another warn message
+This is a new warn message</span>
+<span">This is a normal text</span></code></pre>
+
+</details>
+
+
+<details>
+<summary>Console: Printing a blue background text message</summary>
+
+The following example shows how to print some blue background texts using **Console**
+
+```py
+from filesystem import console as fsconsole
+
+# This will print a spaced text to your print message
+print(fsconsole.background.BLUE, 'This is a blue background message')
+
+# This will print a no space text to your print message
+print(fsconsole.background.BLUE + 'This is another blue background message')
+
+# You can use f-string format to assign the color to your print
+print(f'{fsconsole.background.BLUE}This is a new blue background message{fsconsole.background.RESET}')
+
+# This text will be printed without color (default)
+print('This is a normal text')
+```
+
+Output:
+
+<pre><code><span style="background-color: #ADD8E6;"> This is a blue background message
+This is another blue background warn message
+This is a new blue background message</span>
+<span">This is a normal text</span></code></pre>
+
+</details>
+
+<details>
+<summary>Console: Different foregrounds, backgrounds and styles</summary>
+
+The following example shows how to print some texts with different backgrounds, foregrounds and styles using **Console**
+
+```py
+# Prints a red foreground text
+print(f'{fsconsole.foreground.RED}Some red text')
+# Prints a red foreground text with a green background
+print(f'{fsconsole.background.GREEN}And with a green background{fsconsole.style.RESET_ALL}')
+# Prints a dim normal text with no background
+print(f'{fsconsole.style.DIM}And in dim text{fsconsole.style.RESET_ALL}')
+# Prints a normal text
+print('Back to normal color')
+```
+
+Output:
+
+<pre><code><span style="color: red;">Some red text</span>
+<span style="background-color: #90EE90; color: red">And with a green background</span>
+<span style="color: #A9A9A9">And in dim text</span>
+<span>Back to normal color</span>
+</code></pre>
+
+</details>
+
+Remember, for the color changes to work, your Terminal must support ANSI escape sequences, which are used to set the color. Not all Terminals do, so if you’re not seeing the colors as expected, that could be why. 
+
+---
+
+# Directory
+
+```py
+from filesystem import directory as dir
+```
+
+The Directory module is a component of the FileSystemPro library that provides a collection of functions
+for handling directory-related operations. It simplifies tasks such as path manipulation, 
+directory creation and deletion, and file retrieval within directories.
+
+## Features
+- **Path Combination:** Dynamically combines multiple paths into a single path string.
+- **Directory Creation:** Creates new directories, with an option to create necessary subdirectories.
+- **Directory Deletion:** Deletes directories, with an option for recursive deletion.
+- **Directory Existence Check:** Checks whether a directory exists at a specified path.
+- **File Retrieval:** Retrieves a list of files within a directory using glob patterns.
+- **Parent Directory Information:** Retrieves the name or path of a file's parent directory.
+- **Directory Listing:** Lists all subdirectories within a given directory.
+- **Directory Renaming:** Renames a directory if it exists.
+
+<table>
+  <tr>
+  	<th>Method</th>
+  	<th>Description</th>
+  </tr>
+  
+  <tr>
+    <td>directory.combine(*args, paths=[])</td>
+    <td>
+      Combines a list of paths or arguments into a single path. If the first argument or the first element in the paths list is not an absolute path, it raises a ValueError.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>directory.create(path, create_subdirs = True)</td>
+    <td>
+      Creates a directory at the specified path. If `create_subdirs` is True, all intermediate-level 
+    directories needed to contain the leaf directory will be created. After the directory is created, 
+    it returns the details of the created directory.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>directory.delete(path, recursive=False)</td>
+    <td>
+     Deletes a directory at the specified path. If `recursive` is True, the directory and all its contents will be removed.
+  </td>
+  
+  <tr>
+    <td>directory.exists(path)</td>
+    <td>
+     Checks if a directory exists at the specified path.
+  </td>
+  
+  <tr>
+    <td>directory.get_parent_name(path)</td>
+    <td>
+     Retrieves the parent directory name from the specified path.
+  </td>
+  
+  <tr>
+    <td>directory.get_parent(path)</td>
+    <td>
+     Retrieves the parent directory from the specified path.
+  </td>
+  
+  <tr>
+    <td>directory.get_name(path)</td>
+    <td>
+     Retrieves the name of the directory of the specified path. 
+    If the path has an extension, it is assumed to be a file, and the parent directory name is returned. 
+    If the path does not have an extension, it is assumed to be a directory, 
+    and the directory name is returned.
+  </td>
+  
+  <tr>
+    <td>directory.join(path1='', path2='', path3='', path4='', paths=[])</td>
+    <td>
+     Joins multiple directory paths into a single path. The function ensures that each directory path ends with a separator before joining. If a directory path does not end with a separator, one is added.
+  </td>
+  
+  <tr>
+    <td>directory.get_directories(path)</td>
+    <td>
+     Lists all directories in the specified path.
+  </td>
+  
+  <tr>
+    <td>directory.rename(old_path, new_path)</td>
+    <td>
+     Renames a directory from the old directory path to the new directory path. If the old directory path does not exist or is not a directory, the function returns False.
+  </td>
+  </tr>
+</table>
+
+## Sample Codes
+
+<details>
+<summary>Directory: Check if exists</summary>
+
+The following example check whether a directory exists within the file system and print the result using **Directory**
+
+```py
+import filesystem as fs
+from filesystem import directory as dir
+
+documents_exists = dir.exists(fs.documents)
+
+print(documents_exists)
+```
+
+Output:
+
+```
+True
+```
+</details>
+
+<details>
+<summary>Directory: Listing directories inside a folder</summary>
+
+The following example shows how to lists all directories in the specified path using **Directory**
+
+```py
+import filesystem as fs
+from filesystem import directory as dir
+
+folder_list = dir.get_directories(fs.documents)
+
+print(folder_list)
+```
+
+Output:
+
+```
+['Work', 'School', 'PicsBackups', 'Office Documents']
+```
+</details>
+
+<details>
+<summary>Directory: Renaming a folder</summary>
+
+The following example shows how rename a folder using **Directory**
+
+```py
+import filesystem as fs
+from filesystem import directory as dir
+
+new_name = dir.rename(f'{fs.documents}/MyFolder', f'{fs.documents}/NewFolder')
+
+print(new_name)
+```
+
+Output:
+
+```
+True
+```
+</details>
+
+---
+
+# File
+
+```py
+from filesystem import file as fsfile
+```
+
+The File module is a comprehensive utility toolset that forms part of the FileSystemPro library. 
+It provides a suite of functions designed to handle various file operations such as integrity checks,
+file creation, deletion, enumeration, and file splitting and reassembling.
+
+## Features
+- **Checksum Calculation:** Utilizes SHA-256 hashing to calculate file checksums for integrity verification.
+- **Integrity Check:** Compares checksums of two files to verify their integrity.
+- **File Creation:** Supports creating both text and binary files with specified data.
+- **File Deletion:** Safely deletes files by checking for their existence before removal.
+- **File Enumeration:** Enumerates all files in a given directory, providing detailed file information.
+- **File Existence Check:** Determines if a file exists at a given path.
+- **File Listing:** Lists all files in a specified directory.
+- **File Renaming:** Renames files within a directory after checking for their existence.
+- **File Reassembling:** Reassembles split files back into a single file.
+- **File Splitting:** Splits a file into smaller parts based on a specified chunk size.
+
+<table>
+  <tr>
+  	<th>Method</th>
+  	<th>Description</th>
+  </tr>
+  
+  <tr>
+    <td>file.calculate_checksum(file)</td>
+    <td>
+      Calculates the SHA-256 checksum of a file. This function reads the file in binary mode and updates the hash in chunks to efficiently handle large files.
+    </td>
+  </tr>
+
+  <tr>
+    <td>file.check_integrity(file, reference_file)</td>
+    <td>
+      Compares the SHA-256 checksums of two files to verify their integrity. This function is useful for ensuring that a file has not been altered or corrupted by comparing it to a reference file.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>file.create(file, data, encoding="utf-8-sig")</td>
+    <td>
+      Creates a file at the specified path and writes data into it. If the file already exists, 
+    its contents are overwritten. The function then returns the details of the created file.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>file.create_binary_file(filename, data)</td>
+    <td>
+      Creates a binary file at the specified filename and writes data into it. If the data is not of bytes type,
+    it is first encoded to bytes.
+    </td>
+  </tr>
+
+  <tr>
+    <td>file.delete(file)</td>
+    <td>
+      Deletes a file at the specified path if it exists.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>file.enumerate_files(file)</td>
+    <td>
+      Enumerates all files in a given directory and its subdirectories. 
+    For each file and directory, it retrieves various attributes using the `wra.get_object` function.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>file.exists(file)</td>
+    <td>
+      Checks if a file exists at the specified path.
+    </td>
+  </tr>
+
+  <tr>
+    <td>file.get_files(path)</td>
+    <td>
+      Retrieves all files in a given directory.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>file.move(source, destination, new_filename=None, replace_existing=False)</td>
+    <td>
+      The move function moves a file from a source location to a destination location. 
+    If the destination file already exists, 
+    you can choose whether to replace it or keep the existing file. 
+    </td>
+  </tr>
+  
+  <tr>
+    <td>file.rename(old_name, new_name)</td>
+    <td>
+      Renames a file in a given directory from `old_name` to `new_name`.
+    </td>
+  </tr>
+
+  <tr>
+    <td>file.reassemble_file(large_file, new_file)</td>
+    <td>
+      Reassembles a file that was previously split into parts. 
+    The function checks for the existence of the split parts and reads each part, writing it to a new file. 
+    After all parts have been written to the new file, the function deletes the parts.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>file.split_file(file, chunk_size = 1048576)</td>
+    <td>
+      Splits a large file into smaller chunks. The function reads the file in chunks of a specified size and writes each chunk to a new file. The new files are named by appending `.fsp` and an index number to the original filename.
+    </td>
+  </tr>  
+  
+  
+</table>
+
+## Sample Codes
+
+<details>
+<summary>File: Check Integrity</summary>
+
+The following example check the integrity of a file against a reference file and print the result using **File**
+
+```py
+from filesystem import file as fsfile
+
+integrity = fsfile.check_integrity("/path/to/file", "/path/to/reference_file")
+print("Files are identical:", integrity)
+```
+
+Output:
+
+```
+Files are identical: True
+```
+</details>
+
+<details>
+<summary>File: Split File</summary>
+
+The following example shows how to split a large file into 500 KB chunks using **File**
+
+```py
+from filesystem import file as fsfile
+
+is_split = fsfile.split_file("large_file.iso", 512000)
+print(is_split)
+```
+
+Output:
+
+```
+True
+```
+</details>
+
+<details>
+<summary>File: Reassemble File</summary>
+
+The following example shows how to reassemble a file that was previously split into parts using **File**
+
+```py
+from filesystem import file as fsfile
+
+fsfile.reassemble_file("large_file.iso", "new_file.iso")
+```
+
+Output:
+
+```
+None output
+```
+</details>
+
+---
+
 # Wrapper
 
 ```py
@@ -473,88 +958,85 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
 ## Sample Codes
 
 <details>
-<summary>Wrapper: Creating a Folder</summary>
+<summary>Wrapper: Make a zip file</summary>
 
-The following example shows how to create a new directory named `database` inside the `Documents` directory using **Wrapper**
+Creates a zip archive of the specified source directory or file and moves it to the specified destination using **Wrapper**
+
+- Creates a zip archive of a **directory** and moves it to a destination.
+
+```python
+from filesystem import wrapper as wra
+
+wra.make_zip("/path/to/directory", "/path/to/directory.zip")
+```
+
+- Creates a zip archive of a **file** and moves it to a destination.
+
+```python
+from filesystem import wrapper as wra
+
+wra.make_zip("/path/to/file.txt", "/path/to/file.zip")
+```
+</details>
+
+<details>
+<summary>Wrapper: Has Extension</summary>
+
+Checks if the given file path has an extension
+
+```python
+from filesystem import wrapper as wra
+
+bool_extension = wra.has_extension("/path/to/file.txt")
+print(bool_extension)
+```
+
+Output
+
+```sh
+True
+```
+
+This will return **True** because the file has an extension (.txt).
+
+---
+
+Checks if the given file path has an extension
+
+```python
+from filesystem import wrapper as wra
+
+bool_extension = wra.has_extension("/path/to/file")
+print(bool_extension)
+```
+
+Output
+
+```sh
+False
+```
+
+This will return **False** because the file does not have an extension.
+</details>
+
+<details>
+<summary>Wrapper: Get size of file or directory</summary>
+
+Calculates the size of the file or directory at the specified path.
 
 ```py
 import filesystem as fs
 from filesystem import wrapper as wra
 
-bd_folder = "database"
-try:
-   wra.create_directory(f'{fs.documents}/{bd_folder}')
-except:
-   print("Could`t create the folder")
-```
-</details>
+documents_size = wra.get_size(fs.documents)
 
-<details>
-<summary>Wrapper: Get Files</summary>
-
-1. **Get Files:**
-
-The following example shows how to get files information from **Downloads** folder.
-
-```py
-import filesystem as fs
-from filesystem import wrapper as wra
-
-pointers = wra.get_files(f'{fs.downloads}/*')
-print(pointers)
+print(documents_size)
 ```
 
 Output:
 
 ```sh
-[{'modified': 1695535334.1411633, 'created': 1697604128.7045012, 'access': 1697604129.781534, 'name': 'CLI.py', 'size': 3345, 'abspath': '/Users/YOU/Downloads/CLI.py', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'extension': 'py'}, {'modified': 1697605101.6574, 'created': 1697683292.4821024, 'access': 1697683294.46923, 'name': 'Python_Logo.png', 'size': 747809, 'abspath': '/Users/YOU/Downloads/Python_Logo.png', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'extension': 'png'}, {'modified': 1697681746.0940206, 'created': 1697682027.268841, 'access': 1697682292.5433743, 'name': 'Sample_File.py', 'size': 1031, 'abspath': '/Users/YOU/Downloads/Sample_File.py', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'extension': 'py'}]
-```
-
-#
-
-2. **Filter Files by Extension:**
-
-The following example is using a list comprehension to filter out files with extension `.py` from the pointers list:
-
-```py
-py_files = [x for x in pointers if x["extension"] == "py"]
-print(py_files)
-```
-
-```sh
-[{'modified': 1695535334.1411633, 'created': 1697604128.7045012, 'access': 1697604129.781534, 'name': 'CLI.py', 'size': 3345, 'abspath': '/Users/YOU/Downloads/CLI.py', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'extension': 'py'}, {'modified': 1697681746.0940206, 'created': 1697682027.268841, 'access': 1697681829.0075543, 'name': 'Sample_File.py', 'size': 1031, 'abspath': '/Users/YOU/Downloads/Sample_File.py', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'extension': 'py'}]
-```
-
-#
-
-3. **Get File Names Inside the Filter:**
-The following code is using a list comprehension that prints the names of all filtered files in the `py_files` list:
-
-```py
-print([x["name"] for x in py_files])
-```
-
-Output:
-
-```sh
-['CLI.py', 'Sample_File.py']
-```
-</details>
-
-<details>
-<summary>Wrapper: Enumerate files (walk recursively) from a directory</summary>
-
-The following code is using a list comprehension to generate a list of all files in the **Downloads** directory:
-
-```py
-tree = [x for x in wra.enumerate_files(fs.downloads)]
-print(tree)
-```
-
-Output:
-
-```sh
-[{'modified': 1697683292.4821026, 'created': 1697683292.4821026, 'access': 1697683292.484029, 'name': 'Downloads', 'size': 224, 'abspath': '/Users/YOU/Downloads', 'dirname': '/Users/YOU', 'is_dir': True, 'is_file': False, 'is_link': False, 'exists': True, 'extension': ''}, {'modified': 1697683288.8639557, 'created': 1697683288.8639557, 'access': 1697602943.1846778, 'name': '.DS_Store', 'size': 6148, 'abspath': '/Users/YOU/Downloads/.DS_Store', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'extension': 'DS_Store'}, {'modified': 1690685751.342114, 'created': 1690685751.4194765, 'access': 1690685751.342114, 'name': '.localized', 'size': 0, 'abspath': '/Users/YOU/Downloads/.localized', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'extension': 'localized'}, {'modified': 1695535334.1411633, 'created': 1697604128.7045012, 'access': 1697604129.781534, 'name': 'CLI.py', 'size': 3345, 'abspath': '/Users/YOU/Downloads/CLI.py', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'extension': 'py'}, {'modified': 1697605101.6574, 'created': 1697683292.4821024, 'access': 1697683294.46923, 'name': 'Python_Logo.png', 'size': 747809, 'abspath': '/Users/YOU/Downloads/Python_Logo.png', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'extension': 'png'}, {'modified': 1697681746.0940206, 'created': 1697682027.268841, 'access': 1697682292.5433743, 'name': 'Sample_File.py', 'size': 1031, 'abspath': '/Users/YOU/Downloads/Sample_File.py', 'dirname': '/Users/YOU/Downloads', 'is_dir': False, 'is_file': True, 'is_link': False, 'exists': True, 'extension': 'py'}]
+1.6 GB
 ```
 </details>
 
@@ -636,147 +1118,6 @@ while True:
 ```
 
 </details>
-
----
-
-# Console
-
-```
-from filesystem import console as fsconsole
-```
-
-Console is a robust library designed to enable ANSI escape character sequences, which are used for generating colored terminal text and cursor positioning.
-This library is a key addition to FileSystemPro as a third-party library, enhancing the toolkit for developers who require consistent terminal styling across different operating systems.
-
-## Features
-
-- **Universal Compatibility:** Console ensures that applications or libraries utilizing ANSI sequences for colored output on Unix or Macs can now operate identically on Windows systems.
-- **Simplified Integration:** With no dependencies other than the standard library, integrating Console into your projects is straightforward. It’s tested across multiple Python versions, ensuring reliability.
-- **Enhanced Terminal Experience:** By converting ANSI sequences into appropriate win32 calls, Console allows Windows terminals to emulate the behavior of Unix terminals, providing a consistent user experience.
-- **Effortless Transition:** For developers transitioning to FileSystemPro, incorporating Console into your workflow is effortless, enabling you to maintain the visual aspects of your terminal applications without platform constraints.
-
-<table>
-  <tr>
-    <th>Constants</th>
-    <th>Colors</th>
-  </tr>
-  
-  <tr>
-    <td>foreground</td>
-    <td>
-      BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE, RESET.
-    </td>
-  </tr>
-  
-  <tr>
-    <td>background</td>
-    <td>
-      BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE, RESET.
-    </td>
-  </tr>
-  
-  <tr>
-    <td>style</td>
-    <td>
-     DIM, NORMAL, BRIGHT, RESET_ALL
-  </td>
-  </tr>
-  
-</table>
-
-## Sample Codes
-
-> [!NOTE]
-> Please note that **GitHub (and PYPI) does not support colored text** in README files. This is due to the limitations of the markdown language used in GitHub (and PYPI) READMEs, which does not have built-in support for text color changes.
-
-<details>
-<summary>Console: Printing a red foreground text message</summary>
-
-The following example shows how to print some red foreground texts using **Console**
-
-```py
-from filesystem import console as fsconsole
-
-# This will print a spaced text to your print message
-print(fsconsole.foreground.RED, "This is a warn message")
-
-# This will print a no space text to your print message
-print(fsconsole.foreground.RED + "This is another warn message")
-
-# You can use f-string format to assign the color to your print
-print(f'{fsconsole.foreground.RED}This is a new warn message{fsconsole.foreground.RESET}')
-
-# This text will be printed without color (default)
-print("This is a normal text")
-```
-
-Output:
-
-<pre><code><span style="color: red;"> This is a warn message
-This is another warn message
-This is a new warn message</span>
-<span">This is a normal text</span></code></pre>
-
-</details>
-
-
-<details>
-<summary>Console: Printing a blue background text message</summary>
-
-The following example shows how to print some blue background texts using **Console**
-
-```py
-from filesystem import console as fsconsole
-
-# This will print a spaced text to your print message
-print(fsconsole.background.BLUE, 'This is a blue background message')
-
-# This will print a no space text to your print message
-print(fsconsole.background.BLUE + 'This is another blue background message')
-
-# You can use f-string format to assign the color to your print
-print(f'{fsconsole.background.BLUE}This is a new blue background message{fsconsole.background.RESET}')
-
-# This text will be printed without color (default)
-print('This is a normal text')
-```
-
-Output:
-
-<pre><code><span style="background-color: #ADD8E6;"> This is a blue background message
-This is another blue background warn message
-This is a new blue background message</span>
-<span">This is a normal text</span></code></pre>
-
-</details>
-
-<details>
-<summary>Console: Different foregrounds, backgrounds and styles</summary>
-
-The following example shows how to print some texts with different backgrounds, foregrounds and styles using **Console**
-
-```py
-# Prints a red foreground text
-print(f'{fsconsole.foreground.RED}Some red text')
-# Prints a red foreground text with a green background
-print(f'{fsconsole.background.GREEN}And with a green background{fsconsole.style.RESET_ALL}')
-# Prints a dim normal text with no background
-print(f'{fsconsole.style.DIM}And in dim text{fsconsole.style.RESET_ALL}')
-# Prints a normal text
-print('Back to normal color')
-```
-
-Output:
-
-<pre><code><span style="color: red;">Some red text</span>
-<span style="background-color: #90EE90; color: red">And with a green background</span>
-<span style="color: #A9A9A9">And in dim text</span>
-<span>Back to normal color</span>
-</code></pre>
-
-</details>
-
-Remember, for the color changes to work, your Terminal must support ANSI escape sequences, which are used to set the color. Not all Terminals do, so if you’re not seeing the colors as expected, that could be why. 
 
 ---
 
