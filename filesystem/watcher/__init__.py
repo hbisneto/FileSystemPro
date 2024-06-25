@@ -1,4 +1,46 @@
-from filesystem import wrapper as wr
+"""
+# Watcher
+
+---
+
+## Overview
+The Watcher module is a part of the FileSystemPro library that provides file monitoring capabilities.
+It is designed to track changes within a specified directory, 
+alerting users to any modifications, creations, or deletions of files.
+
+## Features
+- `Real-Time Monitoring:` Continuously monitors a directory for any file changes.
+- `Change Detection:` Identifies updated, created, or removed files since the last check.
+- `State Preservation:` Maintains a record of the directory's state for comparison.
+
+## How It Works
+The `Watcher` class within the module is initialized with a root directory to monitor. 
+It uses the `get_state` method to create a snapshot of the current state of the directory, 
+mapping absolute file paths to their metadata.
+
+### State Tracking
+Upon initialization, `Watcher` stores the state of the directory. 
+The `diff` method compares the current state with the saved state to detect any changes. 
+It categorizes changes into three types:
+- `Updated:` Files that have been modified since the last state.
+- `Created:` New files that have been added to the directory.
+- `Removed:` Files that have been deleted from the directory.
+
+### Results
+The `diff` method returns a list of changes,
+with each entry containing the file's path and the type of change. 
+This allows for easy integration with other systems that may need to respond to file system events.
+
+## Usage
+To use the `Watcher` module, instantiate the `Watcher` class with the directory you wish to monitor:
+
+```python
+from filesystem import watcher as wat
+watcher = wat('/path/to/directory')
+```
+"""
+
+from filesystem import file as fsfile
 
 class Watcher(object):
     """
@@ -15,7 +57,7 @@ class Watcher(object):
         """
         This method returns a dictionary where the keys are the absolute paths of all files in the given path and the values are file metadata obtained from the core.enumerate_files(path) function
         """
-        files = wr.enumerate_files(path)
+        files = fsfile.enumerate_files(path)
         named_files = dict([(x["abspath"], x,) for x in files])
         return named_files
 

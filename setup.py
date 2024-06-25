@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name = 'filesystempro',
-    version = '1.0.2.0',
+    version = '1.0.3.0',
     url = 'https://github.com/hbisneto/FileSystemPro',
     license = 'MIT License',
     
@@ -28,7 +28,7 @@ setup(
         'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.12',
     ],
-    description = u'FileSystem Pro is designed to identify the operating system (OS) on which it`s running and define the paths to various user directories based on the OS.',
+    description = u'FileSystem is a powerful toolkit designed to handle file and directory operations with ease and efficiency across various operating systems.',
     install_requires = [
         'requests',
     ],

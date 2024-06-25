@@ -1,3 +1,38 @@
+"""
+# FileSystem
+
+---
+
+FileSystem is a library for managing file paths in a user's system, 
+depending on the operating system (OS) they are using.
+It uses Python's built-in libraries like `os`, `sys`, and `getpass` to interact with the system and
+manage file paths.
+
+Here's a brief description of what the code does:
+
+1. `User Identification:` It identifies the current user using the `getpass.getuser()`
+function and stores the username with the first letter capitalized.
+
+2. `Platform Identification:` It identifies the platform (OS) using `sys.platform`. 
+Depending on whether the platform is Linux, macOS, or Windows, it sets up different file paths.
+
+3. `File Paths:` For each platform, it sets up file paths for common user directories like Desktop,
+Documents, Downloads, Music, Pictures, Public, and Videos.
+The paths are formed using the user's home directory path and the standard directory names for each platform.
+
+   - For `Linux`, it uses the `/home/{username}` directory as the base.
+   - For `macOS`, it uses the `/Users/{username}` directory as the base.
+   - For `Windows`, it uses the `USERPROFILE` environment variable to get the base directory.
+
+4. `Special Directories:` Apart from the common directories, it also sets up paths for some
+special directories based on the platform. For example, `Templates` in Linux, `Applications` and
+`Movies` in macOS, and several `AppData` related paths in Windows.
+
+This library can be useful for scripts that need to work with user files and need to be compatible across
+different operating systems. 
+It provides an easy way to get the correct file paths regardless of the platform.
+"""
+
 import getpass
 import os
 from sys import platform as PLATFORM
@@ -58,7 +93,7 @@ if PLATFORM == "linux" or PLATFORM == "linux2":
     Creates a string that represents the path to the current user's Videos folder.
     """
 elif PLATFORM == "darwin":
-    PLATFORM_NAME = "Mac"
+    PLATFORM_NAME = "macOS"
     user = f'/Users/{os.environ["USER"]}'
     """
     Creates a string that represents the path to the current user's home directory.
