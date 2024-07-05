@@ -45,10 +45,13 @@ from filesystem import wrapper as wra
 import codecs
 import datetime
 import glob
+import io
 import os
 import shutil
 from filesystem import file as fsfile
 from filesystem import directory as dir
+import zipfile
+
 
 ### wrapper.combine() kept to cover version support. Remove on (MAJOR UPDATE ONLY)
 def combine(*args, paths=[]):
@@ -768,3 +771,20 @@ def make_zip(source, destination):
     archive_to = os.path.basename(source.strip(os.sep))
     shutil.make_archive(name, format, archive_from, archive_to)
     shutil.move('%s.%s'%(name,format), destination)
+
+# Under Tests
+def read_zip_file(zip_filename, text_filename):
+    try:
+        with zipfile.ZipFile(zip_filename) as zf:
+            with io.TextIOWrapper(zf.open(text_filename), encoding="utf-8") as f:
+                content = f.read()
+                print(content)
+    except FileNotFoundError:
+        print(f"File '{text_filename}' not found in '{zip_filename}'.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+# Example usage:
+zip_filename = "files.zip"
+text_filename = "text1.txt"
+read_zip_file(zip_filename, text_filename)
