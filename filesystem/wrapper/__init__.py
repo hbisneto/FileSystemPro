@@ -773,18 +773,12 @@ def make_zip(source, destination):
     shutil.move('%s.%s'%(name,format), destination)
 
 # Under Tests
-def read_zip_file(zip_filename, text_filename):
+def read_zip_file_contents(zip_filename):
     try:
-        with zipfile.ZipFile(zip_filename) as zf:
-            with io.TextIOWrapper(zf.open(text_filename), encoding="utf-8") as f:
-                content = f.read()
-                print(content)
+        with zipfile.ZipFile(zip_filename, "r") as zip_file:
+            zip_contents_list = zip_file.namelist()
+            return zip_contents_list
     except FileNotFoundError:
-        print(f"File '{text_filename}' not found in '{zip_filename}'.")
+        return "[FileSystem Pro]: File Not Found"
     except Exception as e:
-        print(f"An error occurred: {e}")
-
-# Example usage:
-zip_filename = "files.zip"
-text_filename = "text1.txt"
-read_zip_file(zip_filename, text_filename)
+        return f"[FileSystem Pro]: An error occurred. Error: {e}"
