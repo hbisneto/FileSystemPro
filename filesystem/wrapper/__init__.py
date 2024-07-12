@@ -49,6 +49,8 @@ import os
 import shutil
 from filesystem import file as fsfile
 from filesystem import directory as dir
+import zipfile
+
 
 ### wrapper.combine() kept to cover version support. Remove on (MAJOR UPDATE ONLY)
 def combine(*args, paths=[]):
@@ -768,3 +770,14 @@ def make_zip(source, destination):
     archive_to = os.path.basename(source.strip(os.sep))
     shutil.make_archive(name, format, archive_from, archive_to)
     shutil.move('%s.%s'%(name,format), destination)
+
+# Under Tests
+def read_zip_file_contents(zip_filename):
+    try:
+        with zipfile.ZipFile(zip_filename, "r") as zip_file:
+            zip_contents_list = zip_file.namelist()
+            return zip_contents_list
+    except FileNotFoundError:
+        return "[FileSystem Pro]: File Not Found"
+    except Exception as e:
+        return f"[FileSystem Pro]: An error occurred. Error: {e}"
