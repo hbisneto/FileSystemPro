@@ -45,7 +45,6 @@ from filesystem import wrapper as wra
 import codecs
 import datetime
 import glob
-import io
 import os
 import shutil
 from filesystem import file as fsfile
