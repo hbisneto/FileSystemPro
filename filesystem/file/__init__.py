@@ -213,7 +213,7 @@ def create_binary_file(filename, data):
         with open(filename, 'wb') as binary_file:
             binary_file.write(data)
 
-def delete(file):
+def delete(file, send_to_trash=False):
     """
     # file.delete(file)
 
@@ -239,8 +239,25 @@ def delete(file):
     delete("/path/to/file")
     ```
     """
-    if exists(file):
-        os.remove(file)
+    # Redesign this function to make sure the file is a file indeed.
+    # The function must security operation
+    
+    # if exists(file):
+    #     os.remove(file)
+
+    try:
+        if os.path.exists(file):
+            if send_to_trash:
+                shutil.send2trash(file)
+                print(f"File '{file}' sent to trash successfully.")
+            else:
+                os.remove(file)
+                print(f"File '{file}' removed successfully.")
+        else:
+            raise FileNotFoundError(f"File '{file}' does not exist.")
+    except Exception as e:
+        print(f"Error: {e}")
+
 
 def enumerate_files(file):
     """
