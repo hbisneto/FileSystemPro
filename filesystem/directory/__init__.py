@@ -201,7 +201,10 @@ def delete(path, recursive=False):
     delete("/path/to/directory", True)
     ```
     """
-    if not os.path.exists(path):
+    # if not os.path.exists(path):
+    #     raise Exception(f'\n\n>> The directory "{path}" does not exist.')
+    
+    if not exists(path):
         raise Exception(f'\n\n>> The directory "{path}" does not exist.')
 
     if not os.listdir(path) or recursive:
@@ -233,8 +236,7 @@ def exists(path):
     """
     if os.path.isdir(path):
         return True
-    else:
-        return False
+    return False
 
 def get_directories(path):
     """
