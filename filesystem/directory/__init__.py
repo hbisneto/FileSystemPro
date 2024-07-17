@@ -205,7 +205,6 @@ def delete(path, recursive=False):
     #     raise Exception(f'\n\n>> The directory "{path}" does not exist.')
     
     if not exists(path):
-        # Check if in FILE the EXISTS checks if the URL is a FILE INDEED
         raise Exception(f'\n\n>> The directory "{path}" does not exist.')
 
     if not os.listdir(path) or recursive:
@@ -237,8 +236,7 @@ def exists(path):
     """
     if os.path.isdir(path):
         return True
-    else:
-        return False
+    return False
 
 def get_directories(path):
     """
