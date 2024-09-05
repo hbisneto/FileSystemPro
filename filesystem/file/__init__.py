@@ -310,17 +310,18 @@ def exists(file):
         return True
     return False
 
-def get_files(path):
+def get_files(path, extension=None):
     """
-    # file.get_files(path)
+    # file.get_files(path, extension=None)
 
     ---
-    
+        
     ### Overview
-    Retrieves all files in a given directory.
+    Retrieves all files in a given directory, optionally filtering by file extension.
 
     ### Parameters:
-    path (str): The directory path to retrieve files from.
+    - path (str): The directory path to retrieve files from.
+    - extension (str, optional): The file extension to filter by. Defaults to None.
 
     ### Returns:
     A list of strings, where each string is the name of a file in the directory.
@@ -332,14 +333,17 @@ def get_files(path):
     ### Examples:
     - Retrieves all files in a specific directory.
 
-    ```python
-    get_files("/path/to/directory")
-    ```
+    `get_files("/path/to/directory")`
+
+    - Retrieves all `.txt` files in a specific directory.
+
+    `get_files("/path/to/directory", ".txt")`
     """
     file_list = []
     for file in os.listdir(path):
-        if os.path.isfile(dir.join(path, file)):
-            file_list.append(file)
+        if os.path.isfile(os.path.join(path, file)):
+            if extension is None or file.endswith(extension):
+                file_list.append(file)
     return file_list
 
 def move(source, destination, new_filename=None, replace_existing=False):
