@@ -289,7 +289,8 @@ def find_duplicates(path):
     ---
 
     ### Overview
-    Finds duplicate files in a given directory and its subdirectories. A file is considered a duplicate if it has the same checksum as another file.
+    Finds duplicate files in a given directory and its subdirectories.
+    A file is considered a duplicate if it has the same checksum as another file.
 
     ### Parameters:
     path (str): The directory path to search for duplicate files.

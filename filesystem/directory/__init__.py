@@ -55,6 +55,7 @@ from filesystem import directory as dir
 
 import os
 import shutil
+import filesystem as fs
 from filesystem import wrapper as wra
 
 def combine(*args, paths=[]):
@@ -235,7 +236,7 @@ def exists(path):
         return True
     return False
 
-def get_directories(path):
+def get_directories(path, fullpath=False):
     """
     # directory.get_directories(path)
 
@@ -260,8 +261,10 @@ def get_directories(path):
     directory_list = []
     for dir in os.listdir(path):
         if os.path.isdir(join(path, dir)):
-            directory_list.append(dir)
-    
+            if fullpath == True:
+                directory_list.append(f'{path}{fs.OS_SEPARATOR}{dir}')
+            else:
+                directory_list.append(dir)
     return directory_list
 
 def get_name(path):
