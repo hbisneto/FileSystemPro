@@ -24,7 +24,7 @@ pip install filesystempro
 
 ---
 
-#### To Developers / Contributors
+### To Developers / Contributors
 
 Clone this repository to your local machine using:
 
@@ -32,28 +32,17 @@ Clone this repository to your local machine using:
 git clone https://github.com/hbisneto/FileSystemPro.git
 ```
 
-Install setuptools
-
-```sh
-pip install setuptools
-```
-
-Upgrade setuptools
+Install setuptools / Upgrade setuptools
 
 ```sh
 pip install --upgrade setuptools
 ```
+
 > [!NOTE]
 > Note: FileSystem Pro requires setuptools 69.5.1 or later.
 ><br> Python environment typically targets setuptools version 49.x.
 
-Install wheel
-
-```sh
-pip install wheel
-```
-
-Upgrade wheel
+Install wheel / Upgrade wheel
 
 ```sh
 pip install --upgrade wheel
@@ -62,6 +51,7 @@ pip install --upgrade wheel
 ---
 
 ## Features
+
 - **Cross-platform Compatibility:** The code is designed to work on multiple operating systems, including Linux, Mac, and Windows. This makes it versatile and adaptable to different environments.
 - **Directory Path Identification:** The code identifies and defines the paths to several common user directories based on the operating system. This includes directories like Desktop, Documents, Downloads, Music, Pictures, Public, Videos, and others.
 - **Current Working Directory:** The code uses `os.getcwd()` to get the current working directory.
@@ -468,15 +458,9 @@ directory creation and deletion, and file retrieval within directories.
   </td>
   
   <tr>
-    <td>directory.get_parent_name(path)</td>
+    <td>directory.get_directories(path, fullpath=False)</td>
     <td>
-     Retrieves the parent directory name from the specified path.
-  </td>
-  
-  <tr>
-    <td>directory.get_parent(path)</td>
-    <td>
-     Retrieves the parent directory from the specified path.
+     Retrieves a list of directories within the specified path.
   </td>
   
   <tr>
@@ -489,15 +473,21 @@ directory creation and deletion, and file retrieval within directories.
   </td>
   
   <tr>
-    <td>directory.join(path1='', path2='', path3='', path4='', paths=[])</td>
+    <td>directory.get_parent_name(path)</td>
     <td>
-     Joins multiple directory paths into a single path. The function ensures that each directory path ends with a separator before joining. If a directory path does not end with a separator, one is added.
+     Retrieves the parent directory name from the specified path.
   </td>
   
   <tr>
-    <td>directory.get_directories(path)</td>
+    <td>directory.get_parent(path)</td>
     <td>
-     Lists all directories in the specified path.
+     Retrieves the parent directory from the specified path.
+  </td>
+  
+  <tr>
+    <td>directory.join(path1='', path2='', path3='', path4='', paths=[])</td>
+    <td>
+     Joins multiple directory paths into a single path. The function ensures that each directory path ends with a separator before joining. If a directory path does not end with a separator, one is added.
   </td>
   
   <tr>
@@ -604,6 +594,13 @@ file creation, deletion, enumeration, and file splitting and reassembling.
   </tr>
   
   <tr>
+    <td>file.append_text(file, text)</td>
+    <td>
+      Appends UTF-8 encoded text to an existing file, or creates a new file if it does not exist.
+    </td>
+  </tr>
+  
+  <tr>
     <td>file.calculate_checksum(file)</td>
     <td>
       Calculates the SHA-256 checksum of a file. This function reads the file in binary mode and updates the hash in chunks to efficiently handle large files.
@@ -618,7 +615,7 @@ file creation, deletion, enumeration, and file splitting and reassembling.
   </tr>
   
   <tr>
-    <td>file.create(file, data, encoding="utf-8-sig")</td>
+    <td>file.create(file, data, encoding="utf-8")</td>
     <td>
       Creates a file at the specified path and writes data into it. If the file already exists, 
     its contents are overwritten. The function then returns the details of the created file.
@@ -654,11 +651,18 @@ file creation, deletion, enumeration, and file splitting and reassembling.
       Checks if a file exists at the specified path.
     </td>
   </tr>
+  
+    <tr>
+    <td>file.get_extension(file_path, lower=True)</td>
+    <td>
+      Extracts the file extension from the given file path and returns it in lowercase or uppercase based on the `lower` parameter.
+    </td>
+  </tr>
 
   <tr>
-    <td>file.get_files(path)</td>
+    <td>file.get_files(path, fullpath=False, extension=None)</td>
     <td>
-      Retrieves all files in a given directory.
+      Retrieves a list of files from the specified directory. Optionally, it can return the full path of each file and filter files by their extension.
     </td>
   </tr>
   
@@ -773,7 +777,7 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
   </tr>
 
   <tr>
-    <td>combine(*args, paths=[])</td>
+    <td>wrapper.combine(*args, paths=[])</td>
     <td>
       This function is designed to combine file or directory paths. It takes any number of arguments *args and an optional parameter paths which is a list of paths. The function returns a combined path based on the inputs.
       If the paths list is provided, the function uses it to combine paths. It starts with the first path in the list and checks if it’s an absolute path. If it’s not, it raises a ValueError with a detailed error message. Then, it iterates over the rest of the paths in the list. If a path is absolute, it replaces the current result with this path. If a path is relative, it joins this path to the current result. Finally, it returns the combined path.
@@ -789,7 +793,7 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
 
   <tr>
     <td>
-      create_directory(path, create_subdirs=True)
+      wrapper.create_directory(path, create_subdirs=True)
     </td>
     <td>
       This function is used to create a directory at the specified <strong>path</strong>. If <strong>create_subdirs</strong> is <strong>True</strong>, the function creates all intermediate-level directories needed to contain the leaf directory. If <strong>create_subdirs</strong> is <strong>False</strong>, the function will raise an error if the directory already exists or if any intermediate-level directories in the path do not exist. 
@@ -803,7 +807,7 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
 
   <tr>
     <td>
-      create_file(file_name, path, text, encoding="utf-8-sig")
+      wrapper.create_file(file_name, path, text, encoding="utf-8-sig")
     </td>
     <td>
       The function attempts to open a file at the specified <strong>path</strong> with the given <strong>file_name</strong> (with extension), in write mode with the specified <strong>encoding</strong>. It then writes the provided <strong>text</strong> into the file.
@@ -816,7 +820,7 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
 
   <tr>
     <td>
-      delete(path, recursive=False)
+      wrapper.delete(path, recursive=False)
     </td>
     <td>
       This function is designed to delete a directory at a given <strong>path</strong>.
@@ -829,19 +833,19 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
   
   <tr>
     <td>
-      find_duplicates(path)
+      wrapper.find_duplicates(path)
     </td>
     <td>
       Finds duplicate files in a given directory and its subdirectories. A file is considered a duplicate if it has the same checksum as another file.
     </td>
     <td>
-      New implementation
+      Supported
     </td>
   </tr>
 
   <tr>
     <td>
-      enumerate_files(path)
+      wrapper.enumerate_files(path)
     </td>
     <td>
       This function performs a depth-first traversal of the directory tree at the given path (after expanding any user home directory symbols). It returns a list of dictionaries containing the attributes of each file and directory in the tree.
@@ -853,7 +857,7 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
 
   <tr>
     <td>
-      get_files(path)
+      wrapper.get_files(path)
     </td>
     <td>
       This function takes a path as input (which can include wildcards), expands any user home directory symbols (~), and returns a list of dictionaries containing the attributes of each file or directory that matches the path.
@@ -865,7 +869,7 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
 
   <tr>
     <td>
-      get_object(path)
+      wrapper.get_object(path)
     </td>
     <td>
       This function takes a file or directory path as input and returns a dictionary containing various attributes of the file or directory. These attributes include the time of last modification, creation time, last access time, name, size, absolute path, parent directory, whether it's a directory or file or link, whether it exists, and its extension (if it's a file).
@@ -877,7 +881,7 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
   
   <tr>
     <td>
-      get_size(file_path)
+      wrapper.get_size(file_path)
     </td>
     <td>
       Calculates the size of the file or directory at the specified path. If the path is a directory, 
@@ -885,25 +889,25 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
       MB, GB, or TB, depending on the size.
     </td>
     <td>
-      New implementation
+      Supported
     </td>
   </tr>
   
   <tr>
     <td>
-      has_extension(file_path)
+      wrapper.has_extension(file_path)
     </td>
     <td>
       Checks if the given file path has an extension. This function can return True or False based on the string, even if the file or directory does not exist.
     </td>
     <td>
-      New implementation
+      Supported
     </td>
   </tr>
 
   <tr>
     <td>
-      join(path1='', path2='', path3='', path4='', paths=[])
+      wrapper.join(path1='', path2='', path3='', path4='', paths=[])
     </td>
     <td>
       This function is designed to concatenate directory paths. It takes four optional string parameters <strong>path1</strong>, <strong>path2</strong>, <strong>path3</strong>, <strong>path4</strong> and an optional list of paths paths. The function returns a single string that represents the concatenated path.
@@ -920,7 +924,7 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
 
   <tr>
     <td>
-      list_directories(path)
+      wrapper.list_directories(path)
     </td>
     <td>
       This function returns a list of all the directories in a given directory.
@@ -932,7 +936,7 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
 
   <tr>
     <td>
-      list_files(path)
+      wrapper.list_files(path)
     </td>
     <td>
       This function returns a list of all the files in a given directory.
@@ -944,7 +948,7 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
 
   <tr>
     <td>
-      make_zip(source, destination)
+      wrapper.make_zip(source, destination)
     </td>
     <td>
       This function is used to create a zip archive of a given source directory and move it to a specified destination.
@@ -953,6 +957,19 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
     	Supported
     </td>
   </tr>
+  
+  <tr>
+    <td>
+      wrapper.read_zip_file_contents(zip_filename)
+    </td>
+    <td>
+      Reads the contents of a ZIP file and returns a list of the names of the files contained within it.
+    </td>
+    <td>
+    	New implementation
+    </td>
+  </tr>
+  
 </table>
 
 ## Sample Codes

@@ -85,7 +85,9 @@ def append_text(file, text):
     ### Examples:
     - Appends text to a file, creating the file if it does not exist.
 
-    `append_text('example.txt', 'This is a sample text.')`
+    ```python
+    append_text('example.txt', 'This is a sample text.')
+    ```
     """
     with open(file, 'a', encoding='utf-8') as file:
         file.write(text + '\n')
@@ -339,6 +341,37 @@ def exists(file):
     return False
 
 def get_extension(file_path, lower=True):
+    """
+    # file.get_extension(file_path, lower=True)
+
+    ---
+    
+    ### Overview
+    Extracts the file extension from the given file path and returns it in lowercase or uppercase based on the `lower` parameter.
+
+    ### Parameters:
+    file_path (str): The path of the file from which to extract the extension.
+    lower (bool, optional): If True, returns the extension in lowercase. If False, returns it in uppercase. Default is True.
+
+    ### Returns:
+    str: The file extension in lowercase or uppercase.
+
+    ### Examples:
+    - Extracts the file extension in lowercase.
+
+    ```python
+    get_extension("/path/to/file.txt")
+    # Output: '.txt'
+    ```
+
+    - Extracts the file extension in uppercase.
+
+    ```python
+    get_extension("/path/to/file.txt", lower=False)
+    # Output: '.TXT'
+    ```
+    """
+
     _, file_extension = os.path.splitext(file_path)
     if lower == True:
         return file_extension.lower()
@@ -346,33 +379,39 @@ def get_extension(file_path, lower=True):
 
 def get_files(path, fullpath=False, extension=None):
     """
-    # file.get_files(path, extension=None)
+    # file.get_files(path, fullpath=False, extension=None)
 
     ---
-        
+
     ### Overview
-    Retrieves all files in a given directory, optionally filtering by file extension.
+    Retrieves a list of files from the specified directory. Optionally, it can return the full path of each file and filter files by their extension.
 
     ### Parameters:
-    - path (str): The directory path to retrieve files from.
-    - extension (str, optional): The file extension to filter by. Defaults to None.
+    - path (str): The directory path to search for files.
+    - fullpath (bool, optional): If True, returns the full path of each file. Defaults to False.
+    - extension (str, optional): If specified, only files with this extension will be included. Defaults to None.
 
     ### Returns:
-    A list of strings, where each string is the name of a file in the directory.
+    - list: A list of file names or full paths, depending on the `fullpath` parameter.
 
     ### Raises:
-    - FileNotFoundError: If the directory does not exist.
-    - PermissionError: If the permission is denied.
+    - FileNotFoundError: If the specified directory does not exist.
+    - PermissionError: If the permission is denied to access the directory.
 
     ### Examples:
-    - Retrieves all files in a specific directory.
+    - Retrieve all files in a directory:
 
-    `get_files("/path/to/directory")`
+    ```python
+    get_files("/path/to/directory")
+    ```
 
-    - Retrieves all `.txt` files in a specific directory.
+    - Retrieve all `.txt` files in a directory with full paths:
 
-    `get_files("/path/to/directory", ".txt")`
+    ```python
+    get_files("/path/to/directory", fullpath=True, extension=".txt")
+    ```
     """
+    
     file_list = []
     for file in os.listdir(path):
         if os.path.isfile(os.path.join(path, file)):

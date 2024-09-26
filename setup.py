@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name = 'filesystempro',
-    version = '1.0.3.0',
+    version = '1.0.4.0',
     url = 'https://github.com/hbisneto/FileSystemPro',
     license = 'MIT License',
     
@@ -28,13 +28,24 @@ setup(
         'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.12',
     ],
-    description = u'FileSystem is a powerful toolkit designed to handle file and directory operations with ease and efficiency across various operating systems.',
+    description = u'FileSystemPro is a powerful toolkit designed to handle file and directory operations with ease and efficiency across various operating systems.',
     install_requires = [
         'requests',
     ],
     long_description = readme,
     long_description_content_type = "text/markdown",
-    keywords = ['FileSystem', 'Linux', 'macOS', 'Windows', 'File', 'System', 'Terminals'],
+    keywords = ['FileSystem', 
+                'Linux', 
+                'macOS', 
+                'Windows', 
+                'File', 
+                'System', 
+                'Terminals', 
+                'Console',
+                'Directory',
+                'Watcher',
+                'Wrapper'
+    ],
     packages=find_packages(),
     platforms = 'any',
     python_requires= '>=3.8',

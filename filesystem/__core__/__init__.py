@@ -52,7 +52,7 @@ from filesystem import __core__
 import requests
 from filesystem import console as fsconsole
 
-__version__ = "1.0.3.0"
+__version__ = "1.0.4.0"
 
 def __checkupdates__(user, repo):
     """

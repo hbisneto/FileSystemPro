@@ -98,7 +98,6 @@ class Watcher(object):
         
         # set new state
         self.saved_state = current_state
-        
         return results
 
     def __str__(self):

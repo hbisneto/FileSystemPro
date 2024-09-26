@@ -238,24 +238,35 @@ def exists(path):
 
 def get_directories(path, fullpath=False):
     """
-    # directory.get_directories(path)
+    # directory.get_directories(path, fullpath=False)
 
     ---
-
+    
     ### Overview
-    Lists all directories in the specified path.
+    Retrieves a list of directories within the specified path.
 
     ### Parameters:
-    path (str): The directory path to list.
+    path (str): The directory path to search within.
+    fullpath (bool, optional): If True, returns the full path of each directory. Defaults to False.
 
     ### Returns:
-    list: A list of directory names in the specified path.
+    list: A list of directory names or full paths, depending on the `fullpath` parameter.
+
+    ### Raises:
+    - FileNotFoundError: If the specified path does not exist.
+    - PermissionError: If the permission is denied to access the path.
 
     ### Examples:
-    - Lists all directories in a specific path.
+    - Retrieves directory names within a specified path.
 
     ```python
     get_directories("/path/to/directory")
+    ```
+
+    - Retrieves full paths of directories within a specified path.
+
+    ```python
+    get_directories("/path/to/directory", fullpath=True)
     ```
     """
     directory_list = []

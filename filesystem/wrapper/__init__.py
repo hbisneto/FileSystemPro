@@ -390,7 +390,7 @@ def get_object(path):
     - "is_file": A boolean indicating whether the path is a file.
     - "is_link": A boolean indicating whether the path is a symbolic link.
     - "extension": The file extension, or an empty string if the path is not a file.
-    - "ext": The file extension, or an empty string if the path is not a file. Kept for version support.
+    - "ext": The file extension, or an empty string if the path is not a file. `Kept for version support.`
     - "modified": The last modification time, or -1 if an error occurs.
     - "name": The base name of the path.
     - "name_without_extension": The base name of the path without the extension.
@@ -772,6 +772,31 @@ def make_zip(source, destination):
     shutil.move('%s.%s'%(name,format), destination)
 
 def read_zip_file_contents(zip_filename):
+    """
+    # wrapper.read_zip_file_contents(zip_filename)
+
+    ---
+    
+    ### Overview
+    Reads the contents of a ZIP file and returns a list of the names of the files contained within it.
+
+    ### Parameters:
+    zip_filename (str): The path to the ZIP file to read.
+
+    ### Returns:
+    list: A list of filenames contained in the ZIP file.
+
+    ### Raises:
+    - FileNotFoundError: If the ZIP file does not exist.
+    - Exception: For any other errors that occur while reading the ZIP file.
+
+    ### Examples:
+    - Reads the contents of a ZIP file and returns the list of filenames.
+
+    ```python
+    read_zip_file_contents("/path/to/zipfile.zip")
+    ```
+    """
     try:
         with zipfile.ZipFile(zip_filename, "r") as zip_file:
             zip_contents_list = zip_file.namelist()

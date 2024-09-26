@@ -3,8 +3,8 @@ requires = ["setuptools", "wheel"]
 
 [tool.poetry]
 name = "FileSystemPro"
-version = "1.0.3.0"
-description = "FileSystem is a powerful toolkit designed to handle file and directory operations with ease and efficiency across various operating systems."
+version = "1.0.4.0"
+description = "FileSystemPro is a powerful toolkit designed to handle file and directory operations with ease and efficiency across various operating systems."
 authors = ["Heitor Bisneto <heitor.bardemaker@live.com>"]
 
 [tool.poetry.dependencies]
