@@ -652,7 +652,7 @@ file creation, deletion, enumeration, and file splitting and reassembling.
     </td>
   </tr>
   
-    <tr>
+  <tr>
     <td>file.get_extension(file_path, lower=True)</td>
     <td>
       Extracts the file extension from the given file path and returns it in lowercase or uppercase based on the `lower` parameter.
