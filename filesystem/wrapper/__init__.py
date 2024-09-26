@@ -49,6 +49,7 @@ import os
 import shutil
 from filesystem import file as fsfile
 from filesystem import directory as dir
+import zipfile
 
 ### wrapper.combine() kept to cover version support. Remove on (MAJOR UPDATE ONLY)
 def combine(*args, paths=[]):
@@ -288,7 +289,8 @@ def find_duplicates(path):
     ---
 
     ### Overview
-    Finds duplicate files in a given directory and its subdirectories. A file is considered a duplicate if it has the same checksum as another file.
+    Finds duplicate files in a given directory and its subdirectories.
+    A file is considered a duplicate if it has the same checksum as another file.
 
     ### Parameters:
     path (str): The directory path to search for duplicate files.
@@ -388,7 +390,7 @@ def get_object(path):
     - "is_file": A boolean indicating whether the path is a file.
     - "is_link": A boolean indicating whether the path is a symbolic link.
     - "extension": The file extension, or an empty string if the path is not a file.
-    - "ext": The file extension, or an empty string if the path is not a file. Kept for version support.
+    - "ext": The file extension, or an empty string if the path is not a file. `Kept for version support.`
     - "modified": The last modification time, or -1 if an error occurs.
     - "name": The base name of the path.
     - "name_without_extension": The base name of the path without the extension.
@@ -768,3 +770,38 @@ def make_zip(source, destination):
     archive_to = os.path.basename(source.strip(os.sep))
     shutil.make_archive(name, format, archive_from, archive_to)
     shutil.move('%s.%s'%(name,format), destination)
+
+def read_zip_file_contents(zip_filename):
+    """
+    # wrapper.read_zip_file_contents(zip_filename)
+
+    ---
+    
+    ### Overview
+    Reads the contents of a ZIP file and returns a list of the names of the files contained within it.
+
+    ### Parameters:
+    zip_filename (str): The path to the ZIP file to read.
+
+    ### Returns:
+    list: A list of filenames contained in the ZIP file.
+
+    ### Raises:
+    - FileNotFoundError: If the ZIP file does not exist.
+    - Exception: For any other errors that occur while reading the ZIP file.
+
+    ### Examples:
+    - Reads the contents of a ZIP file and returns the list of filenames.
+
+    ```python
+    read_zip_file_contents("/path/to/zipfile.zip")
+    ```
+    """
+    try:
+        with zipfile.ZipFile(zip_filename, "r") as zip_file:
+            zip_contents_list = zip_file.namelist()
+            return zip_contents_list
+    except FileNotFoundError:
+        return "[FileSystem Pro]: File Not Found"
+    except Exception as e:
+        return f"[FileSystem Pro]: An error occurred. Error: {e}"

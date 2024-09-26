@@ -59,8 +59,38 @@ import codecs
 import hashlib
 import os
 import shutil
+import filesystem as fs
 from filesystem import directory as dir
 from filesystem import wrapper as wra
+
+def append_text(file, text):
+    """
+    # file.append_text(file, text)
+
+    ---
+    
+    ### Overview
+    Appends UTF-8 encoded text to an existing file, or creates a new file if it does not exist.
+
+    ### Parameters:
+    - file_path (str): The path to the file.
+    - text (str): The text to append to the file.
+
+    ### Returns:
+    None
+
+    ### Raises:
+    - IOError: If an I/O error occurs
+
+    ### Examples:
+    - Appends text to a file, creating the file if it does not exist.
+
+    ```python
+    append_text('example.txt', 'This is a sample text.')
+    ```
+    """
+    with open(file, 'a', encoding='utf-8') as file:
+        file.write(text + '\n')
 
 def calculate_checksum(file):
     """
@@ -129,9 +159,9 @@ def check_integrity(file, reference_file):
 
     return file_to_check == reference_check
 
-def create(file, data, encoding="utf-8-sig"):
+def create(file, data, encoding="utf-8"):
     """
-    # file.create(file, data, encoding="utf-8-sig")
+    # file.create(file, data, encoding="utf-8")
 
     ---
     
@@ -142,7 +172,7 @@ def create(file, data, encoding="utf-8-sig"):
     ### Parameters:
     file (str): The file path to create.
     data (str): The data to write into the file.
-    encoding (str): The encoding to use when opening the file. Defaults to "utf-8-sig".
+    encoding (str): The encoding to use when opening the file. Defaults to "utf-8".
 
     ### Returns:
     dict: A dictionary containing the details of the created file.
@@ -310,36 +340,86 @@ def exists(file):
         return True
     return False
 
-def get_files(path):
+def get_extension(file_path, lower=True):
     """
-    # file.get_files(path)
+    # file.get_extension(file_path, lower=True)
 
     ---
     
     ### Overview
-    Retrieves all files in a given directory.
+    Extracts the file extension from the given file path and returns it in lowercase or uppercase based on the `lower` parameter.
 
     ### Parameters:
-    path (str): The directory path to retrieve files from.
+    file_path (str): The path of the file from which to extract the extension.
+    lower (bool, optional): If True, returns the extension in lowercase. If False, returns it in uppercase. Default is True.
 
     ### Returns:
-    A list of strings, where each string is the name of a file in the directory.
-
-    ### Raises:
-    - FileNotFoundError: If the directory does not exist.
-    - PermissionError: If the permission is denied.
+    str: The file extension in lowercase or uppercase.
 
     ### Examples:
-    - Retrieves all files in a specific directory.
+    - Extracts the file extension in lowercase.
+
+    ```python
+    get_extension("/path/to/file.txt")
+    # Output: '.txt'
+    ```
+
+    - Extracts the file extension in uppercase.
+
+    ```python
+    get_extension("/path/to/file.txt", lower=False)
+    # Output: '.TXT'
+    ```
+    """
+
+    _, file_extension = os.path.splitext(file_path)
+    if lower == True:
+        return file_extension.lower()
+    return file_extension.upper()
+
+def get_files(path, fullpath=False, extension=None):
+    """
+    # file.get_files(path, fullpath=False, extension=None)
+
+    ---
+
+    ### Overview
+    Retrieves a list of files from the specified directory. Optionally, it can return the full path of each file and filter files by their extension.
+
+    ### Parameters:
+    - path (str): The directory path to search for files.
+    - fullpath (bool, optional): If True, returns the full path of each file. Defaults to False.
+    - extension (str, optional): If specified, only files with this extension will be included. Defaults to None.
+
+    ### Returns:
+    - list: A list of file names or full paths, depending on the `fullpath` parameter.
+
+    ### Raises:
+    - FileNotFoundError: If the specified directory does not exist.
+    - PermissionError: If the permission is denied to access the directory.
+
+    ### Examples:
+    - Retrieve all files in a directory:
 
     ```python
     get_files("/path/to/directory")
     ```
+
+    - Retrieve all `.txt` files in a directory with full paths:
+
+    ```python
+    get_files("/path/to/directory", fullpath=True, extension=".txt")
+    ```
     """
+    
     file_list = []
     for file in os.listdir(path):
-        if os.path.isfile(dir.join(path, file)):
-            file_list.append(file)
+        if os.path.isfile(os.path.join(path, file)):
+            if extension is None or file.endswith(extension):
+                if fullpath == True:
+                    file_list.append(f'{path}{fs.OS_SEPARATOR}{file}')
+                else:
+                    file_list.append(file)
     return file_list
 
 def move(source, destination, new_filename=None, replace_existing=False):

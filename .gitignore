@@ -1,5 +1,7 @@
 ### FileSystem ignores
 tests
+app.py
+android
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
