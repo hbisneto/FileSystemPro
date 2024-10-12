@@ -129,27 +129,33 @@ elif PLATFORM == "darwin":
     """
 elif PLATFORM == "win32" or PLATFORM == "win64":
     PLATFORM_NAME = "Windows"
+    import winreg
+    def get_registry_paths(folder_name):
+        sub_key = r'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders'
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, sub_key) as key:
+            return winreg.QueryValueEx(key, folder_name)[0]
+    
     user = os.environ['USERPROFILE']
     """
     Creates a string that represents the path to the current user's home directory.
     """
-    desktop = f'{user}/Desktop'
+    desktop = get_registry_paths("Desktop")
     """
     Creates a string that represents the path to the current user's Desktop folder.
     """
-    documents = f'{user}/Documents'
+    documents = get_registry_paths("Personal")
     """
     Creates a string that represents the path to the current user's Documents folder.
     """
-    downloads = f'{user}/Downloads'
+    downloads = get_registry_paths("{374DE290-123F-4565-9164-39C4925E467B}")
     """
     Creates a string that represents the path to the current user's Downloads folder.
     """
-    music = f'{user}/Music'
+    music = get_registry_paths("My Music")
     """
     Creates a string that represents the path to the current user's Music folder.
     """
-    pictures = f'{user}/Pictures'
+    pictures = get_registry_paths("My Pictures")
     """
     Creates a string that represents the path to the current user's Pictures folder.
     """
@@ -157,7 +163,7 @@ elif PLATFORM == "win32" or PLATFORM == "win64":
     """
     Creates a string that represents the path to the current user's Public folder.
     """
-    videos = f'{user}/Videos'
+    videos = get_registry_paths("My Video")
     """
     Creates a string that represents the path to the current user's Videos folder.
     """
@@ -176,7 +182,7 @@ Creates a string that represents the path to the current user's Movies folder in
 
 - Tip: Use `fs.videos` instead:
 
-```
+```python
 import filesystem as fs
 print(fs.videos)
 ```
