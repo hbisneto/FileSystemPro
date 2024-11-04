@@ -621,6 +621,7 @@ def join(path1='', path2='', path3='', path4='', paths=[]):
 
     ### Parameters:
     path1, path2, path3, path4 (str): The directory paths to join. Defaults to an empty string.
+    
     paths (list): A list of additional directory paths to join. Defaults to an empty list.
 
     ### Returns:
@@ -741,6 +742,7 @@ def make_zip(source, destination):
 
     ### Parameters:
     source (str): The path of the directory or file to archive.
+
     destination (str): The path where the archive will be moved to.
 
     ### Returns:
@@ -774,7 +776,8 @@ def make_zip(source, destination):
 def read_zip_file_contents(zip_filename):
     """
     # wrapper.read_zip_file_contents(zip_filename)
-
+    - #### Under support
+        - Consider using `compression.zipfile.read_zip_archive(zip_filename)`
     ---
     
     ### Overview

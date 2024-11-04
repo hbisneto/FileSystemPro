@@ -90,7 +90,7 @@ def append_text(file, text):
     ```
     """
     with open(file, 'a', encoding='utf-8') as file:
-        file.write(text + '\n')
+        file.write(f'{text}')
 
 def calculate_checksum(file):
     """
@@ -159,46 +159,49 @@ def check_integrity(file, reference_file):
 
     return file_to_check == reference_check
 
-def create(file, data, encoding="utf-8"):
+def create(file, data, overwrite=False, encoding="utf-8"):
     """
-    # file.create(file, data, encoding="utf-8")
+    # file.create(file, data, overwrite=False, encoding="utf-8")
 
     ---
-    
+
     ### Overview
-    Creates a file at the specified path and writes data into it. If the file already exists, 
-    its contents are overwritten. The function then returns the details of the created file.
+    Creates a file at the specified path and writes data into it. If the file already exists, its contents can be either appended to or overwritten based on the `overwrite` parameter. The function then returns the details of the created file.
 
     ### Parameters:
-    file (str): The file path to create.
-    data (str): The data to write into the file.
-    encoding (str): The encoding to use when opening the file. Defaults to "utf-8".
+    - **file (str)**: The file path to create.
+    - **data (str)**: The data to write into the file.
+    - **overwrite (bool)**: Whether to overwrite the file if it already exists. Defaults to `False`.
+    - **encoding (str)**: The encoding to use when opening the file. Defaults to "utf-8".
 
     ### Returns:
-    dict: A dictionary containing the details of the created file.
+    - **dict**: A dictionary containing the details of the created file.
 
     ### Raises:
-    - FileNotFoundError: If the file does not exist.
-    - PermissionError: If the permission is denied.
-    - UnicodeEncodeError: If the data cannot be encoded with the specified encoding.
+    - **FileNotFoundError**: If the file does not exist.
+    - **PermissionError**: If the permission is denied.
+    - **UnicodeEncodeError**: If the data cannot be encoded with the specified encoding.
 
     ### Examples:
     - Creates a file and writes data into it, then returns the file details.
 
-    ```python
-    create("/path/to/file", "Hello, World!")
-    ```
+        ```python
+        create("/path/to/file", "Hello, World!")
+        ```
+
     - Creates a file with a different encoding, writes data into it, then returns the file details.
 
-    ```python
-    create("/path/to/file", "Hello, World!", "utf-16")
-    ```
+        ```python
+        create("/path/to/file", "Hello, World!", overwrite=True, encoding="utf-16")
+        ```
     """
-    try:
+    if overwrite==True:
         with codecs.open(f'{file}', "w", encoding=encoding) as custom_file:
             custom_file.write(data)
-    except:
-        pass
+    else:
+        with codecs.open(f'{file}', "a", encoding=encoding) as custom_file:
+            custom_file.write(data)
+
     return wra.get_object(f'{file}')
 
 def create_binary_file(filename, data):
