@@ -44,54 +44,8 @@ from filesystem import wrapper as wra
 
 import datetime
 import os
-import shutil
 from filesystem import file as fsfile
 from filesystem import directory as dir
-
-### INSERT INTO FILE MODULE
-def find_duplicates(path):
-    """
-    # wrapper.find_duplicates(path)
-    
-    ---
-
-    ### Overview
-    Finds duplicate files in a given directory and its subdirectories.
-    A file is considered a duplicate if it has the same checksum as another file.
-
-    ### Parameters:
-    path (str): The directory path to search for duplicate files.
-
-    ### Returns:
-    A tuple of two lists:
-    - The first list contains the paths of the original files.
-    - The second list contains the paths of the duplicate files.
-
-    ### Raises:
-    - FileNotFoundError: If the directory does not exist.
-    - PermissionError: If the permission is denied.
-
-    ### Examples:
-    - Finds duplicate files in a specific directory.
-
-    ```python
-    find_duplicates("/path/to/directory")
-    ```
-    """
-    checksums = {}
-    original_files = []
-    duplicate_files = []
-
-    for root, dirs, files in os.walk(path):
-        for file in files:
-            file_path = dir.join(root, file)
-            checksum = fsfile.calculate_checksum(file_path)
-            if checksum in checksums:
-                original_files.append(checksums[checksum])
-                duplicate_files.append(file_path)
-            else:
-                checksums[checksum] = file_path
-    return original_files, duplicate_files
 
 def get_object(path):
     """
@@ -236,6 +190,54 @@ def get_object(path):
         formatted_date = access_date.strftime("%Y/%m/%d %H:%M:%S:%f")
         return formatted_date
         
+    def obj_get_size(file_path):
+        """
+        # wrapper.get_size(path)
+
+        ---
+
+        ### Overview
+        Calculates the size of the file or directory at the specified path. If the path is a directory, 
+        it calculates the total size of all files in the directory. The size is returned in bytes, KB, 
+        MB, GB, or TB, depending on the size.
+
+        ### Parameters:
+        path (str): The file or directory path to calculate the size of.
+
+        ### Returns:
+        str: A string representing the size of the file or directory, formatted as a float followed by 
+        the unit of measurement.
+
+        ### Raises:
+        - FileNotFoundError: If the file or directory does not exist.
+        - PermissionError: If the permission is denied.
+
+        ### Examples:
+        - Calculates the size of a file.
+
+        ```python
+        get_size("/path/to/file")
+        ```
+        - Calculates the total size of all files in a directory.
+
+        ```python
+        get_size("/path/to/directory")
+        ```
+        """
+        if os.path.isfile(file_path):
+            size = os.path.getsize(file_path)
+        else:
+            size = sum(
+                os.path.getsize(os.path.join(dirpath, filename)) 
+                    for dirpath, dirnames, filenames in os.walk(file_path)
+                        for filename in filenames
+            )
+        
+        for unit in ['bytes', 'KB', 'MB', 'GB', 'TB']:
+            if size < 1024.0:
+                return f"{size:3.1f} {unit}"
+            size /= 1024.0
+
     head, tail = os.path.split(path)
 
     result = {}
@@ -248,62 +250,11 @@ def get_object(path):
     result["is_file"] = os.path.isfile(path)
     result["is_link"] = os.path.islink(path)
     result["extension"] = tail.split(".")[-1] if result["is_file"] else ""
-    ### EXT kept to cover version support. Remove on (MAJOR UPDATE ONLY)
-    result["ext"] = tail.split(".")[-1] if result["is_file"] else ""
     result["modified"] = obj_modification_date(path)
     result["name"] = tail
     result["name_without_extension"] = tail.split('.')[0]
-    result["size"] = get_size(path)
+    result["size"] = obj_get_size(path)
     return result
-
-### CREATE METHOD INSIDE FILE AND DIRECTORY
-def get_size(file_path):
-    """
-    # wrapper.get_size(path)
-
-    ---
-
-    ### Overview
-    Calculates the size of the file or directory at the specified path. If the path is a directory, 
-    it calculates the total size of all files in the directory. The size is returned in bytes, KB, 
-    MB, GB, or TB, depending on the size.
-
-    ### Parameters:
-    path (str): The file or directory path to calculate the size of.
-
-    ### Returns:
-    str: A string representing the size of the file or directory, formatted as a float followed by 
-    the unit of measurement.
-
-    ### Raises:
-    - FileNotFoundError: If the file or directory does not exist.
-    - PermissionError: If the permission is denied.
-
-    ### Examples:
-    - Calculates the size of a file.
-
-    ```python
-    get_size("/path/to/file")
-    ```
-    - Calculates the total size of all files in a directory.
-
-    ```python
-    get_size("/path/to/directory")
-    ```
-    """
-    if os.path.isfile(file_path):
-        size = os.path.getsize(file_path)
-    else:
-        size = sum(
-            os.path.getsize(os.path.join(dirpath, filename)) 
-                for dirpath, dirnames, filenames in os.walk(file_path)
-                    for filename in filenames
-        )
-    
-    for unit in ['bytes', 'KB', 'MB', 'GB', 'TB']:
-        if size < 1024.0:
-            return f"{size:3.1f} {unit}"
-        size /= 1024.0
 
 def has_extension(file_path):
     """
@@ -336,45 +287,3 @@ def has_extension(file_path):
     This will return False because the file does not have an extension.
     """
     return os.path.splitext(file_path)[1] != ''
-
-def make_zip(source, destination):
-    """
-    # wrapper.make_zip(source, destination)
-
-    ---
-
-    ### Overview
-    Creates a zip archive of the specified source directory or file and moves it to the specified destination.
-
-    ### Parameters:
-    source (str): The path of the directory or file to archive.
-
-    destination (str): The path where the archive will be moved to.
-
-    ### Returns:
-    None
-
-    ### Raises:
-    - FileNotFoundError: If the source file or directory does not exist.
-    - PermissionError: If the permission is denied.
-    - shutil.SameFileError: If source and destination are the same file.
-
-    ### Examples:
-    - Creates a zip archive of a directory and moves it to a destination.
-
-    ```python
-    make_zip("/path/to/directory", "/path/to/directory.zip")
-    ```
-    - Creates a zip archive of a file and moves it to a destination.
-
-    ```python
-    make_zip("/path/to/file.txt", "/path/to/file.zip")
-    ```
-    """
-    base = os.path.basename(destination)
-    name = base.split('.')[0]
-    format = base.split('.')[1]
-    archive_from = os.path.dirname(source)
-    archive_to = os.path.basename(source.strip(os.sep))
-    shutil.make_archive(name, format, archive_from, archive_to)
-    shutil.move('%s.%s'%(name,format), destination)
