@@ -190,12 +190,8 @@ def get_object(path):
         formatted_date = access_date.strftime("%Y/%m/%d %H:%M:%S:%f")
         return formatted_date
         
-    def obj_get_size(file_path):
+    def obj_get_size(path):
         """
-        # wrapper.get_size(path)
-
-        ---
-
         ### Overview
         Calculates the size of the file or directory at the specified path. If the path is a directory, 
         it calculates the total size of all files in the directory. The size is returned in bytes, KB, 
@@ -224,12 +220,12 @@ def get_object(path):
         get_size("/path/to/directory")
         ```
         """
-        if os.path.isfile(file_path):
-            size = os.path.getsize(file_path)
+        if os.path.isfile(path):
+            size = os.path.getsize(path)
         else:
             size = sum(
                 os.path.getsize(os.path.join(dirpath, filename)) 
-                    for dirpath, dirnames, filenames in os.walk(file_path)
+                    for dirpath, dirnames, filenames in os.walk(path)
                         for filename in filenames
             )
         
