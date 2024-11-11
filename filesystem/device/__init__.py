@@ -7,6 +7,8 @@
 
 The Device module provides a comprehensive set of functionalities for managing and retrieving various device-related information and metrics. This module is divided into two main parts: CPU Information and Disks Information. It leverages the `psutil` library to gather details efficiently and offers a wide range of functionalities for system monitoring and management tasks.
 
+## Features
+
 ### CPU Information
 
 The CPU Information part of the module provides functionalities for retrieving various CPU-related information, such as CPU usage percentage, CPU times, and the number of CPU cores. It offers essential metrics for monitoring CPU performance.
@@ -63,7 +65,25 @@ The Disks Information part of the module provides functionalities for retrieving
 3. **disk_io_counters**
    - **Returns:** dict - A dictionary where each key is a disk name and each value is an object containing disk I/O statistics.
 
-The Device module is designed to provide essential device-related information and metrics for system monitoring and management tasks. By utilizing the `psutil` library, it ensures accurate and efficient retrieval of CPU and disk metrics and attributes.
+## Detailed Functionality
+
+The module's functions are designed to be robust and easy to use, providing a high level of abstraction from the underlying device operations.
+
+### CPU Information
+
+The CPU Information part of the module provides essential metrics for monitoring CPU performance, including CPU usage percentage, CPU times for various states, and the number of logical CPU cores.
+
+### Disks Information
+
+The Disks Information part of the module provides comprehensive details about disk partitions, including devices, filesystem types, mount points, and options. It also offers storage metrics and disk I/O statistics, with filtering capabilities to narrow down the information based on specific criteria.
+
+## Usage
+
+To use the functions provided by this module, import the module and call the desired function with the appropriate parameters:
+
+```python
+from filesystem import device
+```
 """
 
 from . import disks
