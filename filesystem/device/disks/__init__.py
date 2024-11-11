@@ -725,8 +725,6 @@ def disk_info():
     disk_info = {i: info for i, info in enumerate(
         zip(mountpoint, devices, filesystems,
             opts, total, used, free, percent_used, percent_free)
-
-            #
             )
     }
     return disk_info

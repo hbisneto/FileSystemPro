@@ -126,19 +126,13 @@ def extract(zip_path, destination, extraction_list=None):
         read_zip_archive("/path/to/zipfile.zip", extraction_list="file1.txt", destination="/path/to/destination")
         ```
     """
-    # A função deve extrair todos os item de um arquivo ZIP
-    # A função deve extrair apenas um item (escolhido pelo usuário) de um arquivo ZIP
-    # A função deve extrair uma lista de itens (escolhida pelo usuário) de um arquivo ZIP
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
         if extraction_list is None:
-            # Extrair todos os itens
             zip_ref.extractall(destination)
         elif isinstance(extraction_list, list):
-            # Extrair uma lista de itens
             for item in extraction_list:
                 zip_ref.extract(item, destination)
         elif isinstance(extraction_list, str):
-            # Extrair um item específico
             zip_ref.extract(extraction_list, destination)
         else:
             raise ValueError("The parameter 'extraction_list' must be None, a list, or a string.")
@@ -178,9 +172,7 @@ def read_zip_archive(zip_filename, show_compression_system_files=True):
                     zip_contents_list.append(i)
                 else:
                     if "__MACOSX/" not in i:
-                        # print(f">> NÃO TEM MACOSX: {i}")
                         if ".DS_Store" not in i:
-                            # print(f">> NÃO TEM DS_STORE: {i}")
                             zip_contents_list.append(i)
             return zip_contents_list
     except FileNotFoundError:

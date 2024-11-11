@@ -138,12 +138,10 @@ def extract(tar_filename, destination, extraction_list=[]):
     """
     try:
         with tarfile.open(tar_filename, "r:*") as tar_file:
-            # If extraction_list is empty, extract all
             if len(extraction_list) == 0:
                 tar_file.extractall(destination)
                 return True
 
-            # Extract specific items
             for item in extraction_list:
                 if item in tar_file.getnames():
                     tar_file.extract(item, destination)
