@@ -6,12 +6,11 @@
 ## Overview
 Wrapper is an integral part of the FileSystemPro library, designed to provide detailed information about 
 files and directories. 
-It includes functions for retrieving metadata, checking file extensions, and creating zip archives.
+It includes functions for retrieving metadata and checking file extensions.
 
 ## Features
 - `Metadata Retrieval:` Gathers comprehensive metadata about a file or directory path.
 - `Extension Check:` Determines whether a file has an extension.
-- `Zip Archive Creation:` Packages a directory or file into a zip archive.
 
 ## Detailed Functionality
 The module's functions are crafted to offer detailed insights into the file system and to perform common 
@@ -26,11 +25,6 @@ file name, size, and more.
 ### Extension Check (`has_extension`)
 The `has_extension` function checks if a given file path has an extension, 
 which is useful for file type validation or processing logic that depends on file types.
-
-### Zip Archive Creation (`make_zip`)
-The `make_zip` function creates a zip archive from the specified source directory or file and 
-saves it to the given destination. 
-It is a convenient way to compress and package files for storage or transfer.
 
 ## Usage
 To use the functions provided by this module, 
