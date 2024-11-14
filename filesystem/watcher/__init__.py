@@ -96,7 +96,6 @@ class Watcher(object):
             i["change"] = "removed"
             results.append(i)
         
-        # set new state
         self.saved_state = current_state
         return results
 

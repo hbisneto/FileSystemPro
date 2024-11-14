@@ -90,7 +90,7 @@ def append_text(file, text):
     ```
     """
     with open(file, 'a', encoding='utf-8') as file:
-        file.write(text + '\n')
+        file.write(f'{text}')
 
 def calculate_checksum(file):
     """
@@ -121,7 +121,6 @@ def calculate_checksum(file):
     """
     sha256_hash = hashlib.sha256()
     with open(file, "rb") as f:
-        # Read and update hash in chunks of 4K
         for byte_block in iter(lambda: f.read(4096), b""):
             sha256_hash.update(byte_block)
     return sha256_hash.hexdigest()
@@ -159,46 +158,49 @@ def check_integrity(file, reference_file):
 
     return file_to_check == reference_check
 
-def create(file, data, encoding="utf-8"):
+def create(file, data, overwrite=False, encoding="utf-8"):
     """
-    # file.create(file, data, encoding="utf-8")
+    # file.create(file, data, overwrite=False, encoding="utf-8")
 
     ---
-    
+
     ### Overview
-    Creates a file at the specified path and writes data into it. If the file already exists, 
-    its contents are overwritten. The function then returns the details of the created file.
+    Creates a file at the specified path and writes data into it. If the file already exists, its contents can be either appended to or overwritten based on the `overwrite` parameter. The function then returns the details of the created file.
 
     ### Parameters:
-    file (str): The file path to create.
-    data (str): The data to write into the file.
-    encoding (str): The encoding to use when opening the file. Defaults to "utf-8".
+    - **file (str)**: The file path to create.
+    - **data (str)**: The data to write into the file.
+    - **overwrite (bool)**: Whether to overwrite the file if it already exists. Defaults to `False`.
+    - **encoding (str)**: The encoding to use when opening the file. Defaults to "utf-8".
 
     ### Returns:
-    dict: A dictionary containing the details of the created file.
+    - **dict**: A dictionary containing the details of the created file.
 
     ### Raises:
-    - FileNotFoundError: If the file does not exist.
-    - PermissionError: If the permission is denied.
-    - UnicodeEncodeError: If the data cannot be encoded with the specified encoding.
+    - **FileNotFoundError**: If the file does not exist.
+    - **PermissionError**: If the permission is denied.
+    - **UnicodeEncodeError**: If the data cannot be encoded with the specified encoding.
 
     ### Examples:
     - Creates a file and writes data into it, then returns the file details.
 
-    ```python
-    create("/path/to/file", "Hello, World!")
-    ```
+        ```python
+        create("/path/to/file", "Hello, World!")
+        ```
+
     - Creates a file with a different encoding, writes data into it, then returns the file details.
 
-    ```python
-    create("/path/to/file", "Hello, World!", "utf-16")
-    ```
+        ```python
+        create("/path/to/file", "Hello, World!", overwrite=True, encoding="utf-16")
+        ```
     """
-    try:
+    if overwrite==True:
         with codecs.open(f'{file}', "w", encoding=encoding) as custom_file:
             custom_file.write(data)
-    except:
-        pass
+    else:
+        with codecs.open(f'{file}', "a", encoding=encoding) as custom_file:
+            custom_file.write(data)
+
     return wra.get_object(f'{file}')
 
 def create_binary_file(filename, data):
@@ -340,6 +342,50 @@ def exists(file):
         return True
     return False
 
+def find_duplicates(path):
+    """
+    # file.find_duplicates(path)
+    
+    ---
+
+    ### Overview
+    Finds duplicate files in a given directory and its subdirectories.
+    A file is considered a duplicate if it has the same checksum as another file.
+
+    ### Parameters:
+    path (str): The directory path to search for duplicate files.
+
+    ### Returns:
+    A tuple of two lists:
+    - The first list contains the paths of the original files.
+    - The second list contains the paths of the duplicate files.
+
+    ### Raises:
+    - FileNotFoundError: If the directory does not exist.
+    - PermissionError: If the permission is denied.
+
+    ### Examples:
+    - Finds duplicate files in a specific directory.
+
+    ```python
+    find_duplicates("/path/to/directory")
+    ```
+    """
+    checksums = {}
+    original_files = []
+    duplicate_files = []
+
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            file_path = dir.join(root, file)
+            checksum = calculate_checksum(file_path)
+            if checksum in checksums:
+                original_files.append(checksums[checksum])
+                duplicate_files.append(file_path)
+            else:
+                checksums[checksum] = file_path
+    return original_files, duplicate_files
+
 def get_extension(file_path, lower=True):
     """
     # file.get_extension(file_path, lower=True)
@@ -377,9 +423,9 @@ def get_extension(file_path, lower=True):
         return file_extension.lower()
     return file_extension.upper()
 
-def get_files(path, fullpath=False, extension=None):
+def get_files(path, fullpath=True, extension=None):
     """
-    # file.get_files(path, fullpath=False, extension=None)
+    # file.get_files(path, fullpath=True, extension=None)
 
     ---
 
@@ -388,7 +434,7 @@ def get_files(path, fullpath=False, extension=None):
 
     ### Parameters:
     - path (str): The directory path to search for files.
-    - fullpath (bool, optional): If True, returns the full path of each file. Defaults to False.
+    - fullpath (bool, optional): If True, returns the full path of each file. Defaults to True.
     - extension (str, optional): If specified, only files with this extension will be included. Defaults to None.
 
     ### Returns:
@@ -421,6 +467,42 @@ def get_files(path, fullpath=False, extension=None):
                 else:
                     file_list.append(file)
     return file_list
+
+def get_size(file_path): 
+    """
+    # file.get_size(file_path)
+
+    ---
+
+    ### Overview
+    Calculates the size of a file at the specified path.
+    The size is returned in bytes, KB, MB, GB, or TB, depending on the size.
+
+    ### Parameters:
+    - file_path (str): The path of the file to calculate the size of.
+
+    ### Returns:
+    - str: A string representing the size of the file, formatted as a float followed by the unit of measurement.
+
+    ### Raises:
+    - FileNotFoundError: If the file does not exist.
+    - PermissionError: If the permission is denied.
+
+    ### Examples:
+    - Calculate the size of a file:
+
+    ```python
+    get_size("/path/to/file")
+    """ 
+
+    if not os.path.isfile(file_path): 
+        raise FileNotFoundError(f"O arquivo '{file_path}' não foi encontrado.") 
+    
+    size = os.path.getsize(file_path) 
+    for unit in ['bytes', 'KB', 'MB', 'GB', 'TB']: 
+        if size < 1024.0: 
+            return f"{size:3.1f} {unit}" 
+        size /= 1024.0
 
 def move(source, destination, new_filename=None, replace_existing=False):
     """

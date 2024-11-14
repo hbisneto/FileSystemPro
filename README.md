@@ -4,9 +4,16 @@ FileSystem is a powerful toolkit designed to handle file and directory operation
 
 ## Getting Started
 
-#### Recommendation
+This section will guide you through setting up the environment required to run **FileSystem Pro** effectively. Follow the steps below to ensure a smooth installation and configuration.
 
-It's recommended Python 3.8 or later to use **FileSystem Pro**. You can download the latest version of Python in [python.org](https://www.python.org/).
+<details>
+	<summary>
+		Expand to get started
+	</summary>
+	
+#### Requirements
+
+It's recommended to use Python 3.8 or later to use **FileSystem Pro**. You can download the latest version of Python at [python.org](https://www.python.org/).
 
 #### Installation
 
@@ -24,7 +31,7 @@ pip install filesystempro
 
 ---
 
-### To Developers / Contributors
+### For Developers / Contributors
 
 Clone this repository to your local machine using:
 
@@ -47,27 +54,46 @@ Install wheel / Upgrade wheel
 ```sh
 pip install --upgrade wheel
 ```
+</details>
 
 ---
+
+# FileSystem Module
+
+FileSystem provides a comprehensive suite of methods for managing and interacting with various directories and user folders across multiple operating systems. It intelligently identifies the user's operating system—Linux, macOS, or Windows—and configures file paths for essential directories like Desktop, Documents, Downloads, Music, Pictures, Public, and Videos. Leveraging Python's built-in libraries such as `os`, `sys`, and `getpass`, it ensures cross-platform compatibility and accurate path retrieval. For Windows environments, it uses the `winreg` module to query the Windows registry, ensuring the paths to these directories are accurately retrieved based on the system's registry settings. This makes FileSystem a versatile and reliable tool for any file management needs.
 
 ## Features
 
+FileSystemPro introduces a range of features and enhancements to help you manage and monitor your system's devices more efficiently.
+
+<details>
+	<summary>
+		Expand to learn about the features
+	</summary>
+	
 - **Cross-platform Compatibility:** The code is designed to work on multiple operating systems, including Linux, Mac, and Windows. This makes it versatile and adaptable to different environments.
 - **Directory Path Identification:** The code identifies and defines the paths to several common user directories based on the operating system. This includes directories like Desktop, Documents, Downloads, Music, Pictures, Public, Videos, and others.
-- **Current Working Directory:** The code uses `os.getcwd()` to get the current working directory.
 - **String Formatting:** The code uses f-string formatting to create directory paths.
-- **Monitoring System:** Watcher acts as a monitoring system for the file system. It keeps track of all activities within the file system.
-- **Change Tracking:** It records any changes made within the file system. This includes the creation of new files, modification of existing files, and deletion of files.
-- **Real-Time Updates:** The Watcher provides real-time updates on any changes made within the file system. This ensures that users have the most current information at all times.
+- **Device Module:** Includes powerful tools for managing and retrieving detailed information about your system's disks and CPU, such as disk partitions, CPU usage, and more.
+- **Compression Module:** Responsible for creating, extracting, and reading compressed archive files in tar and zip formats. It leverages Python's built-in tarfile and zipfile modules to handle these operations efficiently.
+- **Monitoring System (Watcher):** Acts as a monitoring system for the file system. It keeps track of all activities within the file system and provides real-time updates on any changes.
+- **Change Tracking:** Records any changes made within the file system. This includes the creation of new files, modification of existing files, and deletion of files.
 - **Integrity Maintenance:** This feature is particularly useful in scenarios where maintaining the integrity and up-to-date status of the file system is crucial. By tracking all changes, the Watcher helps ensure that the file system remains accurate and reliable.
+- **Registry-Based Path Retrieval:** For Windows, the module now uses the `winreg` module to retrieve accurate paths from the Windows registry. It defines paths for the current user's home, Desktop, Documents, Downloads, Music, Pictures, Public, and Videos folders by querying the Windows registry keys.
+
+</details>
 
 ---
 
-## FileSystem
+<details>
+	<summary>
+		Expand to learn about the methods
+	</summary>
 
 ```py
 import filesystem as fs
 ```
+
 <table>
   <tr>
     <th>Method</th>
@@ -88,7 +114,7 @@ import filesystem as fs
     	OS_SEPARATOR
     </td>
     <td>
-	    prints the OS separator
+	    Prints the OS separator
 		<br>'/' for macOS and Linux 
 		<br>'\\' for Windows
     </td>
@@ -231,11 +257,22 @@ import filesystem as fs
 
 </table>
 
-## Sample Codes
+The paths for Windows environment are retrieved using the `winreg` module to query the Windows registry for accurate and current folder locations. This ensures that paths such as Desktop, Documents, Downloads, Music, Pictures, Public, and Videos are accurately defined for the user based on the system's registry settings.
+
+</details>
+
+---
 
 <details>
-<summary>FileSystem: Reaching Desktop Folder</summary>
+	<summary>
+		Expand for sample codes
+	</summary>
 
+<details>
+	<summary>
+		 FileSystem: Reaching the desktop folder
+	</summary>
+	
 The following example shows how to get the `Desktop` directory path
 
 ```py
@@ -259,24 +296,269 @@ Output:
 C:\Users\YOU\Desktop
 ```
 </details>
+</details>
 
 ---
 
-# Console
+# Compression Module
 
-```py
-from filesystem import console as fsconsole
-```
-
-Console is a robust library designed to enable ANSI escape character sequences, which are used for generating colored terminal text and cursor positioning.
-This library is a key addition to FileSystemPro as a third-party library, enhancing the toolkit for developers who require consistent terminal styling across different operating systems.
+The Compression module is responsible for creating, extracting, and reading compressed archive files in tar and zip formats. It leverages Python's built-in tarfile and zipfile modules to handle these operations efficiently.
 
 ## Features
 
+The Compression Module offers robust and versatile tools for managing file compression and extraction, whether you prefer the tar or zip format.
+
+<details>
+	<summary>
+		Expand to learn about TarFile
+	</summary>
+
+### TarFile
+
+The Tarfile module offers robust and versatile tools for managing file compression and extraction, making it an essential tool for efficient file management.
+	
+</details>
+
+---
+
+<details>
+	<summary>
+		Expand to learn about the ZipFile
+	</summary>
+
+### ZipFile
+
+The Zipfile module offers robust and versatile tools for managing file compression and extraction, making it an essential tool for efficient file management.
+
+</details>
+
+---
+
+<details>
+	<summary>
+		Expand to learn about the features
+	</summary>
+
+
+- **Create Tar Archive:** This feature allows you to compress a single file, directory, or a list of files and directories into a tar archive. It efficiently bundles multiple files and directories into a single archive file, making it easier to manage and transport.
+
+- **Extract Tar Archive:** This feature enables you to extract files from a tar archive to a specified destination. You can choose to extract all files or only a specified list of files, providing flexibility in handling the contents of the archive.
+
+- **Read Tar Archive:** This feature allows you to read and list the contents of a tar archive without extracting them. It provides a convenient way to view the files and directories within the archive before deciding which ones to extract.
+
+- **Create Zip Archive:** This feature allows you to compress a single file, directory, or a list of files and directories into a zip archive. Similar to the tar archive creation, it bundles multiple files and directories into a single archive file, but in a different format.
+
+- **Extract Zip Archive:** This feature enables you to extract files from a zip archive to a specified destination. You can choose to extract all files or only a specified list of files, giving you control over which files to retrieve from the archive.
+
+- **Read Zip Archive:** This feature allows you to read and list the contents of a zip archive without extracting them. It provides a convenient way to inspect the files and directories within the archive before extraction, ensuring you have the information you need.
+
+</details>
+
+---
+
+<details>
+	<summary>
+		 Expand to learn about the methods
+	</summary>
+	
+The Compression module in FileSystemPro provides a comprehensive set of functions to efficiently manage file compression and extraction, enhancing productivity and versatility in handling various file formats and archives
+
+```py
+from filesystem import compression
+```
+
+<table>
+  <tr>
+    <th>Method</th>
+    <th>Description</th>
+  </tr>
+
+  <tr>
+    <td>
+      compression.tarfile.create_tar(fullpath_files, destination)
+    </td>
+    <td>
+      The function compresses files or directories into a TAR file.
+	  Returns a message indicating whether a single file/directory or a list of files/directories was compressed.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      compression.tarfile.extract(tar_filename, destination, extraction_list=[])
+    </td>
+    <td>
+      Extract files from a tar archive. It can extract all files or a specified list of files from the archive.
+	  Returns <strong>True</strong> if the extraction is successful, <strong>[FileSystem Pro]: File Not Found</strong> if the tar file is not found, <strong>False</strong> if a specified item in <strong>extraction_list</strong> is not found and <strong>Error Message</strong> if any other error occurs during extraction.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      compression.tarfile.read_tar_archive(tar_filename)
+    </td>
+    <td>
+      Reads the contents of a TAR archive file and returns a list of the names of the files contained within it.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      compression.zipfile.create_zip(fullpath_files, destination)
+    </td>
+    <td>
+      The function compresses files or directories into a ZIP file.
+	  Returns a message indicating whether a single file/directory or a list of files/directories was compressed.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      compression.zipfile.extract(zip_path, destination, extraction_list=None)
+    </td>
+    <td>
+      Reads the contents of a ZIP file and extracts files based on the provided parameters.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      compression.zipfile.read_zip_archive(zip_filename, show_compression_system_files=True)
+    </td>
+    <td>
+      Reads the contents of a ZIP file and returns a list of the names of the files contained within it.
+    </td>
+  </tr>
+
+</table>
+</details>
+
+---
+
+<details>
+	<summary>
+		 Expand for sample codes
+	</summary>
+
+### ZipFile Sample Codes
+	
+<details>
+<summary>Compression: Creating a zip archive</summary>
+
+This code demonstrates how to use the `create_zip` function to create a ZIP archive using **Compression**
+
+```py
+from filesystem import compression
+compression.zipfile.create_zip('/path/to/file_or_directory', '/path/to/destination.zip')
+```
+
+</details>
+
+---
+
+<details>
+<summary>Compression: Extracting from a zip archive</summary>
+
+This code demonstrates how to use the `extract` function to extract files from a ZIP archive using **Compression**.
+
+```py
+from filesystem import compression
+compression.zipfile.extract('/path/to/archive.zip', '/path/to/destination')
+```
+
+</details>
+
+---
+
+<details>
+<summary>Compression: Reading a zip archive</summary>
+
+This code demonstrates how to use the read_zip_archive function to read the contents of a ZIP archive using **Compression**.
+
+```py
+from filesystem import compression
+contents = compression.zipfile.read_zip_archive('/path/to/archive.zip')
+print(contents)
+```
+
+</details>
+
+---
+### TarFile Sample Codes
+	
+<details>
+<summary>Compression: Creating a tar archive</summary>
+
+This code demonstrates how to use the create_tar function to create a TAR archive using **Compression**.
+
+```py
+from filesystem import compression
+compression.tar.create_tar('/path/to/file_or_directory', '/path/to/destination.tar')
+```
+
+</details>
+
+---
+
+<details>
+<summary>Compression: Extracting from a tar archive</summary>
+
+This code demonstrates how to use the extract function to extract files from a TAR archive using **Compression**.
+
+```py
+from filesystem import compression
+compression.tar.extract('/path/to/archive.tar', '/path/to/destination')
+
+```
+
+</details>
+
+---
+
+<details>
+<summary>Compression: Reading a tar archive</summary>
+
+This code demonstrates how to use the read_tar_archive function to read the contents of a TAR archive using **Compression**.
+
+```py
+from filesystem import compression
+contents = compression.tar.read_tar_archive('/path/to/archive.tar')
+print(contents)
+```
+
+</details>
+</details>
+
+---
+
+# Console Module
+
+Console is a robust library designed to enable ANSI escape character sequences, which are used for generating colored terminal text and cursor positioning. This library is a key addition to FileSystemPro as a third-party library, enhancing the toolkit for developers who require consistent terminal styling across different operating systems.
+
+
+## Features
+
+Unlock the full potential of your Terminal with Console, a robust and feature-rich module that revolutionizes text styling and formatting.
+
+<details>
+	<summary>
+		Expand to learn about the features
+	</summary>
+	
 - **Universal Compatibility:** Console ensures that applications or libraries utilizing ANSI sequences for colored output on Unix or Macs can now operate identically on Windows systems.
 - **Simplified Integration:** With no dependencies other than the standard library, integrating Console into your projects is straightforward. It’s tested across multiple Python versions, ensuring reliability.
 - **Enhanced Terminal Experience:** By converting ANSI sequences into appropriate win32 calls, Console allows Windows terminals to emulate the behavior of Unix terminals, providing a consistent user experience.
 - **Effortless Transition:** For developers transitioning to FileSystemPro, incorporating Console into your workflow is effortless, enabling you to maintain the visual aspects of your terminal applications without platform constraints.
+
+</details>
+
+---
+
+<details>
+	<summary>
+		 Expand to learn about the methods
+	</summary>
+	
+These constants are used to control the appearance of text output in the terminal, including foreground and background colors, as well as text styles. By utilizing these constants, developers can enhance the readability and visual appeal of their terminal applications, ensuring a consistent experience across different operating systems.
+
+```py
+from filesystem import console as fsconsole
+```
 
 <table>
   <tr>
@@ -306,9 +588,15 @@ This library is a key addition to FileSystemPro as a third-party library, enhanc
   </tr>
   
 </table>
+</details>
 
-## Sample Codes
+---
 
+<details>
+	<summary>
+		 Expand for sample codes
+	</summary>
+	
 > [!NOTE]
 > Please note that **GitHub (and PYPI) does not support colored text** in README files. This is due to the limitations of the markdown language used in GitHub (and PYPI) READMEs, which does not have built-in support for text color changes.
 
@@ -342,6 +630,7 @@ This is a new warn message</span>
 
 </details>
 
+---
 
 <details>
 <summary>Console: Printing a blue background text message</summary>
@@ -373,6 +662,8 @@ This is a new blue background message</span>
 
 </details>
 
+---
+
 <details>
 <summary>Console: Different foregrounds, backgrounds and styles</summary>
 
@@ -399,107 +690,108 @@ Output:
 
 </details>
 
+---
+
 Remember, for the color changes to work, your Terminal must support ANSI escape sequences, which are used to set the color. Not all Terminals do, so if you’re not seeing the colors as expected, that could be why. 
+</details>
+</details>
 
 ---
 
-# Directory
+# Device Module
 
-```py
-from filesystem import directory as dir
-```
-
-The Directory module is a component of the FileSystemPro library that provides a collection of functions
-for handling directory-related operations. It simplifies tasks such as path manipulation, 
-directory creation and deletion, and file retrieval within directories.
+The Device module includes powerful tools for managing and retrieving detailed information about your system's disks and CPU.
 
 ## Features
-- **Path Combination:** Dynamically combines multiple paths into a single path string.
-- **Directory Creation:** Creates new directories, with an option to create necessary subdirectories.
-- **Directory Deletion:** Deletes directories, with an option for recursive deletion.
-- **Directory Existence Check:** Checks whether a directory exists at a specified path.
-- **File Retrieval:** Retrieves a list of files within a directory using glob patterns.
-- **Parent Directory Information:** Retrieves the name or path of a file's parent directory.
-- **Directory Listing:** Lists all subdirectories within a given directory.
-- **Directory Renaming:** Renames a directory if it exists.
+
+The Device module includes powerful tools for managing and retrieving detailed information about your system's disks and CPU, enhancing productivity and ensuring efficient system management in applications.
+
+<details>
+	<summary>
+		Expand to learn about Disks
+	</summary>
+
+### Disks
+
+The Disks section of the Device module provides powerful tools for managing and retrieving detailed information about disk partitions, boot drive names, filesystem types, and storage metrics. It enhances productivity by simplifying disk management and ensuring efficient retrieval of disk-related information.	
+</details>
+
+---
+
+<details>
+	<summary>
+		Expand to learn about the CPU
+	</summary>
+
+### CPU
+
+The CPU section of the Device module offers essential metrics and functionalities for monitoring CPU performance, including CPU usage percentage, CPU times, and the number of CPU cores. It empowers developers to efficiently manage and optimize CPU usage within their applications.
+
+</details>
+
+---
+
+<details>
+	<summary>
+		Expand to learn about the features
+	</summary>
+
+
+- **Boot Time:** Provides the system's boot time.
+- **Current Disk Filesystem Name:** Returns the name of the current disk filesystem.
+- **Disk Info:** Displays detailed information about the disks.
+- **Disk I/O Counters:** Returns disk I/O counters.
+- **Disk Partitions:** Retrieves disk partitions.
+- **Boot Drive Name:** Returns the name of the boot drive.
+- **Filter by Device:** Filters disk partitions based on the device.
+- **Filter by Filesystem Type:** Filters disk partitions based on filesystem type.
+- **Filter by Mount Point:** Filters disk partitions based on the mount point.
+- **Filter by Options:** Filters disk partitions based on options.
+- **Storage Metrics:** Provides storage metrics for a specific mount point.
+- **CPU Usage Percentage:** Returns the CPU usage percentage.
+- **CPU Usage Times:** Provides CPU usage times.
+- **CPU Count:** Returns the number of CPUs (logical cores) available in the system.
+
+</details>
+
+---
+
+<details>
+	<summary>
+		 Expand to learn about the methods
+	</summary>
+	
+The Directory module in FileSystemPro brings a comprehensive set of methods that streamline and enhance directory management
+
+```py
+from filesystem import device
+```
 
 <table>
   <tr>
-  	<th>Method</th>
-  	<th>Description</th>
+    <th>Method</th>
+    <th>Description</th>
   </tr>
-  
+
   <tr>
-    <td>directory.combine(*args, paths=[])</td>
+    <td>
+      directory.combine(*args, paths=[])
+    </td>
     <td>
       Combines a list of paths or arguments into a single path. If the first argument or the first element in the paths list is not an absolute path, it raises a ValueError.
     </td>
   </tr>
-  
-  <tr>
-    <td>directory.create(path, create_subdirs = True)</td>
-    <td>
-      Creates a directory at the specified path. If `create_subdirs` is True, all intermediate-level 
-    directories needed to contain the leaf directory will be created. After the directory is created, 
-    it returns the details of the created directory.
-    </td>
-  </tr>
-  
-  <tr>
-    <td>directory.delete(path, recursive=False)</td>
-    <td>
-     Deletes a directory at the specified path. If `recursive` is True, the directory and all its contents will be removed.
-  </td>
-  
-  <tr>
-    <td>directory.exists(path)</td>
-    <td>
-     Checks if a directory exists at the specified path.
-  </td>
-  
-  <tr>
-    <td>directory.get_directories(path, fullpath=False)</td>
-    <td>
-     Retrieves a list of directories within the specified path.
-  </td>
-  
-  <tr>
-    <td>directory.get_name(path)</td>
-    <td>
-     Retrieves the name of the directory of the specified path. 
-    If the path has an extension, it is assumed to be a file, and the parent directory name is returned. 
-    If the path does not have an extension, it is assumed to be a directory, 
-    and the directory name is returned.
-  </td>
-  
-  <tr>
-    <td>directory.get_parent_name(path)</td>
-    <td>
-     Retrieves the parent directory name from the specified path.
-  </td>
-  
-  <tr>
-    <td>directory.get_parent(path)</td>
-    <td>
-     Retrieves the parent directory from the specified path.
-  </td>
-  
-  <tr>
-    <td>directory.join(path1='', path2='', path3='', path4='', paths=[])</td>
-    <td>
-     Joins multiple directory paths into a single path. The function ensures that each directory path ends with a separator before joining. If a directory path does not end with a separator, one is added.
-  </td>
-  
-  <tr>
-    <td>directory.rename(old_path, new_path)</td>
-    <td>
-     Renames a directory from the old directory path to the new directory path. If the old directory path does not exist or is not a directory, the function returns False.
-  </td>
-  </tr>
+
 </table>
+</details>
 
-## Sample Codes
+---
 
+<details>
+	<summary>
+		 Expand for sample codes
+	</summary>
+	
 <details>
 <summary>Directory: Check if exists</summary>
 
@@ -565,17 +857,264 @@ True
 
 ---
 
-# File
+</details>
+
+---
+
+# Directory Module
+
+The Directory module is a component of the FileSystemPro library that provides a collection of functions
+for handling directory-related operations. It simplifies tasks such as path manipulation, 
+directory creation and deletion, and file retrieval within directories.
+
+## Features
+
+The Directory module simplifies directory-related tasks like path manipulation, directory creation and deletion, and file retrieval. It enhances productivity and ensures efficient directory management in applications.
+
+<details>
+	<summary>
+		Expand to learn about the features
+	</summary>
+	
+- **Path Combination:** Dynamically combines multiple paths into a single path string.
+- **Directory Creation:** Creates new directories, with an option to create necessary subdirectories.
+- **Directory Deletion:** Deletes directories, with an option for recursive deletion.
+- **Directory Existence Check:** Checks whether a directory exists at a specified path.
+- **File Retrieval:** Retrieves a list of files within a directory using glob patterns.
+- **Parent Directory Information:** Retrieves the name or path of a file's parent directory.
+- **Directory Listing:** Lists all subdirectories within a given directory.
+- **Directory Renaming:** Renames a directory if it exists.
+
+</details>
+
+---
+
+<details>
+	<summary>
+		 Expand to learn about the methods
+	</summary>
+	
+The Directory module in FileSystemPro brings a comprehensive set of methods that streamline and enhance directory management
 
 ```py
-from filesystem import file as fsfile
+from filesystem import directory as dir
 ```
+
+<table>
+  <tr>
+    <th>Method</th>
+    <th>Description</th>
+  </tr>
+
+  <tr>
+    <td>
+      directory.combine(*args, paths=[])
+    </td>
+    <td>
+      Combines a list of paths or arguments into a single path. If the first argument or the first element in the paths list is not an absolute path, it raises a ValueError.
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      directory.create(path, create_subdirs = True)
+    </td>
+    <td>
+      Creates a directory at the specified path. If `create_subdirs` is True, all intermediate-level 
+      directories needed to contain the leaf directory will be created. After the directory is created, 
+      it returns the details of the created directory.
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      directory.delete(path, recursive=False)
+    </td>
+    <td>
+      Deletes a directory at the specified path. If `recursive` is True, the directory and all its contents will be removed.
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      directory.exists(path)
+    </td>
+    <td>
+      Checks if a directory exists at the specified path.
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      directory.get_directories(path, fullpath=True)
+    </td>
+    <td>
+      Create a list of directories within a specified path and returns either their full paths or just their names based on the <strong>fullpath</strong> parameter. Defaults to <strong>True</strong>.
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      directory.get_name(path)
+    </td>
+    <td>
+      Retrieves the name of the directory of the specified path. 
+      If the path has an extension, it is assumed to be a file, and the parent directory name is returned. 
+      If the path does not have an extension, it is assumed to be a directory, 
+      and the directory name is returned.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      directory.get_parent(path)
+    </td>
+    <td>
+      Retrieves the parent directory from the specified path.
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      directory.get_parent_name(path)
+    </td>
+    <td>
+      Retrieves the parent directory name from the specified path.
+    </td>
+  </tr>
+  
+    <tr>
+    <td>
+      directory.get_size(directory_path)
+    </td>
+    <td>
+      Calculates the total size of all files in the specified directory. The size is returned in bytes, KB, MB, GB, or TB, depending on the total size.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      directory.join(path1='', path2='', path3='', path4='', paths=[])
+    </td>
+    <td>
+      Joins multiple directory paths into a single path. The function ensures that each directory path ends with a separator before joining. If a directory path does not end with a separator, one is added.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      directory.move(source, destination, move_root=True)
+    </td>
+    <td>
+      The move function is designed to move files or directories from a source location to a destination.
+    It provides flexibility by allowing you to specify whether intermediate-level subdirectories should be created during the move operation.
+    </td>
+  </tr>
+
+
+  <tr>
+    <td>
+      directory.rename(old_path, new_path)
+    </td>
+    <td>
+      Renames a directory from the old directory path to the new directory path. If the old directory path does not exist or is not a directory, the function returns False.
+    </td>
+  </tr>
+</table>
+</details>
+
+---
+
+<details>
+	<summary>
+		 Expand for sample codes
+	</summary>
+	
+<details>
+<summary>Directory: Check if exists</summary>
+
+The following example check whether a directory exists within the file system and print the result using **Directory**
+
+```py
+import filesystem as fs
+from filesystem import directory as dir
+
+documents_exists = dir.exists(fs.documents)
+
+print(documents_exists)
+```
+
+Output:
+
+```
+True
+```
+</details>
+
+<details>
+<summary>Directory: Listing directories inside a folder</summary>
+
+The following example shows how to lists all directories in the specified path using **Directory**
+
+```py
+import filesystem as fs
+from filesystem import directory as dir
+
+folder_list = dir.get_directories(fs.documents)
+
+print(folder_list)
+```
+
+Output:
+
+```
+['Work', 'School', 'PicsBackups', 'Office Documents']
+```
+</details>
+
+<details>
+<summary>Directory: Renaming a folder</summary>
+
+The following example shows how rename a folder using **Directory**
+
+```py
+import filesystem as fs
+from filesystem import directory as dir
+
+new_name = dir.rename(f'{fs.documents}/MyFolder', f'{fs.documents}/NewFolder')
+
+print(new_name)
+```
+
+Output:
+
+```
+True
+```
+</details>
+
+---
+
+</details>
+
+---
+
+# File Module
 
 The File module is a comprehensive utility toolset that forms part of the FileSystemPro library. 
 It provides a suite of functions designed to handle various file operations such as integrity checks,
 file creation, deletion, enumeration, and file splitting and reassembling.
 
+
 ## Features
+
+The File module is packed with a variety of features aimed at simplifying and optimizing file management tasks. From calculating file integrity to creating, deleting, and managing files, these features are designed to provide robust solutions for handling all your file-related operations.
+
+<details>
+	<summary>
+		Expand to learn about the features
+	</summary>
+	
 - **Checksum Calculation:** Utilizes SHA-256 hashing to calculate file checksums for integrity verification.
 - **Integrity Check:** Compares checksums of two files to verify their integrity.
 - **File Creation:** Supports creating both text and binary files with specified data.
@@ -586,6 +1125,21 @@ file creation, deletion, enumeration, and file splitting and reassembling.
 - **File Renaming:** Renames files within a directory after checking for their existence.
 - **File Reassembling:** Reassembles split files back into a single file.
 - **File Splitting:** Splits a file into smaller parts based on a specified chunk size.
+
+</details>
+
+---
+
+<details>
+	<summary>
+		 Expand to learn about the methods
+	</summary>
+	
+The Directory module in FileSystemPro brings a comprehensive set of methods that streamline and enhance directory management
+
+```py
+from filesystem import file as fsfile
+```
 
 <table>
   <tr>
@@ -615,10 +1169,9 @@ file creation, deletion, enumeration, and file splitting and reassembling.
   </tr>
   
   <tr>
-    <td>file.create(file, data, encoding="utf-8")</td>
+    <td>file.create(file, data, overwrite=False, encoding="utf-8")</td>
     <td>
-      Creates a file at the specified path and writes data into it. If the file already exists, 
-    its contents are overwritten. The function then returns the details of the created file.
+      Creates a file at the specified path and writes data into it. If the file already exists, its contents can be either appended to or overwritten based on the <strong>overwrite</strong> parameter. The function then returns the details of the created file
     </td>
   </tr>
   
@@ -653,6 +1206,14 @@ file creation, deletion, enumeration, and file splitting and reassembling.
   </tr>
   
   <tr>
+    <td>file.find_duplicates(path)</td>
+    <td>
+      Finds duplicate files in a given directory and its subdirectories.
+    A file is considered a duplicate if it has the same checksum as another file.
+    </td>
+  </tr>
+  
+  <tr>
     <td>file.get_extension(file_path, lower=True)</td>
     <td>
       Extracts the file extension from the given file path and returns it in lowercase or uppercase based on the `lower` parameter.
@@ -660,9 +1221,17 @@ file creation, deletion, enumeration, and file splitting and reassembling.
   </tr>
 
   <tr>
-    <td>file.get_files(path, fullpath=False, extension=None)</td>
+    <td>file.get_files(path, fullpath=True, extension=None)</td>
     <td>
       Retrieves a list of files from the specified directory. Optionally, it can return the full path of each file and filter files by their extension.
+    </td>
+  </tr>
+  
+    <tr>
+    <td>file.get_size(file_path)</td>
+    <td>
+      Calculates the size of a file at the specified path.
+    The size is returned in bytes, KB, MB, GB, or TB, depending on the size.
     </td>
   </tr>
   
@@ -697,12 +1266,16 @@ file creation, deletion, enumeration, and file splitting and reassembling.
       Splits a large file into smaller chunks. The function reads the file in chunks of a specified size and writes each chunk to a new file. The new files are named by appending `.fsp` and an index number to the original filename.
     </td>
   </tr>  
-  
-  
 </table>
+</details>
 
-## Sample Codes
+---
 
+<details>
+	<summary>
+		 Expand for sample codes
+	</summary>
+	
 <details>
 <summary>File: Check Integrity</summary>
 
@@ -761,135 +1334,55 @@ None output
 
 ---
 
-# Wrapper
+</details>
+
+---
+
+# Wrapper Module
+
+Wrapper is a comprehensive toolkit that provides a set of utility functions specifically designed to facilitate file and directory operations. These operations may include creating, reading, updating, and deleting files or directories.
+
+
+## Features
+
+Wrapper is an integral part of the FileSystemPro library, designed to provide detailed information about 
+files and directories. 
+It includes functions for retrieving metadata and checking file extensions.
+
+<details>
+	<summary>
+		Expand to learn about the features
+	</summary>
+	
+- **Metadata Retrieval:** Gathers comprehensive metadata about a file or directory path.
+- **Extension Check:** Determines whether a file has an extension.
+
+</details>
+
+---
+
+<details>
+	<summary>
+		 Expand to learn about the methods
+	</summary>
+	
+The Wrapper module in FileSystemPro brings a comprehensive set of methods that streamline and enhance file and directory management.
 
 ```py
 from filesystem import wrapper as wra
 ```
 
-Wrapper is a comprehensive toolkit that provides a set of utility functions specifically designed to facilitate file and directory operations. These operations may include creating, reading, updating, and deleting files or directories.
-
 <table>
   <tr>
     <th>Method</th>
     <th>Description</th>
-    <th>Status</th>
   </tr>
-
-  <tr>
-    <td>wrapper.combine(*args, paths=[])</td>
-    <td>
-      This function is designed to combine file or directory paths. It takes any number of arguments *args and an optional parameter paths which is a list of paths. The function returns a combined path based on the inputs.
-      If the paths list is provided, the function uses it to combine paths. It starts with the first path in the list and checks if it’s an absolute path. If it’s not, it raises a ValueError with a detailed error message. Then, it iterates over the rest of the paths in the list. If a path is absolute, it replaces the current result with this path. If a path is relative, it joins this path to the current result. Finally, it returns the combined path.
-      If the paths list is not provided or is empty, the function uses the arguments passed *args. It starts with the first argument and checks if it’s an absolute path. If it’s not, it raises a ValueError with a detailed error message. Then, it iterates over the rest of the arguments. If an argument is an absolute path, it replaces the current result with this path. If an argument is a relative path and not an empty string, it adds this path to the current result. If the current result doesn’t end with a separator (os.sep), it adds one before adding the path. Finally, it returns the combined path.
-      <br><br><strong>Please note:</strong> This function does not check if the paths exist or are valid, it only combines them based on the rules described. It’s up to the caller to ensure that the paths are valid and exist if necessary.
-      <br><br>This method is intended to concatenate individual strings into a single string that represents a file path. However, if an argument other than the first contains a rooted path, any previous path components are ignored, and the returned string begins with that rooted path component. As an alternative to the combine method, consider using the join method.
-    </td>
-    <td>
-    	Under support. Consider using directory.combine(*args, paths=[])
-    </td>
-  </tr>
-
-
-  <tr>
-    <td>
-      wrapper.create_directory(path, create_subdirs=True)
-    </td>
-    <td>
-      This function is used to create a directory at the specified <strong>path</strong>. If <strong>create_subdirs</strong> is <strong>True</strong>, the function creates all intermediate-level directories needed to contain the leaf directory. If <strong>create_subdirs</strong> is <strong>False</strong>, the function will raise an error if the directory already exists or if any intermediate-level directories in the path do not exist. 
-      <br>Default is <strong>True</strong>
-      <br>If the directories already exist, it does nothing.
-    </td>
-    <td>
-    	Under support. Consider using directory.create(path, create_subdirs = True)
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      wrapper.create_file(file_name, path, text, encoding="utf-8-sig")
-    </td>
-    <td>
-      The function attempts to open a file at the specified <strong>path</strong> with the given <strong>file_name</strong> (with extension), in write mode with the specified <strong>encoding</strong>. It then writes the provided <strong>text</strong> into the file.
-      <br>Finally, it calls Wrapper <strong>get_object</strong> with the full path to the newly created file and returns the resulting dictionary.
-    </td>
-    <td>
-    	Under support. Consider using file.create(file, data, encoding="utf-8-sig")
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      wrapper.delete(path, recursive=False)
-    </td>
-    <td>
-      This function is designed to delete a directory at a given <strong>path</strong>.
-      If <strong>recursive</strong> is set to <strong>True</strong>, the function will delete the directory and all its contents. If it’s <strong>False</strong>, the function will only delete the directory if it’s empty. Default is <strong>False</strong>.
-    </td>
-    <td>
-    	Under support. Consider using directory.delete(path, recursive=False)
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      wrapper.find_duplicates(path)
-    </td>
-    <td>
-      Finds duplicate files in a given directory and its subdirectories. A file is considered a duplicate if it has the same checksum as another file.
-    </td>
-    <td>
-      Supported
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      wrapper.enumerate_files(path)
-    </td>
-    <td>
-      This function performs a depth-first traversal of the directory tree at the given path (after expanding any user home directory symbols). It returns a list of dictionaries containing the attributes of each file and directory in the tree.
-    </td>
-    <td>
-    	Under support. Consider using file.enumerate_files(path)
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      wrapper.get_files(path)
-    </td>
-    <td>
-      This function takes a path as input (which can include wildcards), expands any user home directory symbols (~), and returns a list of dictionaries containing the attributes of each file or directory that matches the path.
-    </td>
-    <td>
-    	Under support. Consider using file.get_files(path)
-    </td>
-  </tr>
-
   <tr>
     <td>
       wrapper.get_object(path)
     </td>
     <td>
       This function takes a file or directory path as input and returns a dictionary containing various attributes of the file or directory. These attributes include the time of last modification, creation time, last access time, name, size, absolute path, parent directory, whether it's a directory or file or link, whether it exists, and its extension (if it's a file).
-    </td>
-    <td>
-    	Supported
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      wrapper.get_size(file_path)
-    </td>
-    <td>
-      Calculates the size of the file or directory at the specified path. If the path is a directory, 
-      it calculates the total size of all files in the directory. The size is returned in bytes, KB, 
-      MB, GB, or TB, depending on the size.
-    </td>
-    <td>
-      Supported
     </td>
   </tr>
   
@@ -900,102 +1393,20 @@ Wrapper is a comprehensive toolkit that provides a set of utility functions spec
     <td>
       Checks if the given file path has an extension. This function can return True or False based on the string, even if the file or directory does not exist.
     </td>
-    <td>
-      Supported
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      wrapper.join(path1='', path2='', path3='', path4='', paths=[])
-    </td>
-    <td>
-      This function is designed to concatenate directory paths. It takes four optional string parameters <strong>path1</strong>, <strong>path2</strong>, <strong>path3</strong>, <strong>path4</strong> and an optional list of paths paths. The function returns a single string that represents the concatenated path.
-      <br>For each of the parameters <strong>path1</strong>, <strong>path2</strong>, <strong>path3</strong> and <strong>path4</strong>, the function checks if the path ends with a separator. If it doesn’t, and the path is not an empty string, it adds a separator to the end of the path.
-      If the paths list is provided and is not empty, the function iterates over each item in the list. For each item, it checks if the item ends with a separator. If it doesn’t, it adds a separator to the end of the item.
-      Finally, the function returns the concatenated path.
-      <br><br><strong>Please note:</strong> This function does not check if the paths exist or are valid, it only combines them based on the rules described. It’s up to the caller to ensure that the paths are valid and exist if necessary.
-      <br><br>Unlike the <strong>combine</strong> method, the <strong>join</strong> method does not attempt to root the returned path. (That is, if <strong>path2</strong> or <strong>path3</strong> or <strong>path4</strong> is an absolute path, the <strong>join</strong> method does not discard the previous paths as the <strong>combine</strong> method does).
-    </td>
-    <td>
-    	Under support. Consider using directory.join(path1='', path2='', path3='', path4='', paths=[])
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      wrapper.list_directories(path)
-    </td>
-    <td>
-      This function returns a list of all the directories in a given directory.
-    </td>
-    <td>
-    	Under support. Consider using directory.get_directories(path)
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      wrapper.list_files(path)
-    </td>
-    <td>
-      This function returns a list of all the files in a given directory.
-    </td>
-    <td>
-    	Under support. Consider using file.get_files(path)
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      wrapper.make_zip(source, destination)
-    </td>
-    <td>
-      This function is used to create a zip archive of a given source directory and move it to a specified destination.
-    </td>
-    <td>
-    	Supported
-    </td>
   </tr>
   
-  <tr>
-    <td>
-      wrapper.read_zip_file_contents(zip_filename)
-    </td>
-    <td>
-      Reads the contents of a ZIP file and returns a list of the names of the files contained within it.
-    </td>
-    <td>
-    	New implementation
-    </td>
-  </tr>
+  
   
 </table>
-
-## Sample Codes
-
-<details>
-<summary>Wrapper: Make a zip file</summary>
-
-Creates a zip archive of the specified source directory or file and moves it to the specified destination using **Wrapper**
-
-- Creates a zip archive of a **directory** and moves it to a destination.
-
-```python
-from filesystem import wrapper as wra
-
-wra.make_zip("/path/to/directory", "/path/to/directory.zip")
-```
-
-- Creates a zip archive of a **file** and moves it to a destination.
-
-```python
-from filesystem import wrapper as wra
-
-wra.make_zip("/path/to/file.txt", "/path/to/file.zip")
-```
 </details>
 
+---
+
+<details>
+	<summary>
+		 Expand for sample codes
+	</summary>
+	
 <details>
 <summary>Wrapper: Has Extension</summary>
 
@@ -1036,36 +1447,48 @@ False
 This will return **False** because the file does not have an extension.
 </details>
 
-<details>
-<summary>Wrapper: Get size of file or directory</summary>
+---
 
-Calculates the size of the file or directory at the specified path.
-
-```py
-import filesystem as fs
-from filesystem import wrapper as wra
-
-documents_size = wra.get_size(fs.documents)
-
-print(documents_size)
-```
-
-Output:
-
-```sh
-1.6 GB
-```
 </details>
 
 ---
 
-# Watcher
+# Watcher Module
+
+Watcher serves as a monitoring system for the file system. It keeps track of any changes made within the file system, such as the creation of new files, modification of existing files, or deletion of files. This feature allows for real-time updates and can be particularly useful in scenarios where maintaining the integrity and up-to-date status of the file system is crucial.
+
+
+## Features
+
+Watcher could be useful in scenarios where you need to monitor changes to a file system, for example, in a backup system or a live syncing service.
+
+<details>
+	<summary>
+		Expand to learn about the features
+	</summary>
+	
+- **Initialization:** The constructor method init(self, root) initializes the Watcher object with a root directory to watch and saves the current state of the file system.
+
+- **State Retrieval:** The get_state(self, path) method returns a dictionary of all files in the given path with their metadata.
+
+- **Change Detection:** The diff(self) method compares the current state of the file system with the saved state to identify any changes (created, updated, or removed files) and returns a list of dictionaries with the metadata of changed files and the type of change.
+
+- **String Representation:** The str(self) method returns a string representation of the Watcher object.
+
+</details>
+
+---
+
+<details>
+	<summary>
+		 Expand to learn about the methods
+	</summary>
+	
+The Wrapper module in FileSystemPro brings a comprehensive set of methods that streamline and enhance file and directory management.
 
 ```py
 from filesystem import watcher as wat
 ```
-
-Watcher serves as a monitoring system for the file system. It keeps track of any changes made within the file system, such as the creation of new files, modification of existing files, or deletion of files. This feature allows for real-time updates and can be particularly useful in scenarios where maintaining the integrity and up-to-date status of the file system is crucial.
 
 <table>
   <tr>
@@ -1102,11 +1525,15 @@ Watcher serves as a monitoring system for the file system. It keeps track of any
   </tr>
   
 </table>
+</details>
 
-This class could be useful in scenarios where you need to monitor changes to a file system, for example, in a backup system or a live syncing service.
+---
 
-## Sample Codes
-
+<details>
+	<summary>
+		 Expand for sample codes
+	</summary>
+	
 <details>
 <summary>Watcher: Monitoring Documents Folder</summary>
 
@@ -1133,6 +1560,10 @@ while True:
             print(f"{change['abspath']} was {change['change']}")
     time.sleep(5)  # Awaits for 5 seconds before a new verification
 ```
+
+</details>
+
+---
 
 </details>
 

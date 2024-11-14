@@ -236,9 +236,9 @@ def exists(path):
         return True
     return False
 
-def get_directories(path, fullpath=False):
+def get_directories(path, fullpath=True):
     """
-    # directory.get_directories(path, fullpath=False)
+    # directory.get_directories(path, fullpath=True)
 
     ---
     
@@ -247,7 +247,7 @@ def get_directories(path, fullpath=False):
 
     ### Parameters:
     path (str): The directory path to search within.
-    fullpath (bool, optional): If True, returns the full path of each directory. Defaults to False.
+    fullpath (bool, optional): If True, returns the full path of each directory. Defaults to True.
 
     ### Returns:
     list: A list of directory names or full paths, depending on the `fullpath` parameter.
@@ -373,6 +373,46 @@ def get_parent_name(path):
         path = path[:-1]
         return os.path.basename(path)
     return os.path.basename(os.path.dirname(path))
+
+def get_size(directory_path):
+    """
+    # directory.get_size(directory_path)
+
+    ---
+
+    ### Overview
+    Calculates the total size of all files in the specified directory. The size is returned in bytes, KB, MB, GB, or TB, depending on the total size.
+
+    ### Parameters:
+    - directory_path (str): The path of the directory to calculate the size of.
+
+    ### Returns:
+    - str: A string representing the total size of the directory, formatted as a float followed by the unit of measurement.
+
+    ### Raises:
+    - FileNotFoundError: If the directory does not exist.
+    - PermissionError: If permission is denied.
+
+    ### Examples:
+    - Calculate the total size of all files in a directory:
+
+    ```python
+    get_size("/path/to/directory")
+
+    """
+    if not os.path.isdir(directory_path):
+        raise FileNotFoundError(f"O diretório '{directory_path}' não foi encontrado.")
+
+    total_size = sum(
+        os.path.getsize(os.path.join(dirpath, filename))
+        for dirpath, dirnames, filenames in os.walk(directory_path)
+        for filename in filenames
+    )
+
+    for unit in ['bytes', 'KB', 'MB', 'GB', 'TB']:
+        if total_size < 1024.0:
+            return f"{total_size:3.1f} {unit}"
+        total_size /= 1024.0
 
 def join(path1='', path2='', path3='', path4='', paths=[]):
     """
