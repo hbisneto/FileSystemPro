@@ -7,9 +7,7 @@ FileSystem is a powerful toolkit designed to handle file and directory operation
 This section will guide you through setting up the environment required to run **FileSystem Pro** effectively. Follow the steps below to ensure a smooth installation and configuration.
 
 <details>
-	<summary>
-		Expand to get started
-	</summary>
+	<summary>Expand to get started</summary>
 	
 #### Requirements
 
@@ -45,7 +43,6 @@ Install setuptools / Upgrade setuptools
 pip install --upgrade setuptools
 ```
 
-> [!NOTE]
 > Note: FileSystem Pro requires setuptools 69.5.1 or later.
 ><br> Python environment typically targets setuptools version 49.x.
 
@@ -67,9 +64,7 @@ FileSystem provides a comprehensive suite of methods for managing and interactin
 FileSystemPro introduces a range of features and enhancements to help you manage and monitor your system's devices more efficiently.
 
 <details>
-	<summary>
-		Expand to learn about the features
-	</summary>
+	<summary>Expand to learn about the features</summary>
 	
 - **Cross-platform Compatibility:** The code is designed to work on multiple operating systems, including Linux, Mac, and Windows. This makes it versatile and adaptable to different environments.
 - **Directory Path Identification:** The code identifies and defines the paths to several common user directories based on the operating system. This includes directories like Desktop, Documents, Downloads, Music, Pictures, Public, Videos, and others.
@@ -86,9 +81,7 @@ FileSystemPro introduces a range of features and enhancements to help you manage
 ---
 
 <details>
-	<summary>
-		Expand to learn about the methods
-	</summary>
+	<summary>Expand to learn about the methods</summary>
 
 ```py
 import filesystem as fs
@@ -115,8 +108,8 @@ import filesystem as fs
     </td>
     <td>
 	    Prints the OS separator
-		<br>'/' for macOS and Linux 
-		<br>'\\' for Windows
+		  <br>'/' for macOS and Linux 
+		  <br>'\\' for Windows
     </td>
   </tr>
 
@@ -264,14 +257,10 @@ The paths for Windows environment are retrieved using the `winreg` module to que
 ---
 
 <details>
-	<summary>
-		Expand for sample codes
-	</summary>
+	<summary>Expand for sample codes</summary>
 
 <details>
-	<summary>
-		 FileSystem: Reaching the desktop folder
-	</summary>
+	<summary>FileSystem: Reaching the desktop folder</summary>
 	
 The following example shows how to get the `Desktop` directory path
 
@@ -295,6 +284,7 @@ Output:
 ## On Windows
 C:\Users\YOU\Desktop
 ```
+
 </details>
 </details>
 
@@ -309,9 +299,7 @@ The Compression module is responsible for creating, extracting, and reading comp
 The Compression Module offers robust and versatile tools for managing file compression and extraction, whether you prefer the tar or zip format.
 
 <details>
-	<summary>
-		Expand to learn about TarFile
-	</summary>
+	<summary>Expand to learn about TarFile</summary>
 
 ### TarFile
 
@@ -322,9 +310,7 @@ The Tarfile module offers robust and versatile tools for managing file compressi
 ---
 
 <details>
-	<summary>
-		Expand to learn about the ZipFile
-	</summary>
+	<summary>Expand to learn about the ZipFile</summary>
 
 ### ZipFile
 
@@ -335,9 +321,7 @@ The Zipfile module offers robust and versatile tools for managing file compressi
 ---
 
 <details>
-	<summary>
-		Expand to learn about the features
-	</summary>
+	<summary>Expand to learn about the features</summary>
 
 
 - **Create Tar Archive:** This feature allows you to compress a single file, directory, or a list of files and directories into a tar archive. It efficiently bundles multiple files and directories into a single archive file, making it easier to manage and transport.
@@ -357,9 +341,7 @@ The Zipfile module offers robust and versatile tools for managing file compressi
 ---
 
 <details>
-	<summary>
-		 Expand to learn about the methods
-	</summary>
+	<summary>Expand to learn about the methods</summary>
 	
 The Compression module in FileSystemPro provides a comprehensive set of functions to efficiently manage file compression and extraction, enhancing productivity and versatility in handling various file formats and archives
 
@@ -379,7 +361,7 @@ from filesystem import compression
     </td>
     <td>
       The function compresses files or directories into a TAR file.
-	  Returns a message indicating whether a single file/directory or a list of files/directories was compressed.
+	    Returns a message indicating whether a single file/directory or a list of files/directories was compressed.
     </td>
   </tr>
   <tr>
@@ -388,7 +370,7 @@ from filesystem import compression
     </td>
     <td>
       Extract files from a tar archive. It can extract all files or a specified list of files from the archive.
-	  Returns <strong>True</strong> if the extraction is successful, <strong>[FileSystem Pro]: File Not Found</strong> if the tar file is not found, <strong>False</strong> if a specified item in <strong>extraction_list</strong> is not found and <strong>Error Message</strong> if any other error occurs during extraction.
+	    Returns <strong>True</strong> if the extraction is successful, <strong>[FileSystem Pro]: File Not Found</strong> if the tar file is not found, <strong>False</strong> if a specified item in <strong>extraction_list</strong> is not found and <strong>Error Message</strong> if any other error occurs during extraction.
     </td>
   </tr>
   <tr>
@@ -405,7 +387,7 @@ from filesystem import compression
     </td>
     <td>
       The function compresses files or directories into a ZIP file.
-	  Returns a message indicating whether a single file/directory or a list of files/directories was compressed.
+	    Returns a message indicating whether a single file/directory or a list of files/directories was compressed.
     </td>
   </tr>
   <tr>
@@ -431,9 +413,7 @@ from filesystem import compression
 ---
 
 <details>
-	<summary>
-		 Expand for sample codes
-	</summary>
+	<summary>Expand for sample codes</summary>
 
 ### ZipFile Sample Codes
 	
@@ -536,9 +516,7 @@ Console is a robust library designed to enable ANSI escape character sequences, 
 Unlock the full potential of your Terminal with Console, a robust and feature-rich module that revolutionizes text styling and formatting.
 
 <details>
-	<summary>
-		Expand to learn about the features
-	</summary>
+	<summary>Expand to learn about the features</summary>
 	
 - **Universal Compatibility:** Console ensures that applications or libraries utilizing ANSI sequences for colored output on Unix or Macs can now operate identically on Windows systems.
 - **Simplified Integration:** With no dependencies other than the standard library, integrating Console into your projects is straightforward. It’s tested across multiple Python versions, ensuring reliability.
@@ -550,9 +528,7 @@ Unlock the full potential of your Terminal with Console, a robust and feature-ri
 ---
 
 <details>
-	<summary>
-		 Expand to learn about the methods
-	</summary>
+	<summary>Expand to learn about the methods</summary>
 	
 These constants are used to control the appearance of text output in the terminal, including foreground and background colors, as well as text styles. By utilizing these constants, developers can enhance the readability and visual appeal of their terminal applications, ensuring a consistent experience across different operating systems.
 
@@ -583,7 +559,7 @@ from filesystem import console as fsconsole
   <tr>
     <td>style</td>
     <td>
-     DIM, NORMAL, BRIGHT, RESET_ALL
+      DIM, NORMAL, BRIGHT, RESET_ALL
   </td>
   </tr>
   
@@ -593,11 +569,8 @@ from filesystem import console as fsconsole
 ---
 
 <details>
-	<summary>
-		 Expand for sample codes
-	</summary>
+	<summary>Expand for sample codes</summary>
 	
-> [!NOTE]
 > Please note that **GitHub (and PYPI) does not support colored text** in README files. This is due to the limitations of the markdown language used in GitHub (and PYPI) READMEs, which does not have built-in support for text color changes.
 
 <details>
@@ -707,9 +680,7 @@ The Device module includes powerful tools for managing and retrieving detailed i
 The Device module includes powerful tools for managing and retrieving detailed information about your system's disks and CPU, enhancing productivity and ensuring efficient system management in applications.
 
 <details>
-	<summary>
-		Expand to learn about Disks
-	</summary>
+	<summary>Expand to learn about Disks</summary>
 
 ### Disks
 
@@ -719,9 +690,7 @@ The Disks section of the Device module provides powerful tools for managing and 
 ---
 
 <details>
-	<summary>
-		Expand to learn about the CPU
-	</summary>
+	<summary>Expand to learn about the CPU</summary>
 
 ### CPU
 
@@ -732,9 +701,7 @@ The CPU section of the Device module offers essential metrics and functionalitie
 ---
 
 <details>
-	<summary>
-		Expand to learn about the features
-	</summary>
+	<summary>Expand to learn about the features</summary>
 
 
 - **Boot Time:** Provides the system's boot time.
@@ -757,9 +724,7 @@ The CPU section of the Device module offers essential metrics and functionalitie
 ---
 
 <details>
-	<summary>
-		 Expand to learn about the methods
-	</summary>
+	<summary>Expand to learn about the methods</summary>
 	
 The Directory module in FileSystemPro brings a comprehensive set of methods that streamline and enhance directory management
 
@@ -788,9 +753,7 @@ from filesystem import device
 ---
 
 <details>
-	<summary>
-		 Expand for sample codes
-	</summary>
+	<summary>Expand for sample codes</summary>
 	
 <details>
 <summary>Directory: Check if exists</summary>
@@ -872,9 +835,7 @@ directory creation and deletion, and file retrieval within directories.
 The Directory module simplifies directory-related tasks like path manipulation, directory creation and deletion, and file retrieval. It enhances productivity and ensures efficient directory management in applications.
 
 <details>
-	<summary>
-		Expand to learn about the features
-	</summary>
+	<summary>Expand to learn about the features</summary>
 	
 - **Path Combination:** Dynamically combines multiple paths into a single path string.
 - **Directory Creation:** Creates new directories, with an option to create necessary subdirectories.
@@ -890,9 +851,7 @@ The Directory module simplifies directory-related tasks like path manipulation, 
 ---
 
 <details>
-	<summary>
-		 Expand to learn about the methods
-	</summary>
+	<summary>Expand to learn about the methods</summary>
 	
 The Directory module in FileSystemPro brings a comprehensive set of methods that streamline and enhance directory management
 
@@ -1007,7 +966,7 @@ from filesystem import directory as dir
     </td>
     <td>
       The move function is designed to move files or directories from a source location to a destination.
-    It provides flexibility by allowing you to specify whether intermediate-level subdirectories should be created during the move operation.
+      It provides flexibility by allowing you to specify whether intermediate-level subdirectories should be created during the move operation.
     </td>
   </tr>
 
@@ -1026,9 +985,7 @@ from filesystem import directory as dir
 ---
 
 <details>
-	<summary>
-		 Expand for sample codes
-	</summary>
+	<summary>Expand for sample codes</summary>
 	
 <details>
 <summary>Directory: Check if exists</summary>
@@ -1111,9 +1068,7 @@ file creation, deletion, enumeration, and file splitting and reassembling.
 The File module is packed with a variety of features aimed at simplifying and optimizing file management tasks. From calculating file integrity to creating, deleting, and managing files, these features are designed to provide robust solutions for handling all your file-related operations.
 
 <details>
-	<summary>
-		Expand to learn about the features
-	</summary>
+	<summary>Expand to learn about the features</summary>
 	
 - **Checksum Calculation:** Utilizes SHA-256 hashing to calculate file checksums for integrity verification.
 - **Integrity Check:** Compares checksums of two files to verify their integrity.
@@ -1131,9 +1086,7 @@ The File module is packed with a variety of features aimed at simplifying and op
 ---
 
 <details>
-	<summary>
-		 Expand to learn about the methods
-	</summary>
+	<summary>Expand to learn about the methods</summary>
 	
 The Directory module in FileSystemPro brings a comprehensive set of methods that streamline and enhance directory management
 
@@ -1194,7 +1147,7 @@ from filesystem import file as fsfile
     <td>file.enumerate_files(file)</td>
     <td>
       Enumerates all files in a given directory and its subdirectories. 
-    For each file and directory, it retrieves various attributes using the `wra.get_object` function.
+      For each file and directory, it retrieves various attributes using the `wra.get_object` function.
     </td>
   </tr>
   
@@ -1209,7 +1162,7 @@ from filesystem import file as fsfile
     <td>file.find_duplicates(path)</td>
     <td>
       Finds duplicate files in a given directory and its subdirectories.
-    A file is considered a duplicate if it has the same checksum as another file.
+      A file is considered a duplicate if it has the same checksum as another file.
     </td>
   </tr>
   
@@ -1227,11 +1180,11 @@ from filesystem import file as fsfile
     </td>
   </tr>
   
-    <tr>
+  <tr>
     <td>file.get_size(file_path)</td>
     <td>
       Calculates the size of a file at the specified path.
-    The size is returned in bytes, KB, MB, GB, or TB, depending on the size.
+      The size is returned in bytes, KB, MB, GB, or TB, depending on the size.
     </td>
   </tr>
   
@@ -1239,8 +1192,8 @@ from filesystem import file as fsfile
     <td>file.move(source, destination, new_filename=None, replace_existing=False)</td>
     <td>
       The move function moves a file from a source location to a destination location. 
-    If the destination file already exists, 
-    you can choose whether to replace it or keep the existing file. 
+      If the destination file already exists,
+      you can choose whether to replace it or keep the existing file. 
     </td>
   </tr>
   
@@ -1255,8 +1208,8 @@ from filesystem import file as fsfile
     <td>file.reassemble_file(large_file, new_file)</td>
     <td>
       Reassembles a file that was previously split into parts. 
-    The function checks for the existence of the split parts and reads each part, writing it to a new file. 
-    After all parts have been written to the new file, the function deletes the parts.
+      The function checks for the existence of the split parts and reads each part, writing it to a new file. 
+      After all parts have been written to the new file, the function deletes the parts.
     </td>
   </tr>
   
@@ -1272,9 +1225,7 @@ from filesystem import file as fsfile
 ---
 
 <details>
-	<summary>
-		 Expand for sample codes
-	</summary>
+	<summary>Expand for sample codes</summary>
 	
 <details>
 <summary>File: Check Integrity</summary>
@@ -1350,9 +1301,7 @@ files and directories.
 It includes functions for retrieving metadata and checking file extensions.
 
 <details>
-	<summary>
-		Expand to learn about the features
-	</summary>
+	<summary>Expand to learn about the features</summary>
 	
 - **Metadata Retrieval:** Gathers comprehensive metadata about a file or directory path.
 - **Extension Check:** Determines whether a file has an extension.
@@ -1362,9 +1311,7 @@ It includes functions for retrieving metadata and checking file extensions.
 ---
 
 <details>
-	<summary>
-		 Expand to learn about the methods
-	</summary>
+	<summary>Expand to learn about the methods</summary>
 	
 The Wrapper module in FileSystemPro brings a comprehensive set of methods that streamline and enhance file and directory management.
 
@@ -1403,9 +1350,7 @@ from filesystem import wrapper as wra
 ---
 
 <details>
-	<summary>
-		 Expand for sample codes
-	</summary>
+	<summary>Expand for sample codes</summary>
 	
 <details>
 <summary>Wrapper: Has Extension</summary>
@@ -1463,9 +1408,7 @@ Watcher serves as a monitoring system for the file system. It keeps track of any
 Watcher could be useful in scenarios where you need to monitor changes to a file system, for example, in a backup system or a live syncing service.
 
 <details>
-	<summary>
-		Expand to learn about the features
-	</summary>
+	<summary>Expand to learn about the features</summary>
 	
 - **Initialization:** The constructor method init(self, root) initializes the Watcher object with a root directory to watch and saves the current state of the file system.
 
@@ -1480,9 +1423,7 @@ Watcher could be useful in scenarios where you need to monitor changes to a file
 ---
 
 <details>
-	<summary>
-		 Expand to learn about the methods
-	</summary>
+	<summary>Expand to learn about the methods</summary>
 	
 The Wrapper module in FileSystemPro brings a comprehensive set of methods that streamline and enhance file and directory management.
 
@@ -1530,9 +1471,7 @@ from filesystem import watcher as wat
 ---
 
 <details>
-	<summary>
-		 Expand for sample codes
-	</summary>
+	<summary>Expand for sample codes</summary>
 	
 <details>
 <summary>Watcher: Monitoring Documents Folder</summary>
