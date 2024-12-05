@@ -41,34 +41,33 @@ def create_zip(fullpath_files, destination):
     ---
     
     ### Overview
-    The `create_zip` function compresses files or directories into a ZIP file.
+    Creates a zip archive at the specified destination path, compressing one or multiple files or directories provided in `fullpath_files`.
 
     ### Parameters:
-    - **fullpath_files (str or list)**: The path(s) to the file(s) or directory(ies) to be compressed. It can be a single string or a list of strings.
-    - **destination (str)**: The path where the resulting ZIP file will be saved.
-
-    ### Function Details:
-    1. **add_to_zip(zipf, path, base_path)**: A helper function that adds files to the ZIP archive.
-    - If `path` is a file, it writes the file to the ZIP archive.
-    - If `path` is a directory, it recursively adds all files in the directory to the ZIP archive.
-
-    2. **Main Function Logic**:
-    - If `fullpath_files` is a string, it compresses the single file or directory specified by the string.
-    - If `fullpath_files` is a list, it compresses each file or directory in the list.
+    - **fullpath_files (str or list)**: The full path of a single file/directory or a list of files/directories to compress.
+    - **destination (str)**: The destination path where the zip archive will be created.
 
     ### Returns:
-    - A message indicating whether a single file/directory or a list of files/directories was compressed.
+    - **str**: A message indicating whether a single file/directory or a list of files/directories was compressed.
+
+    ### Raises:
+    - **FileNotFoundError**: If any of the specified files or directories do not exist.
+    - **PermissionError**: If the permission is denied for accessing the files or writing to the destination.
+    - **ValueError**: If `fullpath_files` is neither a string nor a list.
 
     ### Examples:
-    - Compressing a single file or directory:
-        ```python
-        create_zip("/path/to/file_or_directory", "/path/to/destination.zip")
-        ```
+    - Compresses a single file or directory into a zip archive.
 
-    - Compressing multiple files or directories:
-        ```python
-        create_zip(["/path/to/file1", "/path/to/directory2"], "/path/to/destination.zip")
-        ```
+    ```python
+    create_zip("/path/to/file_or_directory", "/path/to/destination.zip")
+    ```
+
+    - Compresses multiple files or directories into a zip archive.
+
+    ```python
+    files_to_compress = ["/path/to/file1", "/path/to/file2", "/path/to/dir"]
+    create_zip(files_to_compress, "/path/to/destination.zip")
+    ```
     """
     def add_to_zip(zipf, path, base_path):
         if os.path.isfile(path):
@@ -95,36 +94,41 @@ def extract(zip_path, destination, extraction_list=None):
     # compression.zipfile.extract(zip_path, destination, extraction_list=None)
 
     ---
-    
+
     ### Overview
-    Reads the contents of a ZIP file and extracts files based on the provided parameters.
+    Extracts files from a zip archive to the specified destination directory. You can extract the entire archive or specify a list of files to extract.
 
     ### Parameters:
-    - **zip_filename (str)**: The path to the ZIP file to read.
-    - **extraction_list (None, list, or str)**: Specifies which files to extract. If `None`, all files are extracted. If a list, only the files in the list are extracted. If a string, only the specified file is extracted.
-    - **destination (str)**: The directory to extract files to. Defaults to the current directory.
-    - **show_compression_system_files (bool)**: If `True`, includes system files in the extraction. Defaults to `True`.
+    - **zip_path (str)**: The path of the zip archive from which to extract files.
+    - **destination (str)**: The directory where the files will be extracted.
+    - **extraction_list (None or list or str, optional)**: If `None`, extracts all files. If a list, extracts only the files specified in the list. If a string, extracts the file specified. Defaults to `None`.
+
+    ### Returns:
+    - **None**
 
     ### Raises:
-    - **FileNotFoundError**: If the ZIP file does not exist.
+    - **FileNotFoundError**: If the zip archive does not exist.
+    - **PermissionError**: If permission is denied for reading the zip archive or writing to the destination.
     - **ValueError**: If `extraction_list` is not `None`, a list, or a string.
-    - **Exception**: For any other errors that occur while reading the ZIP file.
 
     ### Examples:
-    - Extracts all contents of a ZIP file to the current directory:
-        ```python
-        read_zip_archive("/path/to/zipfile.zip")
-        ```
+    - Extracts all files from a zip archive to the specified destination directory.
 
-    - Extracts specific files from a ZIP file to a specified directory:
-        ```python
-        read_zip_archive("/path/to/zipfile.zip", extraction_list=["file1.txt", "file2.txt"], destination="/path/to/destination")
-        ```
+    ```python
+    extract("/path/to/archive.zip", "/destination/directory")
+    ```
 
-    - Extracts a single file from a ZIP file:
-        ```python
-        read_zip_archive("/path/to/zipfile.zip", extraction_list="file1.txt", destination="/path/to/destination")
-        ```
+    - Extracts specific files from a zip archive.
+
+    ```python
+    extract("/path/to/archive.zip", "/destination/directory", extraction_list=["file1.txt", "file2.txt"])
+    ```
+
+    - Extracts a single file from a zip archive.
+
+    ```python
+    extract("/path/to/archive.zip", "/destination/directory", extraction_list="file1.txt")
+    ```
     """
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
         if extraction_list is None:
@@ -144,23 +148,30 @@ def read_zip_archive(zip_filename, show_compression_system_files=True):
     ---
     
     ### Overview
-    Reads the contents of a ZIP file and returns a list of the names of the files contained within it.
+    Reads the contents of a zip archive and returns a list of the files within it. You can choose to include or exclude compression system files (e.g., `__MACOSX/`, `.DS_Store`).
 
     ### Parameters:
-    zip_filename (str): The path to the ZIP file to read.
+    - **zip_filename (str)**: The path of the zip archive to read.
+    - **show_compression_system_files (bool, optional)**: If `True`, includes compression system files in the list. Defaults to `True`.
 
     ### Returns:
-    list: A list of filenames contained in the ZIP file.
+    - **list**: A list of filenames contained in the zip archive.
 
     ### Raises:
-    - FileNotFoundError: If the ZIP file does not exist.
-    - Exception: For any other errors that occur while reading the ZIP file.
+    - **FileNotFoundError**: If the zip archive does not exist.
+    - **Exception**: For any other errors that occur during the process.
 
     ### Examples:
-    - Reads the contents of a ZIP file and returns the list of filenames.
+    - Reads the contents of a zip archive and includes compression system files.
 
     ```python
-    list_contents("/path/to/zipfile.zip")
+    read_zip_archive("/path/to/archive.zip")
+    ```
+
+    - Reads the contents of a zip archive and excludes compression system files.
+
+    ```python
+    read_zip_archive("/path/to/archive.zip", show_compression_system_files=False)
     ```
     """
     try:
