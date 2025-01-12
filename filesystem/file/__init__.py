@@ -158,6 +158,79 @@ def check_integrity(file, reference_file):
 
     return file_to_check == reference_check
 
+def copy(source, destination, overwrite=False):
+    """
+    # file.copy(source, destination, overwrite=False)
+
+    ---
+
+    ### Overview
+    Copies a file or a list of files from the source to the destination. This function handles both single file copying and multiple file copying while providing options for overwriting existing files and performing various validation checks.
+
+    ### Parameters:
+    - source (str or list): The path to the source file or a list of source files to be copied.
+    - destination (str): The path to the destination directory where the file(s) should be copied.
+    - overwrite (bool, optional): If set to True, existing files at the destination will be overwritten. Defaults to False.
+
+    ### Raises:
+    - FileNotFoundError: If the source file or any of the listed source files do not exist.
+    - FileExistsError: If the file already exists in the destination and `overwrite` is set to False.
+    - PermissionError: If the destination path is not writable.
+    - Exception: For any unexpected errors that occur during the copying process.
+
+    ### Examples:
+    - Copying a single file without overwriting:
+
+    ```python
+    copy("path/to/source/file.txt", "path/to/destination/")
+    ```
+
+    - Copying multiple files with the option to overwrite existing files:
+
+    ```python
+    copy(["path/to/source/file1.txt", "path/to/source/file2.txt"], "path/to/destination/", overwrite=True)
+    ```
+    """
+    try:
+        if isinstance(source, str):
+            if not os.path.exists(source): 
+                raise FileNotFoundError(f'Source file "{source}" does not exist.')
+            
+            if not os.access(os.path.dirname(destination), os.W_OK): 
+                raise PermissionError(f'Destination path "{os.path.dirname(destination)}" is not writable.') 
+
+            if not overwrite:
+                destination_files = get_files(destination, False)
+                if get_filename(source) in destination_files:
+                    raise FileExistsError(f'The file "{source}" already exists in "{destination}"')
+            shutil.copy2(source, destination)
+            
+        if isinstance(source, list):
+            for item in source:
+                if not os.path.exists(item): 
+                    raise FileNotFoundError(f'Source file "{item}" does not exist.')
+        
+                if not os.access(os.path.dirname(destination), os.W_OK): 
+                    raise PermissionError(f'Destination path "{os.path.dirname(destination)}" is not writable.') 
+
+                if not overwrite:
+                    destination_files = get_files(destination, False)
+                    if get_filename(item) in destination_files:
+                        raise FileExistsError(f'The file "{item}" already exists in "{destination}"')
+                shutil.copy2(item, destination)
+    
+    except FileNotFoundError as fnf_error: 
+        raise fnf_error
+
+    except FileExistsError as fe_error:
+        raise fe_error
+    
+    except PermissionError as perm_error:  
+        raise perm_error
+    
+    except Exception as e: 
+        raise Exception(f'An unexpected error occurred: {e}')
+
 def create(file, data, overwrite=False, encoding="utf-8"):
     """
     # file.create(file, data, overwrite=False, encoding="utf-8")
@@ -422,6 +495,30 @@ def get_extension(file_path, lower=True):
     if lower == True:
         return file_extension.lower()
     return file_extension.upper()
+
+def get_filename(filepath):
+    """
+    # file.get_filename(path)
+
+    ---
+
+    ### Overview
+    Extracts the filename from the given filepath and returns it.
+
+    ### Parameters:
+    path (str): The path of the file from which to extract the filename.
+
+    ### Returns:
+    str: The filename extracted from the path.
+
+    ### Examples:
+    - Extracts the filename from a given file path.
+
+    ```python
+    get_filename("/path/to/your/file/name.txt")
+    ```
+    """
+    return os.path.basename(filepath)
 
 def get_files(path, fullpath=True, extension=None):
     """
