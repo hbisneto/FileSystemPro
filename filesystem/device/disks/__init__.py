@@ -191,8 +191,22 @@ def get_boot_drive_name():
             return startup_drive_name
         except Exception as e:
             return str(e)
+    elif PLATFORM == "win32" or PLATFORM == "win64":
+        try:
+            cmd = "wmic logicaldisk where \"DeviceID='C:'\" get VolumeName"
+            startup_drive_name = subprocess.check_output(cmd, shell=True).decode("utf-8").strip().split("\n")[1].strip()
+            return startup_drive_name
+        except Exception as e:
+            return str(e)
+    elif PLATFORM == "linux" or PLATFORM == "linux2":
+        try:
+            cmd = "lsblk -o MOUNTPOINT,LABEL | grep ' /$'"
+            startup_drive_name = subprocess.check_output(cmd, shell=True).decode("utf-8").strip().split(" ")[-1]
+            return startup_drive_name
+        except Exception as e:
+            return str(e)
     else:
-        return "NOT IMPLEMENTED"
+        raise Exception(f"Unsupported platform: {PLATFORM}")
 
 def get_disk_partition_filteredby_device(filter):
     """
