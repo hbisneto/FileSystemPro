@@ -257,15 +257,15 @@ def create(file, data, overwrite=False, encoding="utf-8"):
     ### Examples:
     - Creates a file and writes data into it, then returns the file details.
 
-        ```python
-        create("/path/to/file", "Hello, World!")
-        ```
+    ```python
+    create("/path/to/file", "Hello, World!")
+    ```
 
     - Creates a file with a different encoding, writes data into it, then returns the file details.
 
-        ```python
-        create("/path/to/file", "Hello, World!", overwrite=True, encoding="utf-16")
-        ```
+    ```python
+    create("/path/to/file", "Hello, World!", overwrite=True, encoding="utf-16")
+    ```
     """
     if overwrite==True:
         with codecs.open(f'{file}', "w", encoding=encoding) as custom_file:

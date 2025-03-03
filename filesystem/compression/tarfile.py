@@ -41,34 +41,33 @@ def create_tar(fullpath_files, destination):
     ---
 
     ### Overview
-    The `create_tar` function compresses files or directories into a TAR file.
+    Creates a tar archive at the specified destination path, compressing one or multiple files or directories provided in `fullpath_files`.
 
     ### Parameters:
-    - **fullpath_files (str or list)**: The path(s) to the file(s) or directory(ies) to be compressed. It can be a single string or a list of strings.
-    - **destination (str)**: The path where the resulting TAR file will be saved.
-
-    ### Function Details:
-    1. **add_to_tar(tarf, path, base_path)**: A helper function that adds files to the TAR archive.
-    - If `path` is a file, it writes the file to the TAR archive.
-    - If `path` is a directory, it recursively adds all files in the directory to the TAR archive.
-
-    2. **Main Function Logic**:
-    - If `fullpath_files` is a string, it compresses the single file or directory specified by the string.
-    - If `fullpath_files` is a list, it compresses each file or directory in the list.
+    - **fullpath_files (str or list)**: The full path of a single file/directory or a list of files/directories to compress.
+    - **destination (str)**: The destination path where the tar archive will be created.
 
     ### Returns:
-    - A message indicating whether a single file/directory or a list of files/directories was compressed.
+    - **str**: A message indicating whether a single file/directory or a list of files/directories was compressed.
+
+    ### Raises:
+    - **FileNotFoundError**: If any of the specified files or directories do not exist.
+    - **PermissionError**: If permission is denied for accessing the files or writing to the destination.
+    - **ValueError**: If `fullpath_files` is neither a string nor a list.
 
     ### Examples:
-    - Compressing a single file or directory:
-        ```python
-        create_tar("/path/to/file_or_directory", "/path/to/destination.tar")
-        ```
+    - Compresses a single file or directory into a tar archive.
 
-    - Compressing multiple files or directories:
-        ```python
-        create_tar(["/path/to/file1", "/path/to/directory2"], "/path/to/destination.tar")
-        ```
+    ```python
+    create_tar("/path/to/file_or_directory", "/path/to/destination.tar")
+    ```
+
+    - Compresses multiple files or directories into a tar archive.
+
+    ```python
+    files_to_compress = ["/path/to/file1", "/path/to/file2", "/path/to/dir"]
+    create_tar(files_to_compress, "/path/to/destination.tar")
+    ```
     """
     def add_to_tar(tarf, path, base_path):
         if os.path.isfile(path):
@@ -97,44 +96,33 @@ def extract(tar_filename, destination, extraction_list=[]):
     ---
 
     ### Overview
-    The `extract` function is designed to extract files from a tar archive. It can extract all files or a specified list of files from the archive.
+    Extracts files from a tar archive to the specified destination directory. You can extract the entire archive or specify a list of files to extract.
 
     ### Parameters:
-    - **tar_filename (str)**: The path to the tar file that needs to be extracted.
-    - **destination (str)**: The directory where the extracted files will be saved.
-    - **extraction_list (list, optional)**: A list of specific files or directories to extract from the tar file. If this list is empty, all files will be extracted.
-
-    ### Function Details:
-    1. **Opening the Tar File**:
-        - The function attempts to open the tar file specified by `tar_filename` in read mode (`"r:*"`).
-
-    2. **Extracting Files**:
-        - If `extraction_list` is empty, the function extracts all files to the `destination` directory.
-        - If `extraction_list` contains specific items, the function checks if each item exists in the tar file:
-            - If the item exists, it extracts the item to the `destination`.
-            - If the item does not exist, it checks for any files in the tar archive that start with the item's name and extracts those.
-
-    3. **Error Handling**:
-        - If the tar file is not found, the function returns a message indicating the file was not found.
-        - If a specified item in `extraction_list` is not found, the function returns `False`.
-        - For any other exceptions, the function returns a message with the error details.
+    - **tar_filename (str)**: The path of the tar archive to extract files from.
+    - **destination (str)**: The directory where the files will be extracted.
+    - **extraction_list (list, optional)**: A list of files or directories to extract. If empty, extracts all files. Defaults to an empty list.
 
     ### Returns:
-    - **True**: If the extraction is successful.
-    - **"[FileSystem Pro]: File Not Found"**: If the tar file is not found.
-    - **False**: If a specified item in `extraction_list` is not found.
-    - **Error Message**: If any other error occurs during extraction.
+    - **bool**: Returns `True` if extraction is successful, or `False` if a `KeyError` occurs.
+
+    ### Raises:
+    - **FileNotFoundError**: If the tar archive does not exist.
+    - **KeyError**: If the specified file or directory is not found in the tar archive.
+    - **Exception**: For any other errors that occur during the extraction process.
 
     ### Examples:
-    - Extracting all files from a tar archive:
-        ```python
-        extract("archive.tar.gz", "/path/to/destination")
-        ```
+    - Extracts all files from a tar archive to the specified destination directory.
 
-    - Extracting specific files from a tar archive:
-        ```python
-        extract("archive.tar.gz", "/path/to/destination", ["file1.txt", "dir2/"])
-        ```
+    ```python
+    extract("/path/to/archive.tar", "/destination/directory")
+    ```
+
+    - Extracts specific files from a tar archive.
+
+    ```python
+    extract("/path/to/archive.tar", "/destination/directory", extraction_list=["file1.txt", "file2.txt"])
+    ```
     """
     try:
         with tarfile.open(tar_filename, "r:*") as tar_file:
@@ -165,32 +153,24 @@ def read_tar_archive(tar_filename):
     ---
 
     ### Overview
-    The `read_tar_archive` function reads the contents of a TAR archive file and returns a list of the names of the files contained within it.
+    Reads the contents of a tar archive and returns a list of the files within it.
 
     ### Parameters:
-    - **tar_filename (str)**: The path to the TAR archive file to be read.
-
-    ### Function Details:
-    1. **Opening the TAR file**:
-        - The function attempts to open the specified TAR file in read mode using `tarfile.open(tar_filename, "r")`.
-        - If the file is successfully opened, it retrieves the names of all the files in the archive using `tar_file.getnames()` and returns this list.
-
-    2. **Error Handling**:
-        - If the specified TAR file is not found, the function catches the `FileNotFoundError` and returns the message `"[FileSystem Pro]: File Not Found"`.
-        - If any other exception occurs, it catches the exception and returns a message indicating an error occurred, along with the error message.
+    - **tar_filename (str)**: The path of the tar archive to read.
 
     ### Returns:
-    - A list of file names contained in the TAR archive if successful.
-    - A string message indicating an error if the file is not found or another exception occurs.
+    - **list**: A list of filenames contained in the tar archive.
+
+    ### Raises:
+    - **FileNotFoundError**: If the tar archive does not exist.
+    - **Exception**: For any other errors that occur during the process.
 
     ### Examples:
-    - Reading the contents of a TAR archive:
-        ```python
-        tar_contents = read_tar_archive("/path/to/archive.tar")
-        print(tar_contents)
-        ```
+    - Reads the contents of a tar archive.
 
-    This function is useful for quickly listing the contents of a TAR archive without extracting the files.
+    ```python
+    read_tar_archive("/path/to/archive.tar")
+    ```
     """
     try:
         with tarfile.open(tar_filename, "r") as tar_file:
