@@ -97,7 +97,6 @@ class Watcher(object):
             i["change"] = "removed"
             results.append(i)
         
-        # set new state
         self.saved_state = current_state
         return results
 
@@ -107,11 +106,8 @@ class Watcher(object):
         """
         return "filesystem.Watcher: %s" % (self.root)
 
-# Format name of logfile to be like '2024_10_12_1816_220419.log'
 def get_changes(directory:str, delay=5.0, create_log_file=False, log_filename="FSWatcherLog.log"):
     watcher = Watcher(directory)
-
-    # Run `diff` method to get directory changes
     while True:
         changes = watcher.diff()
         if changes:
@@ -120,4 +116,4 @@ def get_changes(directory:str, delay=5.0, create_log_file=False, log_filename="F
                 if create_log_file == True:
                     fsfile.append_text(log_filename, text=f"{change['abspath']} was {change['change']}")
                 print(f"{change['abspath']} was {change['change']}")
-        time.sleep(delay)  # Awaits for 5 seconds before a new verification
+        time.sleep(delay)
