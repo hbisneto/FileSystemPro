@@ -200,7 +200,7 @@ def get_boot_drive_name():
             return str(e)
     elif PLATFORM == "linux" or PLATFORM == "linux2":
         try:
-            cmd = "lsblk -o MOUNTPOINT,LABEL | grep ' /$'"
+            cmd = "lsblk -o MOUNTPOINT,LABEL | grep '/'"
             startup_drive_name = subprocess.check_output(cmd, shell=True).decode("utf-8").strip().split(" ")[-1]
             return startup_drive_name
         except Exception as e:
