@@ -88,7 +88,7 @@ def current_disk_filesystem_name():
     ```
     """
     dskpart = psutil.disk_partitions()
-    fstypes = [part.fstype for part in dskpart if part.mountpoint in ['C:/', '/']]
+    fstypes = [part.fstype for part in dskpart if part.mountpoint in ['C:\\', '/']]
     
     return fstypes[0]
 
