@@ -191,8 +191,22 @@ def get_boot_drive_name():
             return startup_drive_name
         except Exception as e:
             return str(e)
+    elif PLATFORM == "win32" or PLATFORM == "win64":
+        try:
+            cmd = "wmic logicaldisk where \"DeviceID='C:'\" get VolumeName"
+            startup_drive_name = subprocess.check_output(cmd, shell=True).decode("utf-8").strip().split("\n")[1].strip()
+            return startup_drive_name
+        except Exception as e:
+            return str(e)
+    elif PLATFORM == "linux" or PLATFORM == "linux2":
+        try:
+            cmd = "lsblk -o MOUNTPOINT,LABEL | grep '/'"
+            startup_drive_name = subprocess.check_output(cmd, shell=True).decode("utf-8").strip().split(" ")[-1]
+            return startup_drive_name
+        except Exception as e:
+            return str(e)
     else:
-        return "NOT IMPLEMENTED"
+        raise Exception(f"Unsupported platform: {PLATFORM}")
 
 def get_disk_partition_filteredby_device(filter):
     """
@@ -763,10 +777,11 @@ def disk_io_counters():
 
 drive_name = get_boot_drive_name()
 """
-The name of the boot drive on macOS. 
-This function uses a subprocess call to the Foundation framework to obtain 
-the display name of the boot drive. 
-Note: This function is currently only implemented for macOS.
+This variable stores the name of the boot drive on the current platform.
 
-If the function is called on a non-macOS platform, it returns "NOT IMPLEMENTED".
+- On macOS, the function uses a subprocess call to the Foundation framework to obtain the display name of the boot drive.
+- On Windows, it returns the name of the boot drive.
+- On Linux, it returns the name of the boot drive.
+
+If the function is called on an unsupported platform, it returns "Unsupported platform: _platform_name_".
 """
