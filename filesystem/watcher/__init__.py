@@ -39,7 +39,8 @@ from filesystem import watcher as wat
 watcher = wat('/path/to/directory')
 ```
 """
-
+import time
+from datetime import datetime
 from filesystem import file as fsfile
 
 class Watcher(object):
@@ -104,3 +105,15 @@ class Watcher(object):
         This method returns a string representation of the Watcher object.
         """
         return "filesystem.Watcher: %s" % (self.root)
+
+def get_changes(directory:str, delay=5.0, create_log_file=False, log_filename="FSWatcherLog.log"):
+    watcher = Watcher(directory)
+    while True:
+        changes = watcher.diff()
+        if changes:
+            print(f"Changes detected at: {datetime.now()}:")
+            for change in changes:
+                if create_log_file == True:
+                    fsfile.append_text(log_filename, text=f"{change['abspath']} was {change['change']}")
+                print(f"{change['abspath']} was {change['change']}")
+        time.sleep(delay)
