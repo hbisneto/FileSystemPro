@@ -165,16 +165,16 @@ def get_boot_drive_name():
 
     ### Overview
 
-    Retrieves the name of the boot drive on macOS. This function uses a subprocess call to the Foundation framework to obtain the display name of the boot drive. Note: This function is currently only implemented for macOS.
+    Retrieves the name of the boot drive.
 
     ### Parameters:
     - **None**
 
     ### Returns:
-    - **str:** The name of the boot drive on macOS. If the function is called on a non-macOS platform, it returns "NOT IMPLEMENTED".
+    - **str:** The name of the boot drive.
 
     ### Raises:
-    - **Exception:** If an error occurs during the subprocess call, it returns the error message as a string.
+    - **Exception:** If an error occurs during the subprocess call, it returns "Unsupported platform: _platform_name_".
 
     ### Examples:
     - Retrieves the name of the boot drive on macOS.

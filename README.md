@@ -1122,6 +1122,13 @@ from filesystem import file as fsfile
   </tr>
   
   <tr>
+    <td>file.copy(source, destination, overwrite=False)</td>
+    <td>
+      Copies a file or a list of files from the source to the destination. This function handles both single file copying and multiple file copying while providing options for overwriting existing files and performing various validation checks.
+    </td>
+  </tr>
+
+  <tr>
     <td>file.create(file, data, overwrite=False, encoding="utf-8")</td>
     <td>
       Creates a file at the specified path and writes data into it. If the file already exists, its contents can be either appended to or overwritten based on the <strong>overwrite</strong> parameter. The function then returns the details of the created file
@@ -1170,6 +1177,13 @@ from filesystem import file as fsfile
     <td>file.get_extension(file_path, lower=True)</td>
     <td>
       Extracts the file extension from the given file path and returns it in lowercase or uppercase based on the `lower` parameter.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>file.get_filename(filepath)</td>
+    <td>
+      Extracts the filename from the given filepath and returns it.
     </td>
   </tr>
 
@@ -1508,4 +1522,4 @@ while True:
 
 ---
 
-Copyright © 2023–2024 Bisneto Inc. All rights reserved.
+Copyright © 2023–2025 Bisneto Inc. All rights reserved.
