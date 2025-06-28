@@ -9,17 +9,17 @@ for handling directory-related operations. It simplifies tasks such as path mani
 directory creation and deletion, file and directory enumeration, and management of directory metadata.
 
 ## Features
-- `Directory Creation:` Creates new directories, with an option to create necessary subdirectories.
-- `Directory Deletion:` Deletes directories, with an option for recursive deletion.
-- `Directory Existence Check:` Checks whether a directory exists at a specified path.
-- `Directory Information:` Retrieves parent directories and root information.
-- `Directory Listing:` Lists all subdirectories within a given directory.
-- `Directory Renaming:` Renames a directory if it exists.
-- `File and Directory Enumeration:` Retrieves lists or iterators of files and directories, with support for search patterns and recursion.
-- `Metadata Management:` Gets and sets creation, access, and modification times of directories.
-- `Path Combination:` Dynamically combines multiple paths into a single path string.
-- `Parent Directory Information:` Retrieves the name or path of a file's parent directory.
-- `Symbolic Links:` Creates and resolves symbolic links.
+- **Directory Creation:** Creates new directories, with an option to create necessary subdirectories.
+- **Directory Deletion:** Deletes directories, with an option for recursive deletion.
+- **Directory Existence Check:** Checks whether a directory exists at a specified path.
+- **Directory Information:** Retrieves parent directories and root information.
+- **Directory Listing:** Lists all subdirectories within a given directory.
+- **Directory Renaming:** Renames a directory if it exists.
+- **File and Directory Enumeration:** Retrieves lists or iterators of files and directories, with support for search patterns and recursion.
+- **Metadata Management:** Gets and sets creation, access, and modification times of directories.
+- **Path Combination:** Dynamically combines multiple paths into a single path string.
+- **Parent Directory Information:** Retrieves the name or path of a file's parent directory.
+- **Symbolic Links:** Creates and resolves symbolic links.
 
 ## Usage
 To use the functions provided by this module, 
