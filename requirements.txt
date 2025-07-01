@@ -4,3 +4,5 @@ idna==3.10
 psutil==7.0.0
 requests==2.32.4
 urllib3==2.5.0
+sphinx>=4.0.0
+sphinx-rtd-theme>=1.0.0
