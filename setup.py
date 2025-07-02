@@ -46,5 +46,5 @@ setup(
             ],
     packages=find_packages(),
     platforms = 'any',
-    python_requires= '>=3.9',
+    python_requires= '>=3.8',
 )
