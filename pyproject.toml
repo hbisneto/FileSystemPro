@@ -7,10 +7,32 @@ name = "FileSystemPro"
 version = "2.0.1.0"
 description = "FileSystemPro is a powerful toolkit designed to handle file and directory operations with ease and efficiency across various operating systems."
 authors = [{ name = "Heitor Bisneto", email = "heitor.bardemaker@live.com" }]
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT License" }
+keywords = ["Compression", "Console", "Device", "Directory", "File", "FileSystem", "Linux", "macOS", "System", "Terminals", "Watcher", "Windows", "Wrapper"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Software Development :: Libraries",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
 dependencies = [
     "psutil>=5.8.0,<6.0.0",
     "requests>=2.25.1,<3.0.0",
 ]
+dynamic = []
 
 [project.optional-dependencies]
 dev = [
