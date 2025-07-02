@@ -36,6 +36,7 @@ It provides an easy way to get the correct file paths regardless of the platform
 
 import getpass
 import os
+import sys
 from sys import platform as PLATFORM
 
 ## VERIFY IF THE LIBRARY HAS SOME AVAILABLE UPDATE
@@ -59,9 +60,21 @@ USER_NAME = getpass.getuser()[0].upper() + getpass.getuser()[1:]
 Creates a string that represents the username of the user currently logged in to the system.
 """
 
+# Verify if Sphinx is running
+if 'sphinx' in sys.modules:
+    # Define default values to Sphinx (avoiding KeyError)
+    user_default = '/home/docs'
+else:
+    # FileSystemPro normal bahavior
+    try:
+        user_default = f'/home/{os.environ["USER"]}' if PLATFORM in ("linux", "linux2") else f'/Users/{os.environ["USER"]}' if PLATFORM == "darwin" else os.environ['USERPROFILE']
+    except KeyError:
+        user_default = '/home/docs'  # Default value for non-USER environments
+
 if PLATFORM == "linux" or PLATFORM == "linux2":
     PLATFORM_NAME = "Linux"
-    user = f'/home/{os.environ["USER"]}'
+    # user = f'/home/{os.environ["USER"]}'
+    user = user_default
     """
     Creates a string that represents the path to the current user's home directory.
     """
@@ -95,7 +108,8 @@ if PLATFORM == "linux" or PLATFORM == "linux2":
     """
 elif PLATFORM == "darwin":
     PLATFORM_NAME = "macOS"
-    user = f'/Users/{os.environ["USER"]}'
+    # user = f'/Users/{os.environ["USER"]}'
+    user = user_default
     """
     Creates a string that represents the path to the current user's home directory.
     """
@@ -135,7 +149,8 @@ elif PLATFORM == "win32" or PLATFORM == "win64":
         with winreg.OpenKey(winreg.HKEY_CURRENT_USER, sub_key) as key:
             return winreg.QueryValueEx(key, folder_name)[0]
     
-    user = os.environ['USERPROFILE']
+    # user = os.environ['USERPROFILE']
+    user = user_default
     """
     Creates a string that represents the path to the current user's home directory.
     """

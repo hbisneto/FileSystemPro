@@ -62,6 +62,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../..'))  # Ajusta para a raiz do repositório onde está o diretório filesystem/
+print(f'[1]: System Mdules: {sys.modules}')
 
 # Adiciona a raiz do repositório ao sys.path
 sys.path.insert(0, os.path.abspath('.'))
