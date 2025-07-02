@@ -52,9 +52,7 @@ from filesystem import __core__
 import requests
 from filesystem import console as fsconsole
 
-__version__ = "2.0.1.0"
-
-def __checkupdates__(user, repo):
+def __checkupdates__(user, repo, __version__):
     """
     Checks for updates to the FileSystemPro package on GitHub.
 

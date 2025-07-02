@@ -1,17 +1,17 @@
-# FileSystem Pro 
+# FileSystemPro 
 
-FileSystem is a powerful toolkit designed to handle file and directory operations with ease and efficiency across various operating systems.
+FileSystemPro is a powerful toolkit designed to handle file and directory operations with ease and efficiency across various operating systems.
 
 ## Getting Started
 
-This section will guide you through setting up the environment required to run **FileSystem Pro** effectively. Follow the steps below to ensure a smooth installation and configuration.
+This section will guide you through setting up the environment required to run **FileSystemPro** effectively. Follow the steps below to ensure a smooth installation and configuration.
 
 <details>
 	<summary>Expand to get started</summary>
 	
 #### Requirements
 
-It's recommended to use Python 3.8 or later to use **FileSystem Pro**. You can download the latest version of Python at [python.org](https://www.python.org/).
+It's recommended to use Python 3.8 or later to use **FileSystemPro**. You can download the latest version of Python at [python.org](https://www.python.org/).
 
 #### Installation
 
@@ -21,7 +21,7 @@ Don't forget to upgrade pip:
 pip install --upgrade pip
 ```
 
-And install **FileSystem Pro:**
+And install **FileSystemPro:**
 
 ```sh
 pip install filesystempro
@@ -43,7 +43,7 @@ Install setuptools / Upgrade setuptools
 pip install --upgrade setuptools
 ```
 
-> Note: FileSystem Pro requires setuptools 69.5.1 or later.
+> Note: FileSystemPro requires setuptools 69.5.1 or later.
 ><br> Python environment typically targets setuptools version 49.x.
 
 Install wheel / Upgrade wheel
@@ -370,7 +370,7 @@ from filesystem import compression
     </td>
     <td>
       Extract files from a tar archive. It can extract all files or a specified list of files from the archive.
-	    Returns <strong>True</strong> if the extraction is successful, <strong>[FileSystem Pro]: File Not Found</strong> if the tar file is not found, <strong>False</strong> if a specified item in <strong>extraction_list</strong> is not found and <strong>Error Message</strong> if any other error occurs during extraction.
+	    Returns <strong>True</strong> if the extraction is successful, <strong>[FileSystemPro]: File Not Found</strong> if the tar file is not found, <strong>False</strong> if a specified item in <strong>extraction_list</strong> is not found and <strong>Error Message</strong> if any other error occurs during extraction.
     </td>
   </tr>
   <tr>
@@ -726,95 +726,266 @@ The CPU section of the Device module offers essential metrics and functionalitie
 <details>
 	<summary>Expand to learn about the methods</summary>
 	
-The Directory module in FileSystemPro brings a comprehensive set of methods that streamline and enhance directory management
+The Device module provides a comprehensive set of functionalities for managing and retrieving various device-related information and metrics. This module is divided into two main parts: CPU Information and Disks Information. It leverages the `psutil` library to gather details efficiently and offers a wide range of functionalities for system monitoring and management tasks.
 
 ```py
 from filesystem import device
 ```
 
-<table>
-  <tr>
-    <th>Method</th>
-    <th>Description</th>
-  </tr>
-
-  <tr>
-    <td>
-      directory.combine(*args, paths=[])
-    </td>
-    <td>
-      Combines a list of paths or arguments into a single path. If the first argument or the first element in the paths list is not an absolute path, it raises a ValueError.
-    </td>
-  </tr>
-
-</table>
+  <table>
+    <tr>
+      <th>Method</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>
+        device.cpu.cpu_percent()
+      </td>
+      <td>
+        Retrieves the system's CPU usage percentage. This function uses the `psutil.cpu_percent()` method to get the current CPU usage as a percentage.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        device.cpu.cpu_times()
+      </td>
+      <td>
+        Retrieves CPU times for the system. This function uses the `psutil.cpu_times()` method to get the amount of time the CPU has spent in various states such as user, system, idle, etc.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        device.cpu.cpu_count()
+      </td>
+      <td>
+        Retrieves the number of CPU cores in the system. This function uses the `psutil.cpu_count()` method to get the total number of logical CPU cores available.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        device.disks.current_disk_filesystem_name()
+      </td>
+      <td>
+        Retrieves the filesystem type of the current disk. This function checks the disk partitions and returns the filesystem type of the partition mounted at 'C:/' (for Windows) or '/' (for Unix-like systems).
+      </td>
+    </tr>
+    <tr>
+      <td>
+        device.disks.boot_time()
+      </td>
+      <td>
+        Retrieves the system's boot time. This function uses the `psutil.boot_time()` method to get the boot time as a timestamp and then converts it to a human-readable format.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        device.disks.get_disk_partitions()
+      </td>
+      <td>
+        Retrieves a list of all mounted disk partitions and their attributes. This function converts the partition details into dictionary format for easier access and manipulation.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        device.disks.get_boot_drive_name()
+      </td>
+      <td>
+        Retrieves the name of the boot drive.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        device.disks.get_disk_partition_filteredby_device(filter)
+      </td>
+      <td>
+        Filters and retrieves disk partitions based on the specified device. This function compares the device attribute of each partition with the provided filter and returns a list of matching partitions.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        device.disks.get_disk_partition_filteredby_fstype(filter)
+      </td>
+      <td>
+        Filters and retrieves disk partitions based on the specified filesystem type. This function compares the filesystem type attribute of each partition with the provided filter and returns a list of matching partitions.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        device.disks.get_disk_partition_filteredby_mountpoint(filter)
+      </td>
+      <td>
+        Filters and retrieves disk partitions based on the specified mount point. This function compares the mount point attribute of each partition with the provided filter and returns a list of matching partitions.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        device.disks.get_disk_partition_filteredby_opts(filter)
+      </td>
+      <td>
+        Filters and retrieves disk partitions based on the specified options. This function compares the options attribute of each partition with the provided filter and returns a list of matching partitions.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        device.disks.storage_metrics(mountpoint)
+      </td>
+      <td>
+        Returns storage metrics for a specific mount point, including total, free, and used storage, as well as the percentage of free and used storage.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        device.disks.disk_info()
+      </td>
+      <td>
+        Retrieves comprehensive information about the system's disk partitions, including devices, filesystem types, mount points, options, and storage metrics. This function consolidates data from multiple helper functions to provide detailed disk information.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        device.disks.disk_io_counters()
+      </td>
+      <td>
+        Retrieves disk I/O statistics for each disk in the system. This function utilizes the `psutil.disk_io_counters` method to gather I/O counters for each disk, including the number of read and write operations, the number of bytes read and written, and the time spent reading and writing.
+      </td>
+    </tr>
+  </table>
 </details>
 
 ---
 
 <details>
 	<summary>Expand for sample codes</summary>
-	
-<details>
-<summary>Directory: Check if exists</summary>
 
-The following example check whether a directory exists within the file system and print the result using **Directory**
+<details>
+<summary>Disks: Listing All Disk Partitions and Filtering by Filesystem Type</summary>
+
+This script uses `get_disk_partitions()` and `get_disk_partition_filteredby_fstype()` to list all disk partitions and then filter them by a specific filesystem type (e.g., ntfs or ext4).
 
 ```py
-import filesystem as fs
-from filesystem import directory as dir
+from filesystem.device import disks
 
-documents_exists = dir.exists(fs.documents)
+print("===== Disk Partitions =====")
 
-print(documents_exists)
+# Get all disk partitions
+all_partitions = disks.get_disk_partitions()
+print("[1]: All Mounted Partitions:")
+for partition in all_partitions:
+  print(f"Device: {partition['device']}, Mountpoint: {partition['mountpoint']}, "f"Filesystem: {partition['fstype']}")
+
+# Filter partitions by filesystem type
+fs_type = disks.current_disk_filesystem_name()
+filtered_partitions = disks.get_disk_partition_filteredby_fstype(fs_type)
+print(f"\n[2]: Partitions with Filesystem Type '{fs_type}':")
+for partition in filtered_partitions:
+  print(f"Device: {partition['device']}, Mountpoint: {partition['mountpoint']}")
 ```
 
 Output:
 
-```
-True
+```sh
+===== Disk Partitions =====
+[1]: All Mounted Partitions:
+Device: /dev/disk1s1s1, Mountpoint: /, Filesystem: apfs
+Device: /dev/disk1s4, Mountpoint: /System/Volumes/VM, Filesystem: apfs
+Device: /dev/disk1s2, Mountpoint: /System/Volumes/Preboot, Filesystem: apfs
+Device: /dev/disk1s6, Mountpoint: /System/Volumes/Update, Filesystem: apfs
+Device: /dev/disk1s5, Mountpoint: /System/Volumes/Data, Filesystem: apfs
+Device: /dev/disk0s3, Mountpoint: /Volumes/BOOTCAMP, Filesystem: ntfs
+
+[2]: Partitions with Filesystem Type 'apfs':
+Device: /dev/disk1s1s1, Mountpoint: /
+Device: /dev/disk1s4, Mountpoint: /System/Volumes/VM
+Device: /dev/disk1s2, Mountpoint: /System/Volumes/Preboot
+Device: /dev/disk1s6, Mountpoint: /System/Volumes/Update
+Device: /dev/disk1s5, Mountpoint: /System/Volumes/Data
 ```
 </details>
 
 <details>
-<summary>Directory: Listing directories inside a folder</summary>
+<summary>Disks: Boot Time and Disk I/O Statistics</summary>
 
-The following example shows how to lists all directories in the specified path using **Directory**
+This script uses `boot_time()` and `disk_io_counters()` to display the system's boot time and disk I/O statistics for all disks.
 
 ```py
-import filesystem as fs
-from filesystem import directory as dir
+from filesystem.device import disks
 
-folder_list = dir.get_directories(fs.documents)
+print("===== Boot Time and Disk I/O Stats =====")
 
-print(folder_list)
+# Get system boot time
+boot_time = disks.boot_time()
+print(f"System Boot Time: {boot_time}")
+
+# Get disk I/O statistics
+io_stats = disks.disk_io_counters()
+print("\nDisk I/O Statistics:")
+for disk, stats in io_stats.items():
+  read_mb = stats.read_bytes / (1024 ** 2)
+  write_mb = stats.write_bytes / (1024 ** 2)
+  print(f"Disk: {disk}")
+  print(f"  Reads: {stats.read_count} operations, {read_mb:.2f} MB")
+  print(f"  Writes: {stats.write_count} operations, {write_mb:.2f} MB")
 ```
 
 Output:
 
-```
-['Work', 'School', 'PicsBackups', 'Office Documents']
+```sh
+===== Boot Time and Disk I/O Stats =====
+System Boot Time: 19/6/2025 5:42:40
+
+Disk I/O Statistics:
+Disk: disk0
+  Reads: 11899036 operations, 153688.83 MB
+  Writes: 37520030 operations, 211380.48 MB
 ```
 </details>
 
 <details>
-<summary>Directory: Renaming a folder</summary>
+<summary>CPU: Monitoring CPU Usage</summary>
 
-The following example shows how rename a folder using **Directory**
+The following example displays CPU time breakdown (user, system, idle), counts CPU cores, and monitors CPU usage percentage over 5 seconds with timestamps.
 
 ```py
-import filesystem as fs
-from filesystem import directory as dir
+from filesystem.device import cpu
+import time
 
-new_name = dir.rename(f'{fs.documents}/MyFolder', f'{fs.documents}/NewFolder')
+print("[1]: CPU Times")
 
-print(new_name)
+# Get CPU times
+times = cpu.cpu_times()
+print("CPU Time Breakdown:")
+print(f"  User Time: {times.user:.2f} seconds")
+print(f"  System Time: {times.system:.2f} seconds")
+print(f"  Idle Time: {times.idle:.2f} seconds")
+# Get number of CPU cores
+cores = cpu.cpu_count()
+print(f"Number of CPU Cores: {cores}\n---")
+
+print("\n[2]: CPU Usage Monitoring")
+# Monitor CPU usage over 5 seconds
+for _ in range(5):
+  usage = cpu.cpu_percent()
+  print(f"CPU Usage at {time.strftime('%H:%M:%S')}: {usage:.2f}%")
+  time.sleep(1)
 ```
 
 Output:
 
-```
-True
+```sh
+[1]: CPU Times
+CPU Time Breakdown:
+  User Time: 62208.25 seconds
+  System Time: 39241.50 seconds
+  Idle Time: 1527969.29 seconds
+Number of CPU Cores: 4
+---
+
+[2]: CPU Usage Monitoring
+CPU Usage at 13:18:52: 16.50%
+CPU Usage at 13:18:53: 16.50%
+CPU Usage at 13:18:54: 17.20%
+CPU Usage at 13:18:55: 15.70%
+CPU Usage at 13:18:56: 19.20%
 ```
 </details>
 

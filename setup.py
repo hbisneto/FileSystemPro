@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name = 'filesystempro',
-    version = '2.0.1.0',
+    version = '2.0.2.0',
     url = 'https://github.com/hbisneto/FileSystemPro',
     license = 'MIT License',
     
@@ -35,15 +35,16 @@ setup(
     ],
     long_description = readme,
     long_description_content_type = "text/markdown",
-    keywords = ['Compression', 'Console', 'Device', 
-                'Directory',
-                'File', 'FileSystem', 
-                'Linux', 
-                'macOS', 
-                'System', 
-                'Terminals', 
-                'Watcher', 'Windows', 'Wrapper'
-            ],
+    keywords = [
+        'Compression', 'Console',
+        'Device', 'Directory',
+        'File', 'FileSystem', 
+        'Linux', 
+        'macOS', 
+        'System', 
+        'Terminals', 
+        'Watcher', 'Windows', 'Wrapper'
+    ],
     packages=find_packages(),
     platforms = 'any',
     python_requires= '>=3.8',

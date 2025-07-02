@@ -40,7 +40,8 @@ from sys import platform as PLATFORM
 
 ## VERIFY IF THE LIBRARY HAS SOME AVAILABLE UPDATE
 from filesystem import __core__
-__core__.__checkupdates__("Hbisneto","FileSystemPro")
+__version__ = "2.0.2.0"
+__core__.__checkupdates__("Hbisneto","FileSystemPro", __version__)
 ## VERIFY IF THE LIBRARY HAS SOME AVAILABLE UPDATE
 
 CURRENT_LOCATION = os.getcwd()
@@ -51,8 +52,7 @@ OS_SEPARATOR = os.sep
 """
 The os.sep is an attribute in the os module in Python. It represents the character that is used by the operating system to separate pathname components, and it varies between different operating systems.
 
-For instance, on Windows, it would return a backslash (\\), while on Unix or Linux, it would return a forward slash (/). So, OS_SEPARATOR will contain the appropriate file path separator for the operating system on which the Python script is running. This is useful for creating file paths in a cross-platform compatible way.
-
+For instance, on Windows, it would return a backslash (&#92;&#92;), while on Unix or Linux, it would return a forward slash (/). So, OS_SEPARATOR will contain the appropriate file path separator for the operating system on which the Python script is running. This is useful for creating file paths in a cross-platform compatible way.
 """
 USER_NAME = getpass.getuser()[0].upper() + getpass.getuser()[1:]
 """
