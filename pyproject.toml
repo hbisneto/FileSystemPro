@@ -1,20 +1,24 @@
 [build-system]
-requires = ["poetry-core>=1.0.0", "setuptools>=61.0", "wheel"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+[project]
 name = "FileSystemPro"
 version = "2.0.1.0"
 description = "FileSystemPro is a powerful toolkit designed to handle file and directory operations with ease and efficiency across various operating systems."
-authors = ["Heitor Bisneto <heitor.bardemaker@live.com>"]
-packages = [{ include = "filesystem" }]
+authors = [{ name = "Heitor Bisneto", email = "heitor.bardemaker@live.com" }]
+dependencies = [
+    "psutil>=5.8.0,<6.0.0",
+    "requests>=2.25.1,<3.0.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.8"
-psutil = "^5.8.0"
-requests = "^2.25.1"
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.2.4",
+    "sphinx>=4.0.0",
+    "sphinx-rtd-theme>=1.0.0",
+]
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^6.2.4"
-sphinx = "^4.0.0"
-sphinx-rtd-theme = "^1.0.0"
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["filesystem*"]

@@ -63,6 +63,17 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../..'))  # Ajusta para a raiz do repositório onde está o diretório filesystem/
 
+# Adiciona a raiz do repositório ao sys.path
+sys.path.insert(0, os.path.abspath('.'))
+print("sys.path:", sys.path)
+print("Current directory:", os.getcwd())
+print("Filesystem module path:", os.path.abspath('.'))
+try:
+    import filesystem
+    print("Filesystem module found at:", filesystem.__file__)
+except ImportError as e:
+    print("Failed to import filesystem:", str(e))
+
 # -- Project information -----------------------------------------------------
 
 project = 'FileSystemPro'

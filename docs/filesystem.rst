@@ -6,7 +6,7 @@ FileSystem Module
 The FileSystem module provides a comprehensive suite of methods for managing and interacting with various directories and user folders across multiple operating systems. It intelligently identifies the user's operating system—Linux, macOS, or Windows—and configures file paths for essential directories like Desktop, Documents, Downloads, Music, Pictures, Public, and Videos. Leveraging Python's built-in libraries such as `os`, `sys`, and `getpass`, it ensures cross-platform compatibility and accurate path retrieval. For Windows environments, it uses the `winreg` module to query the Windows registry, ensuring the paths to these directories are accurately retrieved based on the system's registry settings.
 
 **Features**
------------
+------------
 
 - **Cross-platform Compatibility**: Works on Linux, macOS, and Windows, making it versatile and adaptable to different environments.
 - **Directory Path Identification**: Identifies and defines paths to common user directories such as Desktop, Documents, Downloads, Music, Pictures, Public, and Videos.
@@ -14,7 +14,7 @@ The FileSystem module provides a comprehensive suite of methods for managing and
 - **Registry-Based Path Retrieval**: On Windows, uses the `winreg` module to retrieve accurate paths from the Windows registry for folders like Home, Desktop, Documents, Downloads, Music, Pictures, Public, and Videos.
 
 **Methods**
-----------
+-----------
 
 .. code-block:: python
 

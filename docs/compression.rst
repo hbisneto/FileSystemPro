@@ -1,12 +1,12 @@
 .. _compression-module:
 
 Compression Module
-=================
+==================
 
 The Compression module is responsible for creating, extracting, and reading compressed archive files in tar and zip formats. It leverages Python's built-in `tarfile` and `zipfile` modules to handle these operations efficiently.
 
 **Features**
------------
+------------
 
 The Compression module offers robust and versatile tools for managing file compression and extraction, whether you prefer the tar or zip format.
 
@@ -28,7 +28,7 @@ The TarFile module provides tools for managing file compression and extraction i
 The ZipFile module provides tools for managing file compression and extraction in zip format, offering robust functionality for efficient file management.
 
 **Methods**
-----------
+-----------
 
 .. code-block:: python
 
@@ -40,21 +40,21 @@ The ZipFile module provides tools for managing file compression and extraction i
 
    * - Method
      - Description
-   * - compression.tarfile.create_tar(fullpath_files, destination)
+   * - :code:`compression.tarfile.create_tar(fullpath_files, destination)`
      - Compresses files or directories into a TAR file. Returns a message indicating whether a single file/directory or a list of files/directories was compressed.
-   * - compression.tarfile.extract(tar_filename, destination, extraction_list=[])
-     - Extracts files from a tar archive. It can extract all files or a specified list of files. Returns **True** if successful, **[FileSystem Pro]: File Not Found** if the tar file is not found, **False** if a specified item in **extraction_list** is not found, or an **Error Message** if any other error occurs.
-   * - compression.tarfile.read_tar_archive(tar_filename)
+   * - :code:`compression.tarfile.extract(tar_filename, destination, extraction_list=[])`
+     - Extracts files from a tar archive. It can extract all files or a specified list of files. Returns :code:`True` if successful, :code:`"[FileSystem Pro]: File Not Found"` if the tar file is not found, :code:`False` if a specified item in :code:`extraction_list` is not found, or an :code:`Error Message` if any other error occurs.
+   * - :code:`compression.tarfile.read_tar_archive(tar_filename)`
      - Reads the contents of a TAR archive file and returns a list of the names of the files contained within it.
-   * - compression.zipfile.create_zip(fullpath_files, destination)
+   * - :code:`compression.zipfile.create_zip(fullpath_files, destination)`
      - Compresses files or directories into a ZIP file. Returns a message indicating whether a single file/directory or a list of files/directories was compressed.
-   * - compression.zipfile.extract(zip_path, destination, extraction_list=None)
+   * - :code:`compression.zipfile.extract(zip_path, destination, extraction_list=None)`
      - Reads the contents of a ZIP file and extracts files based on the provided parameters.
-   * - compression.zipfile.read_zip_archive(zip_filename, show_compression_system_files=True)
+   * - :code:`compression.zipfile.read_zip_archive(zip_filename, show_compression_system_files=True)`
      - Reads the contents of a ZIP file and returns a list of the names of the files contained within it.
 
 **API Reference**
-----------------
+-----------------
 
 **TarFile**
 

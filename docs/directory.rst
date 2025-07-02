@@ -37,30 +37,30 @@ The Directory module in FileSystemPro brings a comprehensive set of methods that
 
    * - Method
      - Description
-   * - directory.combine(*args, paths=[])
-     - Combines a list of paths or arguments into a single path. If the first argument or the first element in the paths list is not an absolute path, it raises a ValueError.
-   * - directory.create(path, create_subdirs=True)
-     - Creates a directory at the specified path. If `create_subdirs` is True, all intermediate-level directories needed to contain the leaf directory will be created. After the directory is created, it returns the details of the created directory.
-   * - directory.delete(path, recursive=False)
-     - Deletes a directory at the specified path. If `recursive` is True, the directory and all its contents will be removed.
-   * - directory.exists(path)
+   * - :code:`directory.combine(*args, paths=[])`
+     - Combines a list of paths or arguments into a single path. If the first argument or the first element in the paths list is not an absolute path, it raises a :code:`ValueError`.
+   * - :code:`directory.create(path, create_subdirs=True)`
+     - Creates a directory at the specified path. If :code:`create_subdirs` is :code:`True`, all intermediate-level directories needed to contain the leaf directory will be created. After the directory is created, it returns the details of the created directory.
+   * - :code:`directory.delete(path, recursive=False)`
+     - Deletes a directory at the specified path. If :code:`recursive` is :code:`True`, the directory and all its contents will be removed.
+   * - :code:`directory.exists(path)`
      - Checks if a directory exists at the specified path.
-   * - directory.get_directories(path, fullpath=True)
-     - Create a list of directories within a specified path and returns either their full paths or just their names based on the **fullpath** parameter. Defaults to **True**.
-   * - directory.get_name(path)
+   * - :code:`directory.get_directories(path, fullpath=True)`
+     - Creates a list of directories within a specified path and returns either their full paths or just their names based on the :code:`fullpath` parameter. Defaults to :code:`True`.
+   * - :code:`directory.get_name(path)`
      - Retrieves the name of the directory of the specified path. If the path has an extension, it is assumed to be a file, and the parent directory name is returned. If the path does not have an extension, it is assumed to be a directory, and the directory name is returned.
-   * - directory.get_parent(path)
+   * - :code:`directory.get_parent(path)`
      - Retrieves the parent directory from the specified path.
-   * - directory.get_parent_name(path)
+   * - :code:`directory.get_parent_name(path)`
      - Retrieves the parent directory name from the specified path.
-   * - directory.get_size(directory_path)
+   * - :code:`directory.get_size(directory_path)`
      - Calculates the total size of all files in the specified directory. The size is returned in bytes, KB, MB, GB, or TB, depending on the total size.
-   * - directory.join(path1='', path2='', path3='', path4='', paths=[])
+   * - :code:`directory.join(path1='', path2='', path3='', path4='', paths=[])`
      - Joins multiple directory paths into a single path. The function ensures that each directory path ends with a separator before joining. If a directory path does not end with a separator, one is added.
-   * - directory.move(source, destination, move_root=True)
+   * - :code:`directory.move(source, destination, move_root=True)`
      - The move function is designed to move files or directories from a source location to a destination. It provides flexibility by allowing you to specify whether intermediate-level subdirectories should be created during the move operation.
-   * - directory.rename(old_path, new_path)
-     - Renames a directory from the old directory path to the new directory path. If the old directory path does not exist or is not a directory, the function returns False.
+   * - :code:`directory.rename(old_path, new_path)`
+     - Renames a directory from the old directory path to the new directory path. If the old directory path does not exist or is not a directory, the function returns :code:`False`.
 
 Examples
 --------

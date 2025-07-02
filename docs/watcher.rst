@@ -1,7 +1,7 @@
 .. _watcher-module:
 
 Watcher Module
-=============
+==============
 
 The Watcher module serves as a monitoring system for the file system. It keeps track of any changes made within the file system, such as the creation of new files, modification of existing files, or deletion of files. This feature allows for real-time updates and can be particularly useful in scenarios where maintaining the integrity and up-to-date status of the file system is crucial, such as in a backup system or a live syncing service.
 
