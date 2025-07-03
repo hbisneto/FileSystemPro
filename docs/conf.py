@@ -78,7 +78,7 @@ except ImportError as e:
 # -- Project information -----------------------------------------------------
 
 project = 'FileSystemPro'
-copyright = '2025, Heitor Bardemaker A. Bisneto'
+copyright = '2023-2025, Heitor Bardemaker A. Bisneto'
 author = 'Heitor Bardemaker A. Bisneto'
 release = '2.0.1.0'  # Versão do projeto, igual ao pyproject.toml
 
