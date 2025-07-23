@@ -251,12 +251,22 @@ class TarFile():
       return f"[FileSystem Pro]: An error occurred. Error: {e}"
 
 class ZipFile():
+  def add_to_zip(zip_path, files_to_add):
+    with __zipfile__.ZipFile(zip_path, 'a') as zipf:
+        if isinstance(files_to_add, str):
+            zipf.write(files_to_add, os.path.basename(files_to_add))
+        elif isinstance(files_to_add, list):
+            for file in files_to_add:
+                zipf.write(file, os.path.basename(file))
+        else:
+            raise ValueError("[filesystempro.compression.add_to_zip(zip_path, files_to_add)]: This function requires a string or a list of strings.")
+  
   def create_zip(fullpath_files, destination):
     """
     # compression.zipfile.create_zip(fullpath_files, destination)
 
     ---
-
+    
     ### Overview
     Creates a zip archive at the specified destination path, compressing one or multiple files or directories provided in `fullpath_files`.
 
@@ -287,25 +297,25 @@ class ZipFile():
     ```
     """
     def add_to_zip(zipf, path, base_path):
-      if os.path.isfile(path):
-        zipf.write(path, os.path.relpath(path, base_path))
-      else:
-        for root, _, files in os.walk(path):
-          for file in files:
-            file_path = os.path.join(root, file)
-            zipf.write(file_path, os.path.relpath(file_path, base_path))
+        if os.path.isfile(path):
+            zipf.write(path, os.path.relpath(path, base_path))
+        else:
+            for root, _, files in os.walk(path):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    zipf.write(file_path, os.path.relpath(file_path, base_path))
 
     if isinstance(fullpath_files, str):
-      with __zipfile__.ZipFile(destination, 'w') as zipf:
-        add_to_zip(zipf, fullpath_files, os.path.dirname(fullpath_files))
-      return "ONLY ONE FILE OR DIRECTORY WAS COMPRESSED"
-
-    if isinstance(fullpath_files, list):
-      with __zipfile__.ZipFile(destination, 'w') as zipf:
-        for item in fullpath_files:
-          add_to_zip(zipf, item, os.path.dirname(item))
-      return "A LIST OF FILE OR DIRECTORY WAS COMPRESSED"
+        with __zipfile__.ZipFile(destination, 'w') as zipf:
+            add_to_zip(zipf, fullpath_files, os.path.dirname(fullpath_files))
+        return "ONLY ONE FILE OR DIRECTORY WAS COMPRESSED"
     
+    if isinstance(fullpath_files, list):
+        with __zipfile__.ZipFile(destination, 'w') as zipf:
+            for item in fullpath_files:
+                add_to_zip(zipf, item, os.path.dirname(item))
+        return "A LIST OF FILE OR DIRECTORY WAS COMPRESSED"
+      
   def extract(zip_path, destination, extraction_list=None):
     """
     # compression.zipfile.extract(zip_path, destination, extraction_list=None)
@@ -348,22 +358,22 @@ class ZipFile():
     ```
     """
     with __zipfile__.ZipFile(zip_path, 'r') as zip_ref:
-      if extraction_list is None:
-        zip_ref.extractall(destination)
-      elif isinstance(extraction_list, list):
-        for item in extraction_list:
-          zip_ref.extract(item, destination)
-      elif isinstance(extraction_list, str):
-        zip_ref.extract(extraction_list, destination)
-      else:
-        raise ValueError("The parameter 'extraction_list' must be None, a list, or a string.")
+        if extraction_list is None:
+            zip_ref.extractall(destination)
+        elif isinstance(extraction_list, list):
+            for item in extraction_list:
+                zip_ref.extract(item, destination)
+        elif isinstance(extraction_list, str):
+            zip_ref.extract(extraction_list, destination)
+        else:
+            raise ValueError("The parameter 'extraction_list' must be None, a list, or a string.")
 
   def read_zip_archive(zip_filename, show_compression_system_files=True):
     """
     # compression.zipfile.read_zip_archive(zip_filename, show_compression_system_files=True)
 
     ---
-
+    
     ### Overview
     Reads the contents of a zip archive and returns a list of the files within it. You can choose to include or exclude compression system files (e.g., `__MACOSX/`, `.DS_Store`).
 
@@ -392,18 +402,30 @@ class ZipFile():
     ```
     """
     try:
-      with __zipfile__.ZipFile(zip_filename, "r") as zip_file:
-        zip_contents_list = []
-        all_contents_list = zip_file.namelist()
-      for i in all_contents_list:
-        if show_compression_system_files == True:
-          zip_contents_list.append(i)
-        else:
-          if "__MACOSX/" not in i:
-            if ".DS_Store" not in i:
-              zip_contents_list.append(i)
-        return zip_contents_list
+        with __zipfile__.ZipFile(zip_filename, "r") as zip_file:
+            zip_contents_list = []
+            all_contents_list = zip_file.namelist()
+            for i in all_contents_list:
+                if show_compression_system_files == True:
+                    zip_contents_list.append(i)
+                else:
+                    if "__MACOSX/" not in i:
+                        if ".DS_Store" not in i:
+                            zip_contents_list.append(i)
+            return zip_contents_list
     except FileNotFoundError:
-      return "[FileSystem Pro]: File Not Found"
+        return "[FileSystem Pro]: File Not Found"
     except Exception as e:
-      return f"[FileSystem Pro]: An error occurred. Error: {e}"
+        return f"[FileSystem Pro]: An error occurred. Error: {e}"
+
+  def remove_from_zip(zip_path, files_to_remove):
+      if isinstance(files_to_remove, str):
+          files_to_remove = [files_to_remove]
+      
+      temp_zip = zip_path + "_temp.zip"
+      with __zipfile__.ZipFile(zip_path, 'r') as zin, __zipfile__.ZipFile(temp_zip, 'w') as zout:
+          for item in zin.infolist():
+              if item.filename not in files_to_remove:
+                  zout.writestr(item, zin.read(item.filename))
+      os.replace(temp_zip, zip_path)
+
