@@ -11,6 +11,9 @@ file creation, deletion, enumeration, and file splitting and reassembling.
 ## Features
 - `Checksum Calculation:` Utilizes SHA-256 hashing to calculate file checksums for integrity verification.
 - `Integrity Check:` Compares checksums of two files to verify their integrity.
+- `Batch Integrity Check:` Performs integrity verification on multiple files simultaneously using SHA-256 checksums.
+- `Integrity Report Generation:` Creates detailed reports of integrity verification results.
+- `Reference Hashes Management:` Saves and loads SHA-256 checksums for reference in integrity checks.
 - `File Creation:` Supports creating both text and binary files with specified data.
 - `File Deletion:` Safely deletes files by checking for their existence before removal.
 - `File Enumeration:` Enumerates all files in a given directory, providing detailed file information.
@@ -28,6 +31,13 @@ providing a high level of abstraction from the underlying file system operations
 The `calculate_checksum` function reads a file in binary mode and calculates its SHA-256 hash, 
 returning the hexadecimal digest. The `check_integrity` function uses this to compare the checksums of 
 two files, which is essential for verifying that files have not been tampered with or corrupted.
+The `batch_check_integrity` function extends this capability to verify multiple files against reference hashes or without references, detecting data corruption efficiently.
+
+### Integrity Report Generation
+The `generate_integrity_report` function creates detailed reports of batch integrity checks, including statistics on total files checked, successful verifications, failures, and detailed file information such as size, modification time, and hash values.
+
+### Reference Hashes Management
+The `save_reference_hashes` function generates and saves SHA-256 checksums for specified files or directories to a JSON file. The `load_reference_hashes` function retrieves these hashes for use in integrity verification.
 
 ### File Creation, Deletion, and Enumeration
 File creation is handled by two functions: `create` for text files, 
@@ -62,6 +72,9 @@ import shutil
 import filesystem as fs
 from filesystem import directory as dir
 from filesystem import wrapper as wra
+from datetime import datetime
+import json
+import logging
 
 def append_text(file, text):
     """
@@ -91,6 +104,115 @@ def append_text(file, text):
     """
     with open(file, 'a', encoding='utf-8') as file:
         file.write(f'{text}')
+
+def batch_check_integrity(paths, reference_hashes=None, log_file="integrity_report.log"):
+    """
+    # file.batch_check_integrity(paths, reference_hashes=None, log_file="integrity_report.log")
+
+    ---
+
+    ### Overview
+    Performs batch integrity verification on multiple files or directories using SHA-256 checksums.
+    Supports verification against reference hashes if provided, and logs results to a specified log file.
+
+    ### Parameters:
+    - paths (str or list): A single path or list of paths to files or directories to verify.
+    - reference_hashes (dict, optional): A dictionary mapping file paths to their reference SHA-256 hashes. Defaults to None.
+    - log_file (str, optional): Path to the log file for recording verification results. Defaults to "integrity_report.log".
+
+    ### Returns:
+    dict: A dictionary containing verification results with the following keys:
+        - timestamp: ISO format timestamp of when the verification was performed
+        - total_files: Total number of files checked
+        - successful: Number of files with verified integrity
+        - failed: Number of files that failed verification or encountered errors
+        - errors: List of error messages
+        - file_details: Dictionary mapping file paths to their verification details
+
+    ### Raises:
+    - FileNotFoundError: If a specified file or directory does not exist.
+    - PermissionError: If permission is denied when accessing a file or directory.
+    - IOError: If there is an error reading a file during checksum calculation.
+
+    ### Examples:
+    - Verify integrity of files in a directory without reference hashes:
+
+    ```python
+    results = batch_check_integrity("/path/to/directory")
+    ```
+
+    - Verify integrity of multiple files against reference hashes:
+
+    ```python
+    ref_hashes = {"/path/to/file1.txt": "hash1", "/path/to/file2.txt": "hash2"}
+    results = batch_check_integrity(["/path/to/file1.txt", "/path/to/file2.txt"], ref_hashes)
+    ```
+    """
+
+    logging.basicConfig(
+        filename=log_file,
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s'
+    )
+
+    results = {
+        "timestamp": datetime.now().isoformat(),
+        "total_files": 0,
+        "successful": 0,
+        "failed": 0,
+        "errors": [],
+        "file_details": {}
+    }
+
+    if isinstance(paths, str):
+        paths = [paths]
+
+    for path in paths:
+        try:
+            if dir.exists(path):
+                files = get_files(path, fullpath=True)
+            else:
+                files = [path] if exists(path) else []
+                if not files:
+                    raise FileNotFoundError(f"Path '{path}' does not exist.")
+
+            for file_path in files:
+                results["total_files"] += 1
+                try:
+                    current_hash = calculate_checksum(file_path)
+                    file_info = {
+                        "size": get_size(file_path),
+                        "last_modified": datetime.fromtimestamp(os.path.getmtime(file_path)).isoformat(),
+                        "current_hash": current_hash,
+                        "status": "OK"
+                    }
+
+                    if reference_hashes and file_path in reference_hashes:
+                        file_info["reference_hash"] = reference_hashes[file_path]
+                        file_info["status"] = "OK" if current_hash == reference_hashes[file_path] else "CORRUPTED"
+
+                    results["file_details"][file_path] = file_info
+                    results["successful" if file_info["status"] == "OK" else "failed"] += 1
+                    logging.info(f"Verified {file_path}: {file_info['status']}")
+
+                except (IOError, PermissionError) as e:
+                    error_msg = f"Error processing {file_path}: {str(e)}"
+                    results["errors"].append(error_msg)
+                    results["failed"] += 1
+                    logging.error(error_msg)
+
+        except FileNotFoundError as e:
+            error_msg = str(e)
+            results["errors"].append(error_msg)
+            results["failed"] += 1
+            logging.error(error_msg)
+        except PermissionError as e:
+            error_msg = f"Permission denied for {path}: {str(e)}"
+            results["errors"].append(error_msg)
+            results["failed"] += 1
+            logging.error(error_msg)
+
+    return results
 
 def calculate_checksum(file):
     """
@@ -459,6 +581,77 @@ def find_duplicates(path):
                 checksums[checksum] = file_path
     return original_files, duplicate_files
 
+def generate_integrity_report(results, output_file=None):
+    """
+    # file.generate_integrity_report(results, output_file=None)
+
+    ---
+
+    ### Overview
+    Generates a detailed report of batch integrity verification results, optionally saving it to a file.
+
+    ### Parameters:
+    - results (dict): The results dictionary returned by `batch_check_integrity`.
+    - output_file (str, optional): Path to save the report. If None, the report is only returned as a string. Defaults to None.
+
+    ### Returns:
+    str: The formatted report as a string.
+
+    ### Raises:
+    - PermissionError: If permission is denied when writing to the output file.
+    - IOError: If there is an error writing to the output file.
+
+    ### Examples:
+    - Generate a report and print it:
+
+    ```python
+    results = batch_check_integrity("/path/to/directory")
+    report = generate_integrity_report(results)
+    print(report)
+    ```
+
+    - Generate a report and save it to a file:
+
+    ```python
+    results = batch_check_integrity("/path/to/directory")
+    generate_integrity_report(results, "integrity_report.txt")
+    ```
+    """
+    report = [
+        "=" * 50,
+        f"Integrity Report - {results['timestamp']}",
+        "=" * 50,
+        f"Total files verified: {results['total_files']}",
+        f"Files with integrity: {results['successful']}",
+        f"Files with issues: {results['failed']}",
+        "\nFile Details:"
+    ]
+
+    for file_path, details in results["file_details"].items():
+        report.append(f"\nFile: {file_path}")
+        report.append(f"Size: {details['size']}")
+        report.append(f"Last Modified: {details['last_modified']}")
+        report.append(f"SHA-256 Hash: {details['current_hash']}")
+        if "reference_hash" in details:
+            report.append(f"Reference Hash: {details['reference_hash']}")
+        report.append(f"Status: {details['status']}")
+
+    if results["errors"]:
+        report.append("\nErrors Encountered:")
+        for error in results["errors"]:
+            report.append(f"- {error}")
+
+    report_text = "\n".join(report)
+
+    if output_file:
+        try:
+            with open(output_file, "w", encoding="utf-8") as f:
+                f.write(report_text)
+        except (IOError, PermissionError) as e:
+            raise IOError(f"Error writing report to {output_file}: {str(e)}")
+
+    return report_text
+
 def get_extension(file_path, lower=True):
     """
     # file.get_extension(file_path, lower=True)
@@ -601,6 +794,43 @@ def get_size(file_path):
             return f"{size:3.1f} {unit}" 
         size /= 1024.0
 
+def load_reference_hashes(input_file):
+    """
+    # file.load_reference_hashes(input_file)
+
+    ---
+
+    ### Overview
+    Loads SHA-256 checksums from a JSON file for use in integrity verification.
+
+    ### Parameters:
+    - input_file (str): Path to the JSON file containing the reference hashes.
+
+    ### Returns:
+    dict: A dictionary mapping file paths to their reference SHA-256 hashes.
+
+    ### Raises:
+    - FileNotFoundError: If the input file does not exist.
+    - PermissionError: If permission is denied when reading the input file.
+    - IOError: If there is an error reading the input file or parsing the JSON.
+
+    ### Examples:
+    - Load reference hashes from a JSON file:
+
+    ```python
+    ref_hashes = load_reference_hashes("hashes.json")
+    ```
+    """
+    try:
+        with open(input_file, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Reference hash file '{input_file}' does not exist.")
+    except (IOError, PermissionError) as e:
+        raise IOError(f"Error reading reference hashes from {input_file}: {str(e)}")
+    except json.JSONDecodeError as e:
+        raise IOError(f"Invalid JSON format in {input_file}: {str(e)}")
+
 def move(source, destination, new_filename=None, replace_existing=False):
     """
     # file.move(source, destination, new_filename=None, replace_existing=False)
@@ -737,6 +967,73 @@ def reassemble_file(large_file, new_file):
         for part in parts:
             delete(part)
 
+def save_reference_hashes(paths, output_file):
+    """
+    # file.save_reference_hashes(paths, output_file)
+
+    ---
+
+    ### Overview
+    Calculates SHA-256 checksums for specified files or directories and saves them to a JSON file.
+    The resulting file can be used as a reference for integrity verification.
+
+    ### Parameters:
+    - paths (str or list): A single path or list of paths to files or directories to calculate hashes for.
+    - output_file (str): Path to the JSON file where the hashes will be saved.
+
+    ### Returns:
+    None
+
+    ### Raises:
+    - FileNotFoundError: If a specified file or directory does not exist.
+    - PermissionError: If permission is denied when accessing a file or directory or writing to the output file.
+    - IOError: If there is an error writing to the output file.
+
+    ### Examples:
+    - Save hashes for a directory:
+
+    ```python
+    save_reference_hashes("/path/to/directory", "hashes.json")
+    ```
+
+    - Save hashes for multiple files:
+
+    ```python
+    save_reference_hashes(["/path/to/file1.txt", "/path/to/file2.txt"], "hashes.json")
+    ```
+    """
+    hashes = {}
+    
+    if isinstance(paths, str):
+        paths = [paths]
+
+    for path in paths:
+        try:
+            if dir.exists(path):
+                files = get_files(path, fullpath=True)
+            else:
+                files = [path] if exists(path) else []
+                if not files:
+                    raise FileNotFoundError(f"Path '{path}' does not exist.")
+
+            for file_path in files:
+                try:
+                    hash_value = calculate_checksum(file_path)
+                    hashes[file_path] = hash_value
+                except (IOError, PermissionError) as e:
+                    logging.error(f"Error calculating hash for {file_path}: {str(e)}")
+
+        except FileNotFoundError as e:
+            logging.error(str(e))
+        except PermissionError as e:
+            logging.error(f"Permission denied for {path}: {str(e)}")
+
+    try:
+        with open(output_file, "w", encoding="utf-8") as f:
+            json.dump(hashes, f, indent=2)
+    except (IOError, PermissionError) as e:
+        raise IOError(f"Error writing hashes to {output_file}: {str(e)}")
+
 def split_file(file, chunk_size = 1048576):
     """
     # file.split_file(file, chunk_size = 1048576)
@@ -781,4 +1078,3 @@ def split_file(file, chunk_size = 1048576):
             i += 1
             chunk = f.read(chunk_size)
     return True
-
