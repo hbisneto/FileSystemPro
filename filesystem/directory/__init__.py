@@ -414,6 +414,63 @@ def get_size(directory_path):
             return f"{total_size:3.1f} {unit}"
         total_size /= 1024.0
 
+def get_tree(directory, indent="", prefix="├── "):
+    """
+    # directory.get_tree(directory, indent="", prefix="├── ")
+
+    ---
+
+    ### Overview
+    Generates a visual representation of the directory structure rooted at the given `directory` path. 
+    The structure is returned as a list of strings, each representing a line of the tree-like layout, 
+    mimicking the output of the Unix `tree` command.
+
+    Common development directories such as `.git`, `__pycache__`, `node_modules`, and `.venv` are 
+    automatically ignored.
+
+    ### Parameters:
+    directory (str): The root directory path whose contents will be represented.
+    indent (str): A string used for indenting subdirectory levels. Typically managed internally during recursion.
+    prefix (str): The prefix to use before the current item. Defaults to `"├── "`.
+
+    ### Returns:
+    list[str]: A list of strings representing the visual structure of the directory tree.
+
+    ### Raises:
+    - PermissionError: If access to a directory is denied.
+
+    ### Examples:
+    - Displays the structure of a directory and its subdirectories.
+
+    ```python
+    lines = get_tree("/path/to/project")
+    for line in lines:
+        print(line)
+    ```
+    """
+    
+    tree_lines = []
+    ignore_list = {'.git', '__pycache__', 'node_modules', '.venv'}
+    
+    try:
+        items = sorted(os.listdir(directory))
+    except PermissionError:
+        tree_lines.append(f"{indent}{prefix}[Permissão negada: {directory}]")
+        return tree_lines
+    
+    items = [item for item in items if item not in ignore_list]
+    
+    for index, item in enumerate(items):
+        path = os.path.join(directory, item)
+        is_last = index == len(items) - 1
+        current_prefix = "└── " if is_last else "├── "
+        tree_lines.append(f"{indent}{current_prefix}{item}")
+        
+        if os.path.isdir(path):
+            next_indent = indent + ("    " if is_last else "│   ")
+            tree_lines.extend(get_tree(path, next_indent))
+    return tree_lines
+
 def join(path1='', path2='', path3='', path4='', paths=[]):
     """
     # directory.join(path1='', path2='', path3='', path4='', paths=[])
