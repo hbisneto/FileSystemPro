@@ -155,7 +155,7 @@ def create(path, create_subdirs=True):
         os.mkdir(path)
     return wra.get_object(path)
 
-def create_symbolic_link(path_link, path_target):
+def create_symbolic_link(path_target, path_link):
     """
     # directory.create_symbolic_link(path_link, path_target)
 
@@ -165,8 +165,8 @@ def create_symbolic_link(path_link, path_target):
     Creates a directory symbolic link identified by path that points to path_to_target.
 
     ### Parameters:
-    path_link (str): The path where the symbolic link will be created.
     path_target (str): The target directory the symbolic link points to.
+    path_link (str): The path where the symbolic link will be created.
 
     ### Returns:
     dict: A dictionary containing details about the created symbolic link
@@ -181,7 +181,7 @@ def create_symbolic_link(path_link, path_target):
     - Creates a symbolic link to a directory.
 
     ```python
-    create_symbolic_link("/path/to/link", "/path/to/target")
+    create_symbolic_link("/path/to/target", "/path/to/link")
     ```
     """
     if not os.path.exists(path_target):
@@ -730,9 +730,10 @@ def get_name(path):
     ```
     """
     if wra.has_extension(path):
-        return f'{get_parent_name(path)}'
+        return get_parent_name(path)
     else:
-        return os.path.basename(os.path.dirname(path + '/'))
+        normalized = os.path.normpath(path.rstrip('/'))
+        return os.path.basename(normalized)
 
 def get_parent(path):
     """
@@ -790,10 +791,8 @@ def get_parent_name(path):
     get_parent_name("/path/to/directory")
     ```
     """
-    if path.endswith('/'):
-        path = path[:-1]
-        return os.path.basename(path)
-    return os.path.basename(os.path.dirname(path))
+    normalized = os.path.normpath(path.rstrip('/'))
+    return os.path.basename(os.path.dirname(normalized))
 
 def get_size(directory_path, show_unit=False):
     """
@@ -926,27 +925,29 @@ def move(source, destination, move_root=True):
     move("/path/to/source", "/path/to/destination", move_root=False)
     ```
     """
+    if not exists(source):
+        raise FileNotFoundError(f"The source path '{source}' does not exist.")
+    
     if exists(destination):
         if move_root:
             shutil.move(source, destination)
         else:
-            entries = os.listdir(source)
             for root, dirs, files in os.walk(source):
                 for d in dirs:
-                    shutil.move(os.path.join(root, d), os.path.join(destination, d))
+                    shutil.move(os.path.join(root, d), os.path.join(destination, os.path.relpath(os.path.join(root, d), source)))
                 for f in files:
-                    shutil.move(os.path.join(root, f), os.path.join(destination, f))
+                    shutil.move(os.path.join(root, f), os.path.join(destination, os.path.relpath(os.path.join(root, f), source)))
     else:
         if move_root:
             create(destination)
             shutil.move(source, destination)
         else:
-            entries = os.listdir(source)
+            create(destination)
             for root, dirs, files in os.walk(source):
                 for d in dirs:
-                    shutil.move(os.path.join(root, d), os.path.join(destination, d))
+                    shutil.move(os.path.join(root, d), os.path.join(destination, os.path.relpath(os.path.join(root, d), source)))
                 for f in files:
-                    shutil.move(os.path.join(root, f), os.path.join(destination, f))
+                    shutil.move(os.path.join(root, f), os.path.join(destination, os.path.relpath(os.path.join(root, f), source)))
    
 def rename(old_path, new_path):
     """
