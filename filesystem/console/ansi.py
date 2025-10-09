@@ -93,10 +93,16 @@ class AnsiBack(AnsiCodes):
 class AnsiStyle(AnsiCodes):
     BRIGHT    = 1
     DIM       = 2
+    # NEW IMPLEMENTATION
+    UNDERLINE = 4
+    STRIKETHROUGH = 9
     NORMAL    = 22
     RESET_ALL = 0
+    # RESET TO NEW IMPLEMENTATION
+    RESET_UNDERLINE = 24
+    RESET_STRIKETHROUGH = 29
 
-foreground   = AnsiFore()
-background   = AnsiBack()
+fore   = AnsiFore()
+back   = AnsiBack()
 style  = AnsiStyle()
 cursor = AnsiCursor()
