@@ -169,6 +169,11 @@ class AnsiToWin32(object):
                 AnsiBack.LIGHTMAGENTA_EX: (winterm.back, WinColor.MAGENTA, True),
                 AnsiBack.LIGHTCYAN_EX: (winterm.back, WinColor.CYAN, True),
                 AnsiBack.LIGHTWHITE_EX: (winterm.back, WinColor.GREY, True),
+                # NEW IMPLEMENTATION
+                AnsiStyle.UNDERLINE: (winterm.style, AnsiStyle.UNDERLINE),
+                AnsiStyle.RESET_UNDERLINE: (winterm.style, AnsiStyle.RESET_UNDERLINE),
+                AnsiStyle.STRIKETHROUGH: (winterm.style, AnsiStyle.STRIKETHROUGH),
+                AnsiStyle.RESET_STRIKETHROUGH: (winterm.style, AnsiStyle.RESET_STRIKETHROUGH),
             }
         return dict()
 
