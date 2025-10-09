@@ -40,7 +40,6 @@ from sys import platform as PLATFORM
 
 ## VERIFY IF THE LIBRARY HAS SOME AVAILABLE UPDATE
 from filesystem import __core__
-from .console import console
 __core__.__checkupdates__("Hbisneto","FileSystemPro")
 ## VERIFY IF THE LIBRARY HAS SOME AVAILABLE UPDATE
 
