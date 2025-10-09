@@ -40,7 +40,7 @@ from sys import platform as PLATFORM
 
 ## VERIFY IF THE LIBRARY HAS SOME AVAILABLE UPDATE
 from filesystem import __core__
-__core__.__checkupdates__("Hbisneto","FileSystemPro")
+from .console import console
 ## VERIFY IF THE LIBRARY HAS SOME AVAILABLE UPDATE
 
 CURRENT_LOCATION = os.getcwd()

@@ -45,7 +45,6 @@ from .ansitowin32 import AnsiToWin32
 
 # __version__ = '0.4.7dev1' - Colorama dev version
 __version__ = '3.0.0.0' # Console Library version
-
 class Console:
     def __init__(self):
         self._fore = None
