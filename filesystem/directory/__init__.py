@@ -39,7 +39,7 @@ from filesystem import wrapper as wra
 
 current_directory = os.getcwd()
 """
-Creates a string that represents the path to the current directory. (Where the directory is working)
+Global variable tracking the current working directory (updated by set_current_directory).
 """
 
 def combine(*args, paths=[]):
@@ -50,6 +50,7 @@ def combine(*args, paths=[]):
 
     ### Overview
     Combines a list of paths or arguments into a single path. If the first argument or the first element in the paths list is not an absolute path, it raises a ValueError.
+    If both `*args` and `paths` are provided, `paths` has priority and `*args` is ignored.
 
     ### Parameters:
     *args (str): The paths to combine. The first argument must be an absolute path.
@@ -59,58 +60,38 @@ def combine(*args, paths=[]):
     str: The combined path.
 
     ### Raises:
-    - ValueError: If the first argument or the first element in the paths list is not an absolute path.
+    - ValueError: If the first path is not absolute.
 
     ### Examples:
     - Combines all paths in the list, starting with an absolute path.
-
     ```python
     combine(paths=["/home/user/directory", "subdirectory", "file.txt"])
     ```
     - Combines all arguments, starting with an absolute path.
-
     ```python
     combine("/home/user/directory", "subdirectory", "file.txt")
     ```
     """
     if paths:
-        result = paths[0]
-        if not os.path.isabs(result):
-            raise ValueError(
-f'''Invalid argument: The path "{result}" is not an absolute path.
-- The first argument inside paths list must to be an absolute path.
-
-For example, "/home/user/directory" is a valid absolute path. Please provide a valid absolute path.
-
-'''
-)
-        for path in paths:
-            if os.path.isabs(path):
-                result = path
-            else:
-                result = join(result, path)
-        return result
-
-    result = args[0]
-    if not os.path.isabs(result):
+        path_list = paths
+    else:
+        path_list = list(args)
+    if not path_list:
+        return ""
+    first = path_list[0]
+    if not os.path.isabs(first):
         raise ValueError(
-f'''Invalid argument: The path "{result}" is not an absolute path.
-- The first argument must to be an absolute path.
-
-For example, "/home/user/directory" is a valid absolute path. Please provide a valid absolute path.
-
-'''
-)
-    for path in args[1:]:
-        if path == '':
-            continue
-        if os.path.isabs(path):
-            result = path
+            f'Invalid argument: The path "{first}" is not an absolute path.\n'
+            f'- The first path must be absolute.\n'
+            f'For example, "/home/user/directory" is valid.'
+        )
+    rel_paths = []
+    for p in path_list[1:]:
+        if os.path.isabs(p):
+            rel_paths = [p]
         else:
-            if not result.endswith(os.sep):
-                result += os.sep
-            result += path
-    return result
+            rel_paths.append(p)
+    return os.path.join(first, *rel_paths).rstrip(os.sep)
 
 def create(path, create_subdirs=True):
     """
@@ -120,8 +101,8 @@ def create(path, create_subdirs=True):
 
     ### Overview
     Creates a directory at the specified path. If `create_subdirs` is True, all intermediate-level 
-    directories needed to contain the leaf directory will be created. After the directory is created, 
-    it returns the details of the created directory.
+    directories needed to contain the leaf directory will be created (ignores if exists). 
+    If False, raises if intermediates missing or leaf exists. Returns details via `wrapper.get_object`.
 
     ### Parameters:
     path (str): The directory path to create.
@@ -129,63 +110,64 @@ def create(path, create_subdirs=True):
     Defaults to True.
 
     ### Returns:
-    dict: A dictionary containing the details of the created directory.
+    dict: Details of the created directory (from `wrapper.get_object`; includes "abspath", "size" as str, times as str, etc.).
 
     ### Raises:
-    - FileExistsError: If the directory already exists when `create_subdirs` is False.
+    - FileExistsError: If the leaf directory already exists when `create_subdirs` is False.
     - PermissionError: If the permission is denied.
-    - FileNotFoundError: If the path does not exist.
+    - FileNotFoundError: If intermediates missing and `create_subdirs` is False.
 
     ### Examples:
     - Creates all intermediate subdirectories if they don't exist and returns their details.
-
     ```python
     create("/path/to/directory")
     ```
     - Creates only the leaf directory, raises an error if any intermediate directory doesn't exist, 
     and returns the details of the created directory.
-
     ```python
     create("/path/to/directory", False)
     ```
     """
-    if create_subdirs:
-        os.makedirs(path, exist_ok=True)
-    else:
-        os.mkdir(path)
+    if not os.path.isdir(path):
+        if create_subdirs:
+            os.makedirs(path, exist_ok=True)
+        else:
+            os.mkdir(path)
     return wra.get_object(path)
 
 def create_symbolic_link(path_target, path_link):
     """
-    # directory.create_symbolic_link(path_link, path_target)
+    # directory.create_symbolic_link(path_target, path_link)
 
     ---
 
     ### Overview
-    Creates a directory symbolic link identified by path that points to path_to_target.
+    Creates a directory symbolic link at `path_link` pointing to `path_target`.
 
     ### Parameters:
     path_target (str): The target directory the symbolic link points to.
     path_link (str): The path where the symbolic link will be created.
 
     ### Returns:
-    dict: A dictionary containing details about the created symbolic link
+    dict: A dictionary containing details about the created symbolic link (from `wrapper.get_object`; "is_link": True).
 
     ### Raises:
     - FileExistsError: If the link already exists.
     - FileNotFoundError: If the target path does not exist.
+    - ValueError: If target is not a directory.
     - OSError: If the operation is not supported or permission is denied.
     - PermissionError: If permission is denied when accessing the target or creating the link.
 
     ### Examples:
     - Creates a symbolic link to a directory.
-
     ```python
     create_symbolic_link("/path/to/target", "/path/to/link")
     ```
     """
     if not os.path.exists(path_target):
         raise FileNotFoundError(f"The target path '{path_target}' does not exist.")
+    if not os.path.isdir(path_target):
+        raise ValueError(f"Target '{path_target}' must be a directory.")
     os.symlink(path_target, path_link)
     return wra.get_object(path_link)
 
@@ -235,27 +217,24 @@ def delete(path, recursive=False):
     None
 
     ### Raises:
-    - Exception: If the directory does not exist or if the directory is not empty and `recursive` is False.
+    - FileNotFoundError: If the directory does not exist.
+    - OSError: If the directory is not empty and `recursive` is False, or permission denied.
 
     ### Examples:
     - Deletes an empty directory.
-
     ```python
     delete("/path/to/directory")
     ```
     - Deletes a directory and all its contents.
-
     ```python
     delete("/path/to/directory", True)
     ```
     """
-    if not exists(path):
-        raise Exception(f'\n\n>> The directory "{path}" does not exist.')
-
-    if not os.listdir(path) or recursive:
-        shutil.rmtree(path)
-    else:
-        raise Exception(f'\n\n>> The directory "{path}" is not empty.\n>> Use delete(path, True) to remove anyway.')
+    if not os.path.isdir(path):
+        raise FileNotFoundError(f'The directory "{path}" does not exist.')
+    if os.listdir(path) and not recursive:
+        raise OSError(f'The directory "{path}" is not empty. Use recursive=True.')
+    shutil.rmtree(path)
 
 def enumerate_directories(path, search_pattern="*", search_option="TopDirectoryOnly"):
     """
@@ -275,25 +254,23 @@ def enumerate_directories(path, search_pattern="*", search_option="TopDirectoryO
     iterator: An iterator of directory full paths.
 
     ### Raises:
-    - FileNotFoundError: If the path does not exist.
+    - FileNotFoundError: If the path does not exist or is not a directory.
     - PermissionError: If permission is denied.
 
     ### Examples:
     - Enumerates all directories in a path.
-
     ```python
     for dir_path in enumerate_directories("/path/to/directory"):
         print(dir_path)
     ```
     - Enumerates directories matching a pattern recursively.
-
     ```python
     for dir_path in enumerate_directories("/path/to/directory", "*.test", "AllDirectories"):
         print(dir_path)
     ```
     """
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"The path '{path}' does not exist.")
+    if not os.path.isdir(path):
+        raise FileNotFoundError(f"The path '{path}' must be a directory.")
     if search_option == "AllDirectories":
         for root, dirs, _ in os.walk(path):
             for d in dirs:
@@ -322,25 +299,23 @@ def enumerate_files(path, search_pattern="*", search_option="TopDirectoryOnly"):
     iterator: An iterator of file full paths.
 
     ### Raises:
-    - FileNotFoundError: If the path does not exist.
+    - FileNotFoundError: If the path does not exist or is not a directory.
     - PermissionError: If permission is denied.
 
     ### Examples:
     - Enumerates all files in a path.
-
     ```python
     for file_path in enumerate_files("/path/to/directory"):
         print(file_path)
     ```
     - Enumerates files matching a pattern recursively.
-
     ```python
     for file_path in enumerate_files("/path/to/directory", "*.txt", "AllDirectories"):
         print(file_path)
     ```
     """
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"The path '{path}' does not exist.")
+    if not os.path.isdir(path):
+        raise FileNotFoundError(f"The path '{path}' must be a directory.")
     if search_option == "AllDirectories":
         for root, _, files in os.walk(path):
             for f in files:
@@ -382,7 +357,7 @@ def get_creation_time(path):
     ---
 
     ### Overview
-    Gets the creation date and time of a directory.
+    Gets the creation date and time of a directory. Note: On Unix, this returns the change time (not true creation time).
 
     ### Parameters:
     path (str): The directory path.
@@ -396,12 +371,11 @@ def get_creation_time(path):
 
     ### Examples:
     - Gets the creation time of a directory.
-
     ```python
     get_creation_time("/path/to/directory")
     ```
     """
-    if not os.path.exists(path):
+    if not os.path.isdir(path):
         raise FileNotFoundError(f"The directory '{path}' does not exist.")
     return datetime.datetime.fromtimestamp(os.path.getctime(path))
 
@@ -412,7 +386,7 @@ def get_creation_time_utc(path):
     ---
 
     ### Overview
-    Gets the creation date and time, in Coordinated Universal Time (UTC) format, of a directory.
+    Gets the creation date and time, in Coordinated Universal Time (UTC) format, of a directory. Note: On Unix, this returns the change time (not true creation time).
 
     ### Parameters:
     path (str): The directory path.
@@ -426,14 +400,41 @@ def get_creation_time_utc(path):
 
     ### Examples:
     - Gets the UTC creation time of a directory.
-
     ```python
     get_creation_time_utc("/path/to/directory")
     ```
     """
-    if not os.path.exists(path):
+    if not os.path.isdir(path):
         raise FileNotFoundError(f"The directory '{path}' does not exist.")
     return datetime.datetime.utcfromtimestamp(os.path.getctime(path))
+
+def get_current_directory():
+    """
+    # directory.get_current_directory()
+
+    ---
+
+    ### Overview
+    Retrieves the current working directory (reflects the last `set_current_directory` call).
+
+    ### Parameters:
+    None.
+
+    ### Returns:
+    str: The path of the current working directory.
+
+    ### Raises:
+    None.
+
+    ### Examples:
+    ```python
+    from filesystem import directory as dir
+    dir.set_current_directory("/path/to/directory")
+    print(dir.get_current_directory())  # Outputs: /path/to/directory
+    ```
+    """
+    global current_directory
+    return current_directory
 
 def get_directories(path, search_pattern="*", search_option="TopDirectoryOnly"):
     """
@@ -453,23 +454,21 @@ def get_directories(path, search_pattern="*", search_option="TopDirectoryOnly"):
     list: A list of directory full paths.
 
     ### Raises:
-    - FileNotFoundError: If the path does not exist.
+    - FileNotFoundError: If the path does not exist or is not a directory.
     - PermissionError: If permission is denied.
 
     ### Examples:
     - Gets all subdirectories in a path.
-
     ```python
     get_directories("/path/to/directory")
     ```
     - Gets subdirectories matching a pattern recursively.
-
     ```python
     get_directories("/path/to/directory", "*.test", "AllDirectories")
     ```
     """
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"The path '{path}' does not exist.")
+    if not os.path.isdir(path):
+        raise FileNotFoundError(f"The path '{path}' must be a directory.")
     result = []
     if search_option == "AllDirectories":
         for root, dirs, _ in os.walk(path):
@@ -500,23 +499,21 @@ def get_files(path, search_pattern="*", search_option="TopDirectoryOnly"):
     list: A list of file full paths.
 
     ### Raises:
-    - FileNotFoundError: If the path does not exist.
+    - FileNotFoundError: If the path does not exist or is not a directory.
     - PermissionError: If permission is denied.
 
     ### Examples:
     - Gets all files in a path.
-
     ```python
     get_files("/path/to/directory")
     ```
     - Gets files matching a pattern recursively.
-
     ```python
     get_files("/path/to/directory", "*.txt", "AllDirectories")
     ```
     """
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"The path '{path}' does not exist.")
+    if not os.path.isdir(path):
+        raise FileNotFoundError(f"The path '{path}' must be a directory.")
     result = []
     if search_option == "AllDirectories":
         for root, _, files in os.walk(path):
@@ -547,23 +544,21 @@ def get_filesystem_entries(path, search_pattern="*", search_option="TopDirectory
     list: A list of file and directory full paths.
 
     ### Raises:
-    - FileNotFoundError: If the path does not exist.
+    - FileNotFoundError: If the path does not exist or is not a directory.
     - PermissionError: If permission is denied.
 
     ### Examples:
     - Gets all entries in a path.
-
     ```python
     get_filesystem_entries("/path/to/directory")
     ```
     - Gets entries matching a pattern recursively.
-
     ```python
     get_filesystem_entries("/path/to/directory", "*.txt", "AllDirectories")
     ```
     """
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"The path '{path}' does not exist.")
+    if not os.path.isdir(path):
+        raise FileNotFoundError(f"The path '{path}' must be a directory.")
     result = []
     if search_option == "AllDirectories":
         for root, dirs, files in os.walk(path):
@@ -600,12 +595,11 @@ def get_last_access_time(path):
 
     ### Examples:
     - Gets the last access time of a directory.
-
     ```python
     get_last_access_time("/path/to/directory")
     ```
     """
-    if not os.path.exists(path):
+    if not os.path.isdir(path):
         raise FileNotFoundError(f"The directory '{path}' does not exist.")
     return datetime.datetime.fromtimestamp(os.path.getatime(path))
 
@@ -630,12 +624,11 @@ def get_last_access_time_utc(path):
 
     ### Examples:
     - Gets the UTC last access time of a directory.
-
     ```python
     get_last_access_time_utc("/path/to/directory")
     ```
     """
-    if not os.path.exists(path):
+    if not os.path.isdir(path):
         raise FileNotFoundError(f"The directory '{path}' does not exist.")
     return datetime.datetime.utcfromtimestamp(os.path.getatime(path))
 
@@ -660,12 +653,11 @@ def get_last_write_time(path):
 
     ### Examples:
     - Gets the last write time of a directory.
-
     ```python
     get_last_write_time("/path/to/directory")
     ```
     """
-    if not os.path.exists(path):
+    if not os.path.isdir(path):
         raise FileNotFoundError(f"The directory '{path}' does not exist.")
     return datetime.datetime.fromtimestamp(os.path.getmtime(path))
 
@@ -690,12 +682,11 @@ def get_last_write_time_utc(path):
 
     ### Examples:
     - Gets the UTC last write time of a directory.
-
     ```python
     get_last_write_time_utc("/path/to/directory")
     ```
     """
-    if not os.path.exists(path):
+    if not os.path.isdir(path):
         raise FileNotFoundError(f"The directory '{path}' does not exist.")
     return datetime.datetime.utcfromtimestamp(os.path.getmtime(path))
 
@@ -709,7 +700,7 @@ def get_name(path):
     Retrieves the name of the directory of the specified path. 
     If the path has an extension, it is assumed to be a file, and the parent directory name is returned. 
     If the path does not have an extension, it is assumed to be a directory, 
-    and the directory name is returned.
+    and the directory name is returned. Works even if path does not exist (assumes dir if not file).
 
     ### Parameters:
     path (str): The directory or file path from which to retrieve the name.
@@ -719,17 +710,15 @@ def get_name(path):
 
     ### Examples:
     - Retrieves the parent directory name when the path is a file.
-
     ```python
     get_name("/path/to/directory/file.txt")
     ```
     - Retrieves the directory name when the path is a directory.
-
     ```python
     get_name("/path/to/directory")
     ```
     """
-    if wra.has_extension(path):
+    if os.path.isfile(path):
         return get_parent_name(path)
     else:
         normalized = os.path.normpath(path.rstrip('/'))
@@ -752,12 +741,10 @@ def get_parent(path):
 
     ### Examples:
     - Retrieves the parent directory when the path ends with a slash.
-
     ```python
     get_parent("/path/to/directory/")
     ```
     - Retrieves the parent directory when the path does not end with a slash.
-
     ```python
     get_parent("/path/to/directory")
     ```
@@ -781,12 +768,10 @@ def get_parent_name(path):
 
     ### Examples:
     - Retrieves the parent directory name when the path ends with a slash.
-
     ```python
     get_parent_name("/path/to/directory/")
     ```
     - Retrieves the parent directory name when the path does not end with a slash.
-
     ```python
     get_parent_name("/path/to/directory")
     ```
@@ -796,29 +781,34 @@ def get_parent_name(path):
 
 def get_size(directory_path, show_unit=False):
     """
-    # directory.get_size(directory_path)
+    # directory.get_size(directory_path, show_unit=False)
 
     ---
 
     ### Overview
-    Calculates the total size of all files in the specified directory. The size is returned in bytes, KB, MB, GB, or TB, depending on the total size.
+    Calculates the total size of all files in the specified directory (recursive). Returns raw bytes as int if `show_unit=False`, or a formatted string with unit (bytes to YB) otherwise.
 
     ### Parameters:
     - directory_path (str): The path of the directory to calculate the size of.
+    - show_unit (bool, optional): If True, format as "X.X unit" (e.g., "2.0 KB"). Defaults to False (returns int bytes).
 
     ### Returns:
-    - str: A string representing the total size of the directory, formatted as a float followed by the unit of measurement.
+    - int: Total size in bytes (if `show_unit=False`).
+    - str: Formatted size (e.g., "2.0 KB") if `show_unit=True`.
 
     ### Raises:
     - FileNotFoundError: If the directory does not exist.
-    - PermissionError: If permission is denied.
+    - PermissionError: If permission is denied (e.g., during walk).
 
     ### Examples:
-    - Calculate the total size of all files in a directory:
-
+    - Calculate raw bytes:
     ```python
-    get_size("/path/to/directory")
-
+    get_size("/path/to/directory")  # Returns: 2048 (int)
+    ```
+    - Calculate formatted size:
+    ```python
+    get_size("/path/to/directory", True)  # Returns: "2.0 KB" (str)
+    ```
     """
     if not os.path.isdir(directory_path):
         raise FileNotFoundError(f"The directory '{directory_path}' does not exist.")
@@ -830,12 +820,13 @@ def get_size(directory_path, show_unit=False):
     )
 
     if not show_unit:
-        return  total_size
+        return total_size
 
-    for unit in ['bytes', 'KB', 'MB', 'GB', 'TB']:
-        if total_size < 1024.0:
-            return f"{total_size:3.1f} {unit}"
-        total_size /= 1024.0
+    size = total_size
+    for unit in ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']:
+        if size < 1024.0:
+            return f"{size:3.1f} {unit}"
+        size /= 1024.0
 
 def join(path1='', path2='', path3='', path4='', paths=[]):
     """
@@ -844,110 +835,151 @@ def join(path1='', path2='', path3='', path4='', paths=[]):
     ---
 
     ### Overview
-    Joins multiple directory paths into a single path. The function ensures that each directory path ends with a separator before joining. If a directory path does not end with a separator, one is added.
+    Joins multiple directory paths into a single path string. Treats all segments as strings (no reset on absolute paths). 
+    Avoids double separators between segments and removes any trailing separator. Filters out empty paths for clean concatenation. 
+    If `paths` is provided, it extends the individual paths (`path1` to `path4`).
 
     ### Parameters:
-    path1, path2, path3, path4 (str): The directory paths to join. Defaults to an empty string.
-    paths (list): A list of additional directory paths to join. Defaults to an empty list.
+    path1, path2, path3, path4 (str): Individual directory paths to join. Defaults to empty strings (ignored if empty).
+    paths (list, optional): A list of additional directory paths to append after the individual ones. Defaults to an empty list.
 
     ### Returns:
     str: The joined directory path.
 
     ### Examples:
     - Joins multiple directory paths.
-
     ```python
     join("/path/to", "directory", paths=["subdirectory", "file.txt"])
     ```
     - Joins multiple directory paths without additional paths.
-
     ```python
     join("/path/to", "directory")
     ```
+    - Handles absolute paths without reset:
+    ```python
+    join("rel", "/abs")  # Returns: "rel/abs"
+    ```
+    - Filters empties:
+    ```python
+    join("", "a", "", paths=["b"])  # Returns: "a/b"
+    ```
     """
-    key_dir = ""
-    if not path1.endswith(os.sep):
-        if path1 != "":
-            path1 = path1 + os.sep
-    key_dir += path1
-    if not path2.endswith(os.sep):
-        if path2 != "":
-            path2 = path2 + os.sep
-    key_dir += path2
-    if not path3.endswith(os.sep):
-        if path3 != "":
-            path3 = path3 + os.sep
-    key_dir += path3
-    if not path4.endswith(os.sep):
-        if path4 != "":
-            path4 = path4 + os.sep
-    key_dir += path4
-
     if paths:
-        for item in paths:
-            if not item.endswith(os.sep):
-                item = item + os.sep
-            key_dir += item
-    return key_dir[:-1]
+        path_list = [p for p in [path1, path2, path3, path4] if p] + paths
+    else:
+        path_list = [p for p in [path1, path2, path3, path4] if p]
+    if not path_list:
+        return ""
+    result = path_list[0]
+    for p in path_list[1:]:
+        if not result.endswith(os.sep):
+            result += os.sep
+        result += p.lstrip(os.sep)
+    return result.rstrip(os.sep)
 
-def move(source, destination, move_root=True):
+def move(source, destination, move_root=True, overwrite=False):
     """
-    # directory.move(source, destination, move_root=True)
+    # directory.move(source, destination, move_root=True, overwrite=False)
 
     ---
 
     ### Overview
-    The move function is designed to move files or directories from a source location to a destination.
-    It provides flexibility by allowing you to specify whether intermediate-level subdirectories should be created during the move operation.
+    Moves file or directory from source to destination.
+    - For files: moves directly (ignores move_root).
+    - For directories:
+        - move_root=True: moves the directory itself (rename/move).
+        - move_root=False: moves only its contents (into destination; merges if destination is existing dir).
+    Creates parent directories if needed. By default, raises if destination conflicts (file/dir with same name).
 
     ### Parameters:
-    source (str): The path to the file or directory you want to move.
-    destination (str): The target location where the source should be moved.
-    move_root (bool, optional): A flag indicating whether to move the entire directory (including its root)
-    or just its contents. Defaults to True.
+    source (str): The source path (file or directory).
+    destination (str): The target path.
+    move_root (bool, optional): For directories, move the root dir? Defaults to True.
+    overwrite (bool, optional): Overwrite existing files/dirs at destination? Defaults to False (raises FileExistsError on conflict).
 
     ### Returns:
-    None
+    dict: Details of the destination (from `wrapper.get_object`).
 
     ### Raises:
-    - FileNotFoundError: If the source path does not exist.
-    - PermissionError: If permission is denied during the move operation.
+    - FileNotFoundError: If source does not exist.
+    - ValueError: If source is not file/dir as expected.
+    - FileExistsError: If destination conflicts and overwrite=False.
+    - PermissionError: If permission denied.
+    - OSError: If move fails (e.g., cross-device, other errors).
 
     ### Examples:
-    - Move the entire directory (including intermediate subdirectories):
-
+    - Move a file (raises if dest exists): 
+    
     ```python
-    move("/path/to/source", "/path/to/destination")
+    move("/path/file.txt", "/new/file.txt")
     ```
-    - Move only the leaf directory (raise an error if intermediate directories don't exist):
-
+    - Force overwrite: 
     ```python
-    move("/path/to/source", "/path/to/destination", move_root=False)
+    move("/path/file.txt", "/new/file.txt", overwrite=True)
+    ```
+    - Move entire dir:
+    ```python
+    move("/path/source_dir", "/new/target_dir")
+    ```
+    - Move contents:
+    ```python
+    move("/path/source_dir", "/new/target_dir", move_root=False)
     ```
     """
-    if not exists(source):
+    if not os.path.exists(source):
         raise FileNotFoundError(f"The source path '{source}' does not exist.")
     
-    if exists(destination):
-        if move_root:
-            shutil.move(source, destination)
-        else:
-            for root, dirs, files in os.walk(source):
-                for d in dirs:
-                    shutil.move(os.path.join(root, d), os.path.join(destination, os.path.relpath(os.path.join(root, d), source)))
-                for f in files:
-                    shutil.move(os.path.join(root, f), os.path.join(destination, os.path.relpath(os.path.join(root, f), source)))
+    def check_conflict(dest_path):
+        """
+        Helper to check/raise on conflict:
+        Raises FileExistsError if dest_path exists and overwrite is False.
+        """
+        if overwrite:
+            return
+        if os.path.exists(dest_path):
+            raise FileExistsError(f"Destination '{dest_path}' already exists. Set overwrite=True to force.")
+
+    if os.path.isfile(source):
+        check_conflict(destination)
+        parent_dest = os.path.dirname(destination)
+        if parent_dest and not os.path.exists(parent_dest):
+            os.makedirs(parent_dest, exist_ok=True)
+        shutil.move(source, destination)
+        return wra.get_object(destination)
+
+    if not os.path.isdir(source):
+        raise ValueError(f"Source '{source}' must be a directory for directory move logic.")
+
+    parent_dest = os.path.dirname(destination)
+    if parent_dest and not os.path.exists(parent_dest):
+        os.makedirs(parent_dest, exist_ok=True)
+
+    if move_root:
+        check_conflict(destination)
+        shutil.move(source, destination)
     else:
-        if move_root:
-            create(destination)
-            shutil.move(source, destination)
-        else:
-            create(destination)
-            for root, dirs, files in os.walk(source):
-                for d in dirs:
-                    shutil.move(os.path.join(root, d), os.path.join(destination, os.path.relpath(os.path.join(root, d), source)))
-                for f in files:
-                    shutil.move(os.path.join(root, f), os.path.join(destination, os.path.relpath(os.path.join(root, f), source)))
+        if not os.path.exists(destination):
+            os.makedirs(destination, exist_ok=True)
+        elif not os.path.isdir(destination):
+            check_conflict(destination)
+            raise OSError(f"Destination '{destination}' exists but is not a directory.")
+        
+        for root, dirs, files in os.walk(source):
+            rel_root = os.path.relpath(root, source)
+            dest_root = os.path.join(destination, rel_root) if rel_root != '.' else destination
+            os.makedirs(dest_root, exist_ok=True)
+            for d in dirs:
+                item_dest = os.path.join(dest_root, d)
+                check_conflict(item_dest)
+                shutil.move(os.path.join(root, d), item_dest)
+            for f in files:
+                item_dest = os.path.join(dest_root, f)
+                check_conflict(item_dest)
+                shutil.move(os.path.join(root, f), item_dest)
+
+        # Remove original folder after moving only contents
+        shutil.rmtree(source, ignore_errors=True)
+    return wra.get_object(destination)
    
 def rename(old_path, new_path):
     """
@@ -965,17 +997,24 @@ def rename(old_path, new_path):
     ### Returns:
     bool: True if the directory was successfully renamed, False otherwise.
 
+    ### Raises:
+    - FileExistsError: If new_path already exists.
+
     ### Examples:
     - Renames a directory.
-
     ```python
     rename("/path/to/old_directory", "/path/to/new_directory")
     ```
     """
-    if os.path.isdir(old_path):
+    if not os.path.isdir(old_path):
+        return False
+    if os.path.exists(new_path):
+        raise FileExistsError(f"Destination '{new_path}' already exists.")
+    try:
         os.rename(old_path, new_path)
         return True
-    return False
+    except OSError:
+        return False
 
 def resolve_link_target(path, return_final_target=False):
     """
@@ -994,21 +1033,21 @@ def resolve_link_target(path, return_final_target=False):
     str: The path of the link target.
 
     ### Raises:
-    - FileNotFoundError: If the path does not exist or is not a symbolic link.
+    - ValueError: If the path is not a symbolic link.
     - OSError: If the operation is not supported.
 
     ### Examples:
     - Resolves a symbolic link.
-
     ```python
     resolve_link_target("/path/to/link")
     ```
     """
     if not os.path.islink(path):
-        raise FileNotFoundError(f"The path '{path}' is not a symbolic link.")
-    if return_final_target:
-        return os.path.realpath(path)
-    return os.readlink(path)
+        raise ValueError(f"The path '{path}' is not a symbolic link.")
+    target = os.path.realpath(path) if return_final_target else os.readlink(path)
+    if not os.path.isdir(target):
+        raise ValueError(f"Link target '{target}' must be a directory.")
+    return target
 
 def set_creation_time(path, creation_time):
     """
@@ -1017,34 +1056,38 @@ def set_creation_time(path, creation_time):
     ---
 
     ### Overview
-    Sets the creation date and time for the specified directory.
+    Sets the creation date and time for the specified directory. Approximates via modification time (Unix limitation: true creation time not settable).
 
     ### Parameters:
     path (str): The directory path.
-    creation_time (datetime): The creation date and time to set.
+    creation_time (datetime or str): The creation date and time to set. Str parsed as "%Y-%m-%d %H:%M:%S" or "%Y-%m-%d %H:%M:%S.%f".
 
     ### Returns:
     None
 
     ### Raises:
     - FileNotFoundError: If the directory does not exist.
+    - ValueError: If str parse fails.
     - PermissionError: If permission is denied.
 
     ### Examples:
     - Sets the creation time of a directory.
-
     ```python
     set_creation_time("/path/to/directory", datetime.datetime(2023, 1, 1))
     ```
     """
-    if not os.path.exists(path):
+    if not os.path.isdir(path):
         raise FileNotFoundError(f"The directory '{path}' does not exist.")
-    # Note: Setting creation time is not directly supported in Python's standard library.
-    # This is a limitation, as os.utime only sets access and modification times.
-    # For Unix, we can approximate by setting modification time as a fallback.
-    if not type(creation_time) == datetime.datetime:
-        creation_time = datetime.datetime.strptime(creation_time, "%Y-%m-%d %H:%M:%S")
-    os.utime(path, (os.path.getatime(path), creation_time.timestamp()))
+    if isinstance(creation_time, str):
+        try:
+            creation_time = datetime.datetime.strptime(creation_time, "%Y-%m-%d %H:%M:%S.%f")
+        except ValueError:
+            try:
+                creation_time = datetime.datetime.strptime(creation_time, "%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                raise ValueError(f"Invalid datetime string format: '{creation_time}'. Use '%Y-%m-%d %H:%M:%S' or with '.%f'.")
+    ts = creation_time.timestamp()
+    os.utime(path, (os.path.getatime(path), ts))
 
 def set_creation_time_utc(path, creation_time_utc):
     """
@@ -1053,33 +1096,38 @@ def set_creation_time_utc(path, creation_time_utc):
     ---
 
     ### Overview
-    Sets the creation date and time, in Coordinated Universal Time (UTC) format, for the specified directory.
+    Sets the creation date and time, in Coordinated Universal Time (UTC) format, for the specified directory. Approximates via modification time (Unix limitation: true creation time not settable). Uses timestamp directly for absolute UTC.
 
     ### Parameters:
     path (str): The directory path.
-    creation_time_utc (datetime): The UTC creation date and time to set.
+    creation_time_utc (datetime or str): The UTC creation date and time to set. Str parsed as above.
 
     ### Returns:
     None
 
     ### Raises:
     - FileNotFoundError: If the directory does not exist.
+    - ValueError: If str parse fails.
     - PermissionError: If permission is denied.
 
     ### Examples:
     - Sets the UTC creation time of a directory.
-
     ```python
     set_creation_time_utc("/path/to/directory", datetime.datetime(2023, 1, 1, tzinfo=datetime.timezone.utc))
     ```
     """
-    if not os.path.exists(path):
+    if not os.path.isdir(path):
         raise FileNotFoundError(f"The directory '{path}' does not exist.")
-    if not type(creation_time_utc) == datetime.datetime:
-        creation_time_utc = datetime.datetime.strptime(creation_time_utc, "%Y-%m-%d %H:%M:%S")
-    # Convert UTC datetime to local timestamp
-    local_time = creation_time_utc.timestamp() - datetime.datetime.now().astimezone().utcoffset().total_seconds()
-    os.utime(path, (os.path.getatime(path), local_time))
+    if isinstance(creation_time_utc, str):
+        try:
+            creation_time_utc = datetime.datetime.strptime(creation_time_utc, "%Y-%m-%d %H:%M:%S.%f")
+        except ValueError:
+            try:
+                creation_time_utc = datetime.datetime.strptime(creation_time_utc, "%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                raise ValueError(f"Invalid datetime string format: '{creation_time_utc}'. Use '%Y-%m-%d %H:%M:%S' or with '.%f'.")
+    ts = creation_time_utc.timestamp()
+    os.utime(path, (os.path.getatime(path), ts))
 
 def set_current_directory(path):
     """
@@ -1088,7 +1136,7 @@ def set_current_directory(path):
     ---
 
     ### Overview
-    Sets the application's current working directory to the specified directory.
+    Sets the application's current working directory to the specified directory and updates the global `current_directory` variable.
 
     ### Parameters:
     path (str): The directory path to set as the current working directory.
@@ -1102,13 +1150,12 @@ def set_current_directory(path):
 
     ### Examples:
     - Sets the current working directory.
-
     ```python
     set_current_directory("/path/to/directory")
     ```
     """
     global current_directory
-    if not os.path.exists(path):
+    if not os.path.isdir(path):
         raise FileNotFoundError(f"The directory '{path}' does not exist.")
     os.chdir(path)
     current_directory = os.getcwd()
@@ -1120,31 +1167,38 @@ def set_last_access_time(path, last_access_time):
     ---
 
     ### Overview
-    Sets the date and time the specified directory was last accessed.
+    Sets the date and time the specified directory was last accessed. Approximates via utime (sets access time).
 
     ### Parameters:
     path (str): The directory path.
-    last_access_time (datetime): The last access date and time to set.
+    last_access_time (datetime or str): The last access date and time to set. Str parsed as above.
 
     ### Returns:
     None
 
     ### Raises:
     - FileNotFoundError: If the directory does not exist.
+    - ValueError: If str parse fails.
     - PermissionError: If permission is denied.
 
     ### Examples:
     - Sets the last access time of a directory.
-
     ```python
     set_last_access_time("/path/to/directory", datetime.datetime(2023, 1, 1))
     ```
     """
-    if not os.path.exists(path):
+    if not os.path.isdir(path):
         raise FileNotFoundError(f"The directory '{path}' does not exist.")
-    if not type(last_access_time) == datetime.datetime:
-        last_access_time = datetime.datetime.strptime(last_access_time, "%Y-%m-%d %H:%M:%S")
-    os.utime(path, (last_access_time.timestamp(), os.path.getmtime(path)))
+    if isinstance(last_access_time, str):
+        try:
+            last_access_time = datetime.datetime.strptime(last_access_time, "%Y-%m-%d %H:%M:%S.%f")
+        except ValueError:
+            try:
+                last_access_time = datetime.datetime.strptime(last_access_time, "%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                raise ValueError(f"Invalid datetime string format: '{last_access_time}'. Use '%Y-%m-%d %H:%M:%S' or with '.%f'.")
+    ts = last_access_time.timestamp()
+    os.utime(path, (ts, os.path.getmtime(path)))
 
 def set_last_access_time_utc(path, last_access_time_utc):
     """
@@ -1153,32 +1207,38 @@ def set_last_access_time_utc(path, last_access_time_utc):
     ---
 
     ### Overview
-    Sets the date and time, in Coordinated Universal Time (UTC) format, that the specified directory was last accessed.
+    Sets the date and time, in Coordinated Universal Time (UTC) format, that the specified directory was last accessed. Uses timestamp directly for absolute UTC.
 
     ### Parameters:
     path (str): The directory path.
-    last_access_time_utc (datetime): The UTC last access date and time to set.
+    last_access_time_utc (datetime or str): The UTC last access date and time to set. Str parsed as above.
 
     ### Returns:
     None
 
     ### Raises:
     - FileNotFoundError: If the directory does not exist.
+    - ValueError: If str parse fails.
     - PermissionError: If permission is denied.
 
     ### Examples:
     - Sets the UTC last access time of a directory.
-
     ```python
     set_last_access_time_utc("/path/to/directory", datetime.datetime(2023, 1, 1, tzinfo=datetime.timezone.utc))
     ```
     """
-    if not os.path.exists(path):
+    if not os.path.isdir(path):
         raise FileNotFoundError(f"The directory '{path}' does not exist.")
-    if not type(last_access_time_utc) == datetime.datetime:
-        last_access_time_utc = datetime.datetime.strptime(last_access_time_utc, "%Y-%m-%d %H:%M:%S")
-    local_time = last_access_time_utc.timestamp() - datetime.datetime.now().astimezone().utcoffset().total_seconds()
-    os.utime(path, (local_time, os.path.getmtime(path)))
+    if isinstance(last_access_time_utc, str):
+        try:
+            last_access_time_utc = datetime.datetime.strptime(last_access_time_utc, "%Y-%m-%d %H:%M:%S.%f")
+        except ValueError:
+            try:
+                last_access_time_utc = datetime.datetime.strptime(last_access_time_utc, "%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                raise ValueError(f"Invalid datetime string format: '{last_access_time_utc}'. Use '%Y-%m-%d %H:%M:%S' or with '.%f'.")
+    ts = last_access_time_utc.timestamp()
+    os.utime(path, (ts, os.path.getmtime(path)))
 
 def set_last_write_time(path, last_write_time):
     """
@@ -1187,31 +1247,38 @@ def set_last_write_time(path, last_write_time):
     ---
 
     ### Overview
-    Sets the date and time a directory was last written to.
+    Sets the date and time a directory was last written to. Approximates via utime (sets modification time).
 
     ### Parameters:
     path (str): The directory path.
-    last_write_time (datetime): The last write date and time to set.
+    last_write_time (datetime or str): The last write date and time to set. Str parsed as above.
 
     ### Returns:
     None
 
     ### Raises:
     - FileNotFoundError: If the directory does not exist.
+    - ValueError: If str parse fails.
     - PermissionError: If permission is denied.
 
     ### Examples:
     - Sets the last write time of a directory.
-
     ```python
     set_last_write_time("/path/to/directory", datetime.datetime(2023, 1, 1))
     ```
     """
-    if not os.path.exists(path):
+    if not os.path.isdir(path):
         raise FileNotFoundError(f"The directory '{path}' does not exist.")
-    if not type(last_write_time) == datetime.datetime:
-        last_write_time = datetime.datetime.strptime(last_write_time, "%Y-%m-%d %H:%M:%S")
-    os.utime(path, (os.path.getatime(path), last_write_time.timestamp()))
+    if isinstance(last_write_time, str):
+        try:
+            last_write_time = datetime.datetime.strptime(last_write_time, "%Y-%m-%d %H:%M:%S.%f")
+        except ValueError:
+            try:
+                last_write_time = datetime.datetime.strptime(last_write_time, "%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                raise ValueError(f"Invalid datetime string format: '{last_write_time}'. Use '%Y-%m-%d %H:%M:%S' or with '.%f'.")
+    ts = last_write_time.timestamp()
+    os.utime(path, (os.path.getatime(path), ts))
 
 def set_last_write_time_utc(path, last_write_time_utc):
     """
@@ -1220,29 +1287,35 @@ def set_last_write_time_utc(path, last_write_time_utc):
     ---
 
     ### Overview
-    Sets the date and time, in Coordinated Universal Time (UTC) format, that a directory was last written to.
+    Sets the date and time, in Coordinated Universal Time (UTC) format, that a directory was last written to. Uses timestamp directly for absolute UTC.
 
     ### Parameters:
     path (str): The directory path.
-    last_write_time_utc (datetime): The UTC last write date and time to set.
+    last_write_time_utc (datetime or str): The UTC last write date and time to set. Str parsed as above.
 
     ### Returns:
     None
 
     ### Raises:
     - FileNotFoundError: If the directory does not exist.
+    - ValueError: If str parse fails.
     - PermissionError: If permission is denied.
 
     ### Examples:
     - Sets the UTC last write time of a directory.
-
     ```python
     set_last_write_time_utc("/path/to/directory", datetime.datetime(2023, 1, 1, tzinfo=datetime.timezone.utc))
     ```
     """
-    if not os.path.exists(path):
+    if not os.path.isdir(path):
         raise FileNotFoundError(f"The directory '{path}' does not exist.")
-    if not type(last_write_time_utc) == datetime.datetime:
-        last_write_time_utc = datetime.datetime.strptime(last_write_time_utc, "%Y-%m-%d %H:%M:%S")
-    local_time = last_write_time_utc.timestamp() - datetime.datetime.now().astimezone().utcoffset().total_seconds()
-    os.utime(path, (os.path.getatime(path), local_time))
+    if isinstance(last_write_time_utc, str):
+        try:
+            last_write_time_utc = datetime.datetime.strptime(last_write_time_utc, "%Y-%m-%d %H:%M:%S.%f")
+        except ValueError:
+            try:
+                last_write_time_utc = datetime.datetime.strptime(last_write_time_utc, "%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                raise ValueError(f"Invalid datetime string format: '{last_write_time_utc}'. Use '%Y-%m-%d %H:%M:%S' or with '.%f'.")
+    ts = last_write_time_utc.timestamp()
+    os.utime(path, (os.path.getatime(path), ts))
