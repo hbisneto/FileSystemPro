@@ -1,5 +1,6 @@
 """
 # Device
+#### Dependência opcional: psutil (instale com `pip install psutil` para usar este módulo).
 
 ---
 
@@ -86,5 +87,9 @@ from filesystem import device
 ```
 """
 
-from . import disks
-from . import cpu
+# from . import disks
+# from . import cpu
+
+from .disks import *
+from .cpu import *
+from .memory import *

@@ -1,5 +1,7 @@
 """
 # Disks
+#### Dependência opcional: psutil (instale com `pip install psutil` para usar este módulo).
+
 
 ---
 
