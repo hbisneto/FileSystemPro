@@ -35,6 +35,7 @@ It provides an easy way to get the correct file paths regardless of the platform
 """
 
 from filesystem import __core__
+from .console import console
 import getpass
 import os
 from sys import platform as PLATFORM

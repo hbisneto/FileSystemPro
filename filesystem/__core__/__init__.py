@@ -94,10 +94,10 @@ import os
 import threading
 import logging
 from pathlib import Path
-from filesystem import console as fsconsole
+from filesystem.console import console
 
 # major.minor.patch.build
-__version__ = "2.0.0.0"
+__version__ = "3.0.0.0"
 """Version of the FileSystemPro package."""
 
 MODULE_DIR = Path(__file__).parent
@@ -113,7 +113,7 @@ DEFAULT_CONFIG = {
     }
 }
 
-_config = None
+__config__ = None
 
 def __parse_env_file__():
     """Simple .env parser using stdlib only. Returns dict of key-value pairs."""
@@ -136,8 +136,8 @@ def __parse_env_file__():
 
 def init_config():  
     """Initialize the configuration manager, loading from env vars, defaults, or file."""  
-    global _config  
-    if _config is not None:  
+    global __config__  
+    if __config__ is not None:  
         return  
   
     initial_config = DEFAULT_CONFIG.copy()
@@ -174,32 +174,32 @@ def init_config():
         except json.JSONDecodeError:  
             logging.warning("Invalid JSON in FILESYSTEMPRO_FEATURE_TOGGLES.")  
       
-    _config = initial_config  
+    __config__ = initial_config  
     
     if not CONFIG_FILE.exists():  
         try:
             with open(CONFIG_FILE, 'w') as f:  
-                json.dump(_config, f, indent=4)  
+                json.dump(__config__, f, indent=4)  
             logging.debug(f"Created config file: {CONFIG_FILE}")  
         except IOError as e:  
             logging.warning(f"Failed to create config file: {e}")
 
-    logging.basicConfig(level=getattr(logging, _config['logging_level']))
+    logging.basicConfig(level=getattr(logging, __config__['logging_level']))
 
 def get_config():
     """Get the current configuration dict."""
-    if _config is None:
+    if __config__ is None:
         init_config()
-    return _config.copy()
+    return __config__.copy()
 
 def save_config(config_dict):
     """Save configuration to file (overrides .env initial values)."""
-    if _config is None:
+    if __config__ is None:
         init_config()
-    _config.update(config_dict)
+    __config__.update(config_dict)
     try:
         with open(CONFIG_FILE, 'w') as f:
-            json.dump(_config, f, indent=4)
+            json.dump(__config__, f, indent=4)
     except IOError as e:
         logging.error(f"Failed to save config: {e}")
 
@@ -255,8 +255,8 @@ def __checkupdates__(user, repo, callback=None):
         update_version = int(update_version_string)
 
         if current_version < update_version:
-            msg = f"[{fsconsole.foreground.BLUE}Notice{fsconsole.style.RESET_ALL}]: New release available: {fsconsole.foreground.RED}v{__version__}{fsconsole.style.RESET_ALL} -> {fsconsole.foreground.GREEN}v{latest_tag}{fsconsole.style.RESET_ALL}"
-            update_msg = f"[{fsconsole.foreground.BLUE}Notice{fsconsole.style.RESET_ALL}]: Update with: {fsconsole.foreground.GREEN}pip install --upgrade filesystempro{fsconsole.style.RESET_ALL}"
+            msg = f'[{console.blue()("Notice")}]: New release available: {console.red()(f"v{__version__}")} -> {console.green()(f"v{latest_tag}")}'
+            update_msg = f'[{console.blue()("Notice")}]: To update, run: {console.green()(f"pip install --upgrade filesystempro")}'
             if callback:
                 callback(msg + "\n" + update_msg)
             else:
