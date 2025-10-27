@@ -1,4 +1,8 @@
 # Copyright Jonathan Hartley 2013. BSD 3-Clause license, see LICENSE file.
+
+from .ansi import AnsiStyle
+from .win32 import windll  # NEW IMPLEMENTATION
+
 try:
     from msvcrt import get_osfhandle
 except ImportError:
@@ -24,6 +28,9 @@ class WinStyle(object):
     NORMAL              = 0x00 # dim text, dim background
     BRIGHT              = 0x08 # bright text, dim background
     BRIGHT_BACKGROUND   = 0x80 # dim text, bright background
+    # NEW IMPLEMENTATION
+    UNDERSCORE          = 0x4000  # COMMON_LVB_UNDERSCORE
+    STRIKEOUT           = 0x8000  # COMMON_LVB_STRIKEOUT
 
 class WinTerm(object):
 
@@ -40,12 +47,23 @@ class WinTerm(object):
         self._light = 0
 
     def get_attrs(self):
-        return self._fore + self._back * 16 + (self._style | self._light)
+        # return self._fore + self._back * 16 + (self._style | self._light)
+        
+        # NEW IMPLEMENTATION: Add underline and strikethrough
+        attrs = self._fore + self._back * 16 + (self._style | self._light)
+        if self._underline:
+            attrs |= WinStyle.UNDERSCORE
+        if self._strikethrough:
+            attrs |= WinStyle.STRIKEOUT
+        return attrs
 
     def set_attrs(self, value):
         self._fore = value & 7
         self._back = (value >> 4) & 7
         self._style = value & (WinStyle.BRIGHT | WinStyle.BRIGHT_BACKGROUND)
+        # NEW IMPLEMENTATION: Extraction of underline and strikethrough
+        self._underline = bool(value & WinStyle.UNDERSCORE)
+        self._strikethrough = bool(value & WinStyle.STRIKEOUT)
 
     def reset_all(self, on_stderr=None):
         self.set_attrs(self._default)
@@ -77,8 +95,19 @@ class WinTerm(object):
     def style(self, style=None, on_stderr=False):
         if style is None:
             style = self._default_style
-        self._style = style
-        self.set_console(on_stderr=on_stderr)
+
+        # Update _style e new flags
+        if style == AnsiStyle.UNDERLINE:
+            self._underline = True
+        elif style == AnsiStyle.RESET_UNDERLINE:
+            self._underline = False
+        elif style == AnsiStyle.STRIKETHROUGH:
+            self._strikethrough = True
+        elif style == AnsiStyle.RESET_STRIKETHROUGH:
+            self._strikethrough = False
+        else:
+            self._style = style
+            self.set_console(on_stderr=on_stderr)
 
     def set_console(self, attrs=None, on_stderr=False):
         if attrs is None:

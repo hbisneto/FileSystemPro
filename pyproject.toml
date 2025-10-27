@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel", "requests", "psutil"]
 
 [tool.poetry]
 name = "FileSystemPro"
-version = "2.0.0.0"
+version = "2.1.0.0"
 description = "FileSystemPro is a powerful toolkit designed to handle file and directory operations with ease and efficiency across various operating systems."
 authors = ["Heitor Bisneto <heitor.bardemaker@live.com>"]
 

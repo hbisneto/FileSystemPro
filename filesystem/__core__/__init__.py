@@ -4,91 +4,86 @@
 ---
 
 ## Overview
-The core module is the heart of the FileSystemPro library, 
-providing essential functionalities that support and enhance the overall performance and usability 
-of the library. It is designed to be robust and flexible, 
-enabling seamless integration and configuration of various components, including the update checker.
+The `__core__` module is the operational heart of the **FileSystemPro** library, responsible for managing the current version, checking for updates on GitHub, and performing this check asynchronously and non-blockingly. It ensures users are promptly notified of new releases upon import, keeping the library up-to-date with the latest features and security patches.
 
 ## Features
-- `Configuration Management:` Centralizes the configuration settings for the entire FileSystemPro library,
-allowing for easy adjustments and fine-tuning of operational parameters.
-- `Update Checker Integration:` Seamlessly incorporates the update checker functionality, 
-ensuring that the library remains up-to-date with the latest features and security patches.
-- `Internal Settings Control:` Offers a comprehensive interface for managing internal settings, 
-which dictate the behavior of the library's various modules and functions.
+- **Automatic update check** on module import.
+- **Simplified version comparison** using numeric digit extraction.
+- **Asynchronous execution** via background thread to avoid blocking.
+- **Colorful console notifications** with clear update instructions.
+- **Optional callback** for custom update handling.
 
 ## Detailed Functionality
-The core module acts as a command center, 
-orchestrating the library's internal mechanisms through a series of well-defined interfaces and protocols. 
-It is responsible for initializing the library, setting up the environment, 
-and providing a consistent experience across different platforms and configurations.
 
-### Configuration Management
-The module contains a configuration manager that stores all the necessary settings in a structured format. 
-This manager is accessible throughout the library, 
-allowing other modules to retrieve or update their configurations as needed. 
-It supports various data types and structures, ensuring compatibility and flexibility.
+### Update Checking
+The `__checkupdates__` function makes a request to the GitHub API to fetch the `latest` release tag.  
+It compares the current version (`__version__ = "2.1.0.0"`) with the latest one by extracting only numeric digits from both strings, enabling reliable integer-based comparison even with `v` prefixes or non-numeric suffixes.
 
-### Update Checker Integration
-The update checker is a critical component that the core module integrates tightly. 
-It utilizes the core module's configuration management system to store and retrieve the 
-current version information. This integration allows the update checker to function efficiently, 
-checking for updates in the background without interrupting the user's workflow.
+### Asynchronous Execution
+The `check_updates_async` function wraps the check in a **daemon thread**, ensuring the update verification runs in the background without interrupting the main program flow.
 
-### Internal Settings Control
-Through the core module, users can access and modify the library's internal settings, 
-such as logging levels, performance options, and feature toggles. 
-This control is crucial for tailoring the library to specific needs and environments, 
-providing developers with the ability to optimize their usage of FileSystemPro.
-
-## Usage
-To utilize the core module, simply import it at the beginning of your script:
+### Auto-Check on Import
+At the end of the module, the following is executed automatically:
 
 ```python
-from filesystem import __core__
+check_updates_async(user='hbisneto', repo='filesystempro')
 ```
 """
 
 import requests
-from filesystem import console as fsconsole
+import threading
+from filesystem.console import console
 
-__version__ = "2.0.1.0"
+__version__ = "2.1.0.0"
+"""Version of the FileSystemPro package."""
 
-def __checkupdates__(user, repo):
+def __checkupdates__(user, repo, callback=None):
     """
-    Checks for updates to the FileSystemPro package on GitHub.
+    Checks for updates to the FileSystemPro package on GitHub (synchronous version).
 
-    This function compares the current version of FileSystemPro, defined in the module,
-    with the latest release version available on the specified user's GitHub repository.
-    If a newer version is found, it notifies the user via the console.
+    Uses simple digit extraction for version comparison.
 
     Parameters:
-    user (str): The GitHub username of the repository owner.
-    repo (str): The name of the repository.
+    user (str): The GitHub username.
+    repo (str): The repository name.
+    callback (callable): Optional callback to notify on update (e.g., print).
 
     Returns:
-    tuple: A tuple containing the current version and the latest version tag if an update is available.
-           Returns (None, None) if there's an exception during the request.
+    tuple: (current_version_str, latest_version_str) or (None, None) on error.
     """
-    ### TAG PATTERN: v1.2.3.4
-    current_version_string = ''.join(filter(str.isdigit, __version__))
-    current_version = int(current_version_string)
-    update_version = 0
 
-    ### Check updates online using 'requests'
-    url = f'https://api.github.com/repos/{user}/{repo}/releases'
+    url = f'https://api.github.com/repos/{user}/{repo}/releases/latest'
     try:
-        response = requests.get(url)
-    except requests.exceptions.RequestException as err:
-        return None, None
-    releases = response.json()
-    
-    for release in releases:
-        if update_version == 0:
-            tag_name = f'{release["tag_name"]}'
-            update_version_string = ''.join(filter(str.isdigit, tag_name))
-            update_version = int(update_version_string)
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()
+        release_data = response.json()
+        latest_tag = release_data['tag_name'].lstrip('v')
+        
+        current_version_string = ''.join(filter(str.isdigit, __version__))
+        current_version = int(current_version_string)
+        update_version_string = ''.join(filter(str.isdigit, latest_tag))
+        update_version = int(update_version_string)
 
-    if current_version < update_version:
-        print(f"[{fsconsole.foreground.BLUE}Notice{fsconsole.style.RESET_ALL}]: A new release of FileSystemPro is available: {fsconsole.foreground.RED}v{__version__}{fsconsole.style.RESET_ALL} -> {fsconsole.foreground.GREEN}{tag_name}{fsconsole.style.RESET_ALL}")
-        print(f"[{fsconsole.foreground.BLUE}Notice{fsconsole.style.RESET_ALL}]: To update, run: {fsconsole.foreground.GREEN}pip install --upgrade filesystempro{fsconsole.style.RESET_ALL}")
+        if current_version < update_version:
+            msg = f'[{console.blue()("Notice")}]: New release available: {console.red()(f"v{__version__}")} -> {console.green()(f"v{latest_tag}")}'
+            update_msg = f'[{console.blue()("Notice")}]: To update, run: {console.green()(f"pip install --upgrade filesystempro")}'
+            if callback:
+                callback(msg + "\n" + update_msg)
+            else:
+                print(msg)
+                print(update_msg)
+            return __version__, latest_tag
+        return __version__, latest_tag
+    except (requests.exceptions.RequestException, KeyError, ValueError) as e:
+        return None, None
+
+def check_updates_async(user, repo, callback=None):
+    """Asynchronous wrapper for __checkupdates__ to avoid blocking."""
+    def _async_check():
+        __checkupdates__(user, repo, callback)
+    
+    thread = threading.Thread(target=_async_check, daemon=True)
+    thread.start()
+
+# Auto-check for updates asynchronously (can be disabled via config or .env)
+check_updates_async(user='hbisneto', repo='filesystempro')
