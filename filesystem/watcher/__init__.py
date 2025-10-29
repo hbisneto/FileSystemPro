@@ -54,12 +54,12 @@ class Watcher(object):
     def __init__(self, roots, ignore_patterns=None, file_extensions=None, max_depth=None, history_size=100, event_handler=None):
         """
         Initialize Watcher with multiple roots, filters, etc.
-        :param roots: Single path or list of paths to monitor.
-        :param ignore_patterns: List of strings to ignore in basenames.
-        :param file_extensions: List of allowed extensions (without dot).
-        :param max_depth: Maximum recursion depth (None for unlimited).
-        :param history_size: Maximum number of changes to keep in history.
-        :param event_handler: Optional callback for all events.
+        - roots: Single path or list of paths to monitor.
+        - ignore_patterns: List of strings to ignore in basenames.
+        - file_extensions: List of allowed extensions (without dot).
+        - max_depth: Maximum recursion depth (None for unlimited).
+        - history_size: Maximum number of changes to keep in history.
+        - event_handler: Optional callback for all events.
         """
         self.roots = roots if isinstance(roots, list) else [roots]
         self.ignore_patterns = ignore_patterns or []
@@ -69,13 +69,13 @@ class Watcher(object):
         self.change_history = []
         self.handlers = defaultdict(list)
         self.event_queue = Queue()
-        self.saved_state = {root: self._get_state(root) for root in self.roots}
+        self.saved_state = {root: self.__get_state__(root) for root in self.roots}
         if event_handler:
             self.register_handler('all', event_handler)
-        self.monitor_thread = threading.Thread(target=self._monitor_loop, daemon=True)
+        self.monitor_thread = threading.Thread(target=self.__monitor_loop__, daemon=True)
         self.monitor_thread.start()
 
-    def _get_metadata(self, abspath):
+    def __get_metadata__(self, abspath):
         """
         Get file metadata including modified time and size.
         """
@@ -86,7 +86,7 @@ class Watcher(object):
             "size": stat.st_size,
         }
 
-    def _should_watch(self, abspath):
+    def __should_watch__(self, abspath):
         """
         Check if file should be monitored based on filters.
         """
@@ -99,7 +99,7 @@ class Watcher(object):
             return False
         return True
 
-    def _get_state(self, path):
+    def __get_state__(self, path):
         """
         Get dictionary of file paths to metadata, respecting filters and depth.
         """
@@ -111,8 +111,8 @@ class Watcher(object):
                 continue
             for filename in files:
                 abspath = os.path.join(root_dir, filename)
-                if self._should_watch(abspath):
-                    state[abspath] = self._get_metadata(abspath)
+                if self.__should_watch__(abspath):
+                    state[abspath] = self.__get_metadata__(abspath)
         return state
 
     def register_handler(self, event_type, callback):
@@ -125,7 +125,7 @@ class Watcher(object):
         """
         self.handlers[event_type].append(callback)
 
-    def _monitor_loop(self, delay=5.0):
+    def __monitor_loop__(self, delay=5.0):
         """
         Internal threaded loop for polling changes.
         """
@@ -151,7 +151,7 @@ class Watcher(object):
         Detect changes across all roots and update state.
         Returns list of change dicts.
         """
-        current_states = {root: self._get_state(root) for root in self.roots}
+        current_states = {root: self.__get_state__(root) for root in self.roots}
         all_changes = []
         now = datetime.now()
         for root in self.roots:
@@ -206,11 +206,11 @@ class Watcher(object):
 def get_changes(roots, delay=5.0, create_log_file=False, log_filename="FSWatcherLog.log", notifier=None):
     """
     Standalone monitoring function using the watcher's event queue.
-    :param roots: Single path or list of paths.
-    :param delay: Polling delay in seconds.
-    :param create_log_file: If True, append changes to log file.
-    :param log_filename: Log file name.
-    :param notifier: Optional callback for each change.
+    - roots: Single path or list of paths.
+    - delay: Polling delay in seconds.
+    - create_log_file: If True, append changes to log file.
+    - log_filename: Log file name.
+    - notifier: Optional callback for each change.
     """
     if isinstance(roots, str):
         roots = [roots]
