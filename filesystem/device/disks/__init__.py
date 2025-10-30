@@ -57,7 +57,7 @@ The Disk Usage part of the module provides functionalities for retrieving variou
 The Disks module is designed to provide essential disk-related information and usage metrics for system monitoring and management tasks. By utilizing the `psutil` library, it ensures accurate and efficient retrieval of disk metrics and attributes.
 """
 
-import psutil
+import psutil as __psutil__
 from datetime import datetime
 import subprocess
 from sys import platform as PLATFORM
@@ -89,7 +89,7 @@ def current_disk_filesystem_name():
     print(filesystem_type)
     ```
     """
-    dskpart = psutil.disk_partitions()
+    dskpart = __psutil__.disk_partitions()
     fstypes = [part.fstype for part in dskpart if part.mountpoint in ['C:\\', '/']]
     
     return fstypes[0]
@@ -121,7 +121,7 @@ def boot_time():
     print(boot_time_str)
     ```
     """
-    boot_time_timestamp = psutil.boot_time()
+    boot_time_timestamp = __psutil__.boot_time()
     bt = datetime.fromtimestamp(boot_time_timestamp)
     return f'{bt.day}/{bt.month}/{bt.year} {bt.hour}:{bt.minute}:{bt.second}'
 
@@ -155,7 +155,7 @@ def get_disk_partitions():
     print(partitions)
     ```
     """
-    var = psutil.disk_partitions()
+    var = __psutil__.disk_partitions()
     output = [part._asdict() for part in var]
     return output
 
@@ -202,7 +202,7 @@ def get_boot_drive_name():
             return str(e)
     elif PLATFORM == "linux" or PLATFORM == "linux2":
         try:
-            cmd = "lsblk -o MOUNTPOINT,LABEL | grep '/'"
+            cmd = "lsblk -o MOUNTPOINT,LABEL | grep -E '^/ +'"
             startup_drive_name = subprocess.check_output(cmd, shell=True).decode("utf-8").strip().split(" ")[-1]
             return startup_drive_name
         except Exception as e:
@@ -370,7 +370,7 @@ def storage_metrics(mountpoint):
     storage_metrics('/')
     ```
     """
-    var = psutil.disk_usage(mountpoint)
+    var = __psutil__.disk_usage(mountpoint)
     total = var.total
     free = var.free
     used = var.used
@@ -772,7 +772,7 @@ def disk_io_counters():
     print(io_counters)
     ```
     """
-    disk_io = psutil.disk_io_counters(perdisk=True)
+    disk_io = __psutil__.disk_io_counters(perdisk=True)
     return disk_io
 
 ######################################## DISK INFORMATION ########################################

@@ -87,9 +87,6 @@ from filesystem import device
 ```
 """
 
-# from . import disks
-# from . import cpu
-
 from .disks import *
 from .cpu import *
 from .memory import *

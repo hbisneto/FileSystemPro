@@ -11,7 +11,7 @@ The CPU module is designed to provide essential CPU-related information for syst
 By utilizing the `psutil` library, it ensures accurate and efficient retrieval of CPU metrics.
 """
 
-import psutil
+import psutil as __psutil__
 
 def cpu_percent():
     """
@@ -40,7 +40,7 @@ def cpu_percent():
     print(cpu_usage)
     ```
     """
-    return psutil.cpu_percent()
+    return __psutil__.cpu_percent()
 
 def cpu_times():
     """
@@ -69,7 +69,7 @@ def cpu_times():
     print(cpu_times_info)
     ```
     """
-    return psutil.cpu_times()
+    return __psutil__.cpu_times()
 
 def cpu_count():
     """
@@ -98,4 +98,4 @@ def cpu_count():
     print(num_cores)
     ```
     """
-    return psutil.cpu_count()
+    return __psutil__.cpu_count()
