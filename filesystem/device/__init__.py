@@ -87,7 +87,12 @@ from filesystem import device
 ```
 """
 
-from .disks import *
-from .cpu import *
-from .memory import *
-from .network import *
+# from .disks import *
+# from .cpu import *
+# from .memory import *
+# from .network import *
+
+from . import disks
+from . import cpu
+from . import memory
+from . import network
