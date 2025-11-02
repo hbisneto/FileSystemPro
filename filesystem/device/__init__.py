@@ -90,3 +90,4 @@ from filesystem import device
 from .disks import *
 from .cpu import *
 from .memory import *
+from .network import *
