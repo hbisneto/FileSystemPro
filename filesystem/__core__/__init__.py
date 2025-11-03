@@ -85,5 +85,4 @@ def check_updates_async(user, repo, callback=None):
     thread = threading.Thread(target=_async_check, daemon=True)
     thread.start()
 
-# Auto-check for updates asynchronously (can be disabled via config or .env)
 check_updates_async(user='hbisneto', repo='filesystempro')

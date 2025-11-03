@@ -43,7 +43,7 @@ setup(
                 'System', 
                 'Terminals', 
                 'Watcher', 'Windows', 'Wrapper'
-            ],
+    ],
     packages=find_packages(),
     platforms = 'any',
     python_requires= '>=3.8',
