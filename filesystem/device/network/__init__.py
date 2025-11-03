@@ -1,16 +1,19 @@
 """
 # Network
+##### Optional dependency: psutil (install via `pip install psutil` to use this module).
 
 ---
 
 ## Overview
 This module provides functions to retrieve network interface information, including Wi-Fi and Ethernet statistics, IP addresses, MAC addresses, and active TCP connections. It leverages the `psutil` library to monitor network activity across interfaces and system-wide totals.
+
 ## Features
 - **Wi-Fi Monitoring:** Retrieve interface details, traffic statistics, IP/MAC addresses, and link speed for Wi-Fi connections.
 - **Ethernet Monitoring:** Similar monitoring capabilities for wired Ethernet interfaces.
 - **System Totals:** Get cumulative sent and received bytes across all network interfaces.
 - **Active TCP Connections:** List established TCP connections for the current user, including local/remote IPs, ports, and associated PIDs.
 - **All Interfaces:** Comprehensive view of all network interfaces with IP, MAC, status, speed, and traffic data.
+
 ## Usage
 To use these functions, simply import the module and call the desired function:
 
@@ -47,9 +50,23 @@ print(all_ifaces)
 """
 
 import getpass
-import psutil as __psutil__
 import socket
 from typing import Dict, List, Optional
+
+__PSUTIL_AVAILABLE__ = False
+try:
+    import psutil as __psutil__
+    __PSUTIL_AVAILABLE__ = True
+except ImportError:
+    psutil = None
+
+def __require_psutil__():
+    """Internal helper function to check and raise error if psutil is not available."""
+    if not __PSUTIL_AVAILABLE__:
+        raise ImportError(
+            "The module Network requires the 'psutil' library. "
+            "Please install it via: pip install psutil"
+        )
 
 # ==============================================================
 # Internal functions (private)
@@ -97,6 +114,7 @@ def get_wifi_interface() -> Optional[str]:
     print(f"Wi-Fi Interface: {wifi_iface}")  # Output: e.g., 'wlan0'
     ```
     """
+    __require_psutil__()
     return __find_interface__(['wlan', 'wi-fi', 'wlp', 'wl'])
 
 def get_wifi_dropped_packets() -> int:
@@ -120,6 +138,7 @@ def get_wifi_dropped_packets() -> int:
     print(f"Dropped Packets: {dropped}")
     ```
     """
+    __require_psutil__()
     iface = get_wifi_interface()
     if not iface: return 0
     io = __get_nic_io__().get(iface)
@@ -146,6 +165,7 @@ def get_wifi_received_bytes() -> int:
     print(f"Received Bytes: {recv_bytes}")
     ```
     """
+    __require_psutil__()
     iface = get_wifi_interface()
     if not iface:
         return 0
@@ -173,6 +193,7 @@ def get_wifi_sent_bytes() -> int:
     print(f"Sent Bytes: {sent_bytes}")
     ```
     """
+    __require_psutil__()
     iface = get_wifi_interface()
     if not iface:
         return 0
@@ -200,6 +221,7 @@ def get_wifi_speed_mbps() -> int:
     print(f"Wi-Fi Speed: {speed} Mbps")
     ```
     """
+    __require_psutil__()
     iface = get_wifi_interface()
     if not iface:
         return 0
@@ -227,6 +249,7 @@ def get_wifi_ip() -> Optional[str]:
     print(f"Wi-Fi IP: {ip}")  # Output: e.g., '192.168.1.100'
     ```
     """
+    __require_psutil__()
     iface = get_wifi_interface()
     if not iface:
         return None
@@ -256,6 +279,7 @@ def get_wifi_mac() -> Optional[str]:
     print(f"Wi-Fi MAC: {mac}")  # Output: e.g., 'aa:bb:cc:dd:ee:ff'
     ```
     """
+    __require_psutil__()
     iface = get_wifi_interface()
     if not iface:
         return None
@@ -288,6 +312,7 @@ def get_ethernet_interface() -> Optional[str]:
     print(f"Ethernet Interface: {eth_iface}")  # Output: e.g., 'eth0'
     ```
     """
+    __require_psutil__()
     return __find_interface__(['eth', 'enp', 'eno', 'ens'])
 
 def get_ethernet_received_bytes() -> int:
@@ -311,6 +336,7 @@ def get_ethernet_received_bytes() -> int:
     print(f"Ethernet Received: {recv_bytes} bytes")
     ```
     """
+    __require_psutil__()
     iface = get_ethernet_interface()
     if not iface:
         return 0
@@ -338,6 +364,7 @@ def get_ethernet_sent_bytes() -> int:
     print(f"Ethernet Sent: {sent_bytes} bytes")
     ```
     """
+    __require_psutil__()
     iface = get_ethernet_interface()
     if not iface:
         return 0
@@ -365,6 +392,7 @@ def get_ethernet_speed_mbps() -> int:
     print(f"Ethernet Speed: {speed} Mbps")
     ```
     """
+    __require_psutil__()
     iface = get_ethernet_interface()
     if not iface:
         return 0
@@ -395,6 +423,7 @@ def get_total_received_bytes() -> int:
     print(f"Total Received: {total_recv} bytes")
     ```
     """
+    __require_psutil__()
     return __psutil__.net_io_counters(pernic=False).bytes_recv
 
 def get_total_sent_bytes() -> int:
@@ -418,6 +447,7 @@ def get_total_sent_bytes() -> int:
     print(f"Total Sent: {total_sent} bytes")
     ```
     """
+    __require_psutil__()
     return __psutil__.net_io_counters(pernic=False).bytes_sent
 
 # ==============================================================
@@ -446,6 +476,7 @@ def get_active_tcp_connections() -> List[Dict]:
         print(f"PID {conn['pid']}: {conn['local_ip']}:{conn['local_port']} -> {conn['remote_ip']}:{conn['remote_port']}")
     ```
     """
+    __require_psutil__()
     current_user = getpass.getuser()
     active = []
     for proc in __psutil__.process_iter(['pid', 'username']):
@@ -492,6 +523,7 @@ def get_all_interfaces() -> Dict[str, Dict]:
         print(f"{iface}: IP={info['ip']}, MAC={info['mac']}, Up={info['is_up']}, Speed={info['speed_mbps']} Mbps")
     ```
     """
+    __require_psutil__()
     stats = __get_nic_stats__()
     addrs = __get_nic_addrs__()
     io = __get_nic_io__()
