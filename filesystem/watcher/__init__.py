@@ -4,39 +4,63 @@
 ---
 
 ## Overview
-The Watcher module is a part of the FileSystemPro library that provides file monitoring capabilities.
-It is designed to track changes within a specified directory, 
-alerting users to any modifications, creations, or deletions of files.
+This module implements a polling-based file system watcher class (`Watcher`) for detecting changes (created, updated, removed) in specified directory roots. It supports multi-root monitoring, customizable filters (ignore patterns, file extensions, recursion depth), event callbacks, change history tracking, and threaded operation for non-blocking polling. A standalone `get_changes` function is also provided for simple logging and notification without instantiating the class.
 
 ## Features
-- `Real-Time Monitoring:` Continuously monitors a directory for any file changes.
-- `Change Detection:` Identifies updated, created, or removed files since the last check.
-- `State Preservation:` Maintains a record of the directory's state for comparison.
-
-## How It Works
-The `Watcher` class within the module is initialized with a root directory to monitor. 
-It uses the `get_state` method to create a snapshot of the current state of the directory, 
-mapping absolute file paths to their metadata.
-
-### State Tracking
-Upon initialization, `Watcher` stores the state of the directory. 
-The `diff` method compares the current state with the saved state to detect any changes. 
-It categorizes changes into three types:
-- `Updated:` Files that have been modified since the last state.
-- `Created:` New files that have been added to the directory.
-- `Removed:` Files that have been deleted from the directory.
-
-### Results
-The `diff` method returns a list of changes,
-with each entry containing the file's path and the type of change. 
-This allows for easy integration with other systems that may need to respond to file system events.
+- **Multi-Root Monitoring:** Watch single or multiple directory paths simultaneously.
+- **Filtering Options:** Ignore files by basename patterns, restrict to specific extensions, and limit recursion depth.
+- **Event Handling:** Register callbacks for specific events ('created', 'updated', 'removed') or 'all' changes.
+- **Change Detection:** Polling-based diffing of file metadata (modified time, size) to identify changes.
+- **History & Stats:** Maintain a configurable history of changes and retrieve statistics (counts per event type).
+- **Threaded Polling:** Background monitoring loop with configurable delay to avoid blocking the main thread.
+- **Standalone Mode:** Simple function for logging changes to file or notifying via callback without class setup.
 
 ## Usage
-To use the `Watcher` module, instantiate the `Watcher` class with the directory you wish to monitor:
+To use this module, import it and instantiate the `Watcher` class or call the `get_changes` function:
 
 ```python
-from filesystem import watcher as wat
-watcher = wat('/path/to/directory')
+from filesystem import watcher
+```
+
+### Examples:
+
+- Initialize and start monitoring a directory with filters:
+```python
+watcher_instance = watcher.Watcher(
+    roots='/path/to/monitor',
+    ignore_patterns=['.git', '__pycache__'],
+    file_extensions=['py', 'txt'],
+    max_depth=3,
+    history_size=50
+)
+```
+
+- Register a callback for updates:
+
+```python
+def on_update(change):
+    print(f"File updated: {change['abspath']}")
+
+watcher_instance.register_handler('updated', on_update)
+```
+
+- Get change statistics:
+
+```python
+stats = watcher_instance.get_stats()
+print(f"Changes: {stats}")  # e.g., {'created': 2, 'updated': 5, 'removed': 1}
+```
+
+- Use standalone monitoring with logging:
+
+```python
+watcher.get_changes(
+    roots='/path/to/monitor',
+    delay=10.0,
+    create_log_file=True,
+    log_filename='changes.log',
+    notifier=lambda change: print(f"Alert: {change['change']} on {change['abspath']}")
+)
 ```
 """
 import time
