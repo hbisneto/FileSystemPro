@@ -1,40 +1,13 @@
 """
-# __core__
+# __Core__
 
 ---
 
 ## Overview
-The core module is the heart of the FileSystemPro library, 
-providing essential functionalities that support and enhance the overall performance and usability 
-of the library. It is designed to be robust and flexible, 
-enabling seamless integration and configuration of various components, including the update checker.
+This module provides configuration management, logging setup, performance tuning, feature toggles, and automated update checking for the FileSystemPro package. It initializes a global config from defaults, JSON files, .env files, and environment variables, with support for saving changes and async operations to avoid blocking. Update checks query GitHub releases asynchronously, notifying via console or callbacks if newer versions are available.
 
-## Features
-- `Configuration Management:` Centralizes the configuration settings for the entire FileSystemPro library,
-allowing for easy adjustments and fine-tuning of operational parameters. Supports persistent storage via JSON and overrides via .env.
-- `Update Checker Integration:` Seamlessly incorporates the update checker functionality, 
-ensuring that the library remains up-to-date with the latest features and security patches. Now optional and asynchronous.
-- `Internal Settings Control:` Offers a comprehensive interface for managing internal settings, 
-which dictate the behavior of the library's various modules and functions, including logging and feature toggles.
-
-## Detailed Functionality
-The core module acts as a command center, 
-orchestrating the library's internal mechanisms through a series of well-defined interfaces and protocols. 
-It is responsible for initializing the library, setting up the environment, 
-and providing a consistent experience across different platforms and configurations.
-
-### Configuration Management
-The module contains a configuration manager that stores all the necessary settings in a structured format (JSON). 
-This manager is accessible throughout the library, 
-allowing other modules to retrieve or update their configurations as needed. 
-It supports various data types and structures, ensuring compatibility and flexibility.
-Supports defaults, .env overrides, and persistence to `.config/config.json`.
-
-### Environment Configuration (.env Support)
-For user autonomy, create a `.env` file in your project root (current directory) or home directory. The library will load it automatically during `init_config()`. 
-Use prefix `FILESYSTEMPRO_` for vars. Changes here set initial values, which can be overridden by JSON or API calls.
-
-**Template .env (copy to .env and customize):**
+### Environment Configuration (.env File)
+The module supports configuration via a `.env` file placed in the current working directory or the user's home directory. Below is an example `.env` file that developers can use as a template to customize settings:
 
 ```
 # Update Checker
@@ -54,37 +27,55 @@ FILESYSTEMPRO_PERFORMANCE_CACHE_SIZE=1024
 FILESYSTEMPRO_FEATURE_TOGGLES = {"experimental_features": true, "advanced_logging": false}
 ```
 
-Note: For complex values like `feature_toggles`, use JSON strings. The library parses them automatically. Supports env vars as fallback.
+These values override defaults and can be combined with the JSON config file for layered configuration.
 
-### Update Checker Integration
-The update checker is a critical component that the core module integrates tightly. 
-It utilizes the core module's configuration management system to store and retrieve the 
-current version information. This integration allows the update checker to function efficiently, 
-checking for updates in the background without interrupting the user's workflow. 
-Can be disabled via config or .env.
-
-### Internal Settings Control
-Through the core module, users can access and modify the library's internal settings, 
-such as logging levels, performance options, and feature toggles. 
-This control is crucial for tailoring the library to specific needs and environments, 
-providing developers with the ability to optimize their usage of FileSystemPro.
+## Features
+- **Config Loading/Saving:** Merge defaults with .env, env vars, and JSON file; persist changes to disk.
+- **Logging Management:** Dynamically set levels (e.g., DEBUG, INFO) with immediate effect.
+- **Performance Settings:** Adjust cache sizes for optimization.
+- **Feature Toggles:** Enable/disable specific features like experimental ones.
+- **Update Detection:** Async GitHub API polling for releases, with version comparison and user notifications (disable via config).
 
 ## Usage
-To utilize the core module, simply import it at the beginning of your script:
+To use these functions, import the module directly:
 
 ```python
-from filesystem import __core__
-__core__.init_config()  # Loads .env and JSON
-__core__.check_updates_async()  # Optional async update check
+from filesystem import __core__ as core
 ```
 
-For configuration via .env: See template above.
+### Examples:
 
-For runtime changes:
+- Get current configuration:
+
 ```python
-config = __core__.get_config()
-config['logging_level'] = 'DEBUG'
-__core__.save_config(config)
+config = core.get_config()
+print(config)  # e.g., {'update_checker_enabled': True, 'logging_level': 'INFO', ...}
+```
+
+- Set logging level:
+
+```python
+core.set_logging_level('DEBUG')
+# Now logs at DEBUG level
+```
+
+- Toggle a feature:
+
+```python
+core.toggle_feature('experimental_features', True)
+```
+
+- Check for updates asynchronously:
+
+```python
+core.check_updates_async(user='hbisneto', repo='filesystempro', callback=print)
+```
+
+- Save custom config changes:
+
+```python
+custom_config = {'performance_cache_size': 2048}
+core.save_config(custom_config)
 ```
 """
 

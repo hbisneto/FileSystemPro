@@ -4,34 +4,66 @@
 ---
 
 ## Overview
-FileSystem is a library for managing file paths in a user's system, 
-depending on the operating system (OS) they are using.
-It uses Python's built-in libraries like `os`, `sys`, and `getpass` to interact with the system and
-manage file paths.
+This module serves as the primary entry point for the FileSystemPro package, automatically detecting the operating system (Linux, macOS, or Windows) and defining cross-platform constants for essential paths, such as the user's home directory, common folders (Desktop, Documents, Downloads, Music, Pictures, Public, Videos), and platform-specific locations (e.g., Templates on Linux, Applications on macOS, AppData on Windows). It also provides utility constants like the current working directory, OS path separator, and username (with the first letter capitalized). These constants enable seamless, platform-agnostic file system interactions without manual path construction. Internally, it imports core configuration and console utilities for enhanced functionality.
 
-Here's a brief description of what the code does:
+## Features
+- **Platform Detection:** Automatically identifies Linux, macOS, or Windows and sets `PLATFORM_NAME` accordingly.
+- **User Directory Constants:** Pre-defined paths for home (`user`), Desktop (`desktop`), Documents (`documents`), Downloads (`downloads`), Music (`music`), Pictures (`pictures`), Public (`public`), and Videos (`videos`).
+- **Platform-Specific Paths:** Additional constants like `linux_templates`, `mac_applications`, `mac_movies`, `windows_applicationData`, `windows_favorites`, `windows_localappdata`, and `windows_temp` for specialized folders.
+- **Global Utilities:** `CURRENT_LOCATION` (current working directory), `OS_SEPARATOR` (OS-specific path delimiter), and `USER_NAME` (current username with first letter uppercased).
+- **Windows Registry Integration:** Uses Windows Registry queries for accurate shell folder paths (e.g., Desktop, Documents).
 
-1. `User Identification:` It identifies the current user using the `getpass.getuser()`
-function and stores the username with the first letter capitalized.
+## Usage
+To use these constants, import the module as `filesystem` (or alias as `fs`) and access them directly:
 
-2. `Platform Identification:` It identifies the platform (OS) using `sys.platform`. 
-Depending on whether the platform is Linux, macOS, or Windows, it sets up different file paths.
+```python
+import filesystem as fs
+```
 
-3. `File Paths:` For each platform, it sets up file paths for common user directories like Desktop,
-Documents, Downloads, Music, Pictures, Public, and Videos.
-The paths are formed using the user's home directory path and the standard directory names for each platform.
+### Examples:
 
-   - For `Linux`, it uses the `/home/{username}` directory as the base.
-   - For `macOS`, it uses the `/Users/{username}` directory as the base.
-   - For `Windows`, it uses the `USERPROFILE` environment variable to get the base directory.
+- Access platform name and user home directory:
 
-4. `Special Directories:` Apart from the common directories, it also sets up paths for some
-special directories based on the platform. For example, `Templates` in Linux, `Applications` and
-`Movies` in macOS, and several `AppData` related paths in Windows.
+```python
+import filesystem as fs
+print(f"Platform: {fs.PLATFORM_NAME}")
+print(f"Home: {fs.user}")  # e.g., "/home/username" on Linux
+```
 
-This library can be useful for scripts that need to work with user files and need to be compatible across
-different operating systems. 
-It provides an easy way to get the correct file paths regardless of the platform.
+- Use common folder paths for operations:
+
+```python
+import filesystem as fs
+desktop_path = fs.desktop
+documents_path = fs.documents
+print(f"Desktop: {desktop_path}")
+print(f"Documents: {documents_path}")
+# Example: List files in Downloads
+from filesystem import file
+files = file.get_files(fs.downloads)
+print(files)
+```
+
+- Platform-specific paths:
+
+```python
+import filesystem as fs
+if fs.PLATFORM_NAME == "Windows":
+    temp_path = fs.windows_temp
+    print(f"Temp: {temp_path}")
+elif fs.PLATFORM_NAME == "macOS":
+    apps_path = fs.mac_applications
+    print(f"Applications: {apps_path}")
+```
+
+- OS separator and current location:
+
+```python
+import filesystem as fs
+print(f"Separator: '{fs.OS_SEPARATOR}'")  # '/' or '\'
+print(f"Current Location: {fs.CURRENT_LOCATION}")
+print(f"User: {fs.USER_NAME}")  # e.g., "Username"
+```
 """
 
 from filesystem import __core__

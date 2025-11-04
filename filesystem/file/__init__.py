@@ -4,64 +4,73 @@
 ---
 
 ## Overview
-The File module is a comprehensive utility toolset that forms part of the FileSystemPro library. 
-It provides a suite of functions designed to handle various file operations such as integrity checks,
-file creation, deletion, enumeration, and file splitting and reassembling.
+This module provides comprehensive file operations, including creation, reading, writing (text/binary), appending, copying/moving/renaming/deleting, integrity verification via SHA-256 checksums, timestamp management (creation/access/write in local/UTC), symbolic links, splitting/reassembling large files, and batch processing for duplicates/hashes/reports. It supports encoding options, overwrite controls, and returns metadata via `wrapper.get_object` where applicable. Cross-platform compatible with error handling for common issues like permissions and non-existence.
 
 ## Features
-- `Checksum Calculation:` Utilizes SHA-256 hashing to calculate file checksums for integrity verification.
-- `Integrity Check:` Compares checksums of two files to verify their integrity.
-- `Batch Integrity Check:` Performs integrity verification on multiple files simultaneously using SHA-256 checksums.
-- `Integrity Report Generation:` Creates detailed reports of integrity verification results.
-- `Reference Hashes Management:` Saves and loads SHA-256 checksums for reference in integrity checks.
-- `File Creation:` Supports creating both text and binary files with specified data.
-- `File Deletion:` Safely deletes files by checking for their existence before removal.
-- `File Enumeration:` Enumerates all files in a given directory, providing detailed file information.
-- `File Existence Check:` Determines if a file exists at a given path.
-- `File Listing:` Lists all files in a specified directory.
-- `File Renaming:` Renames files within a directory after checking for their existence.
-- `File Reassembling:` Reassembles split files back into a single file.
-- `File Splitting:` Splits a file into smaller parts based on a specified chunk size.
-
-## Detailed Functionality
-The module's functions are designed to be robust and easy to use, 
-providing a high level of abstraction from the underlying file system operations.
-
-### Checksum Calculation and Integrity Check
-The `calculate_checksum` function reads a file in binary mode and calculates its SHA-256 hash, 
-returning the hexadecimal digest. The `check_integrity` function uses this to compare the checksums of 
-two files, which is essential for verifying that files have not been tampered with or corrupted.
-The `batch_check_integrity` function extends this capability to verify multiple files against reference hashes or without references, detecting data corruption efficiently.
-
-### Integrity Report Generation
-The `generate_integrity_report` function creates detailed reports of batch integrity checks, including statistics on total files checked, successful verifications, failures, and detailed file information such as size, modification time, and hash values.
-
-### Reference Hashes Management
-The `save_reference_hashes` function generates and saves SHA-256 checksums for specified files or directories to a JSON file. The `load_reference_hashes` function retrieves these hashes for use in integrity verification.
-
-### File Creation, Deletion, and Enumeration
-File creation is handled by two functions: `create` for text files, 
-which uses codecs to handle different encodings, and `create_binary_file` for binary files. 
-The `delete` function removes a file after confirming its existence, 
-while `enumerate_files` provides a comprehensive list of all files in a directory, including their metadata.
-
-### File Existence, Listing, and Renaming
-The `exists` function checks if a file is present at a specified path. 
-The `list` function returns a list of all files in a directory. 
-The `rename` function allows for renaming a file if it exists.
-
-### File Reassembling and Splitting
-The `reassemble_file` function is used to combine parts of a 
-previously split file back into its original form. 
-Conversely, the `split_file` function divides a file into smaller parts, 
-each with a size defined by the `chunk_size` parameter.
+- **I/O Operations:** Create/append/read/write files (text/binary/lines), with encoding and buffer support.
+- **Integrity Tools:** Calculate checksums, check against references, batch verify directories, find duplicates, generate/save/load hash reports.
+- **Path & Metadata:** Get extension/filename/size (raw/formatted), enumerate files recursively, Unix mode.
+- **Manipulation:** Copy/move/rename/delete, create symbolic links, split/reassemble files into chunks.
+- **Timestamps:** Get/set creation/access/write times (local/UTC, as datetime/str; Unix approximations via utime).
+- **Batch & Reporting:** Process multiple files/directories, log results, generate integrity reports.
 
 ## Usage
-To use the functions provided by this module, 
-import the module and call the desired function with the appropriate parameters:
+To use these functions, simply import the module and call the desired function:
 
 ```python
-from filesystem import file as fsfile
+from filesystem import file
+```
+
+### Examples:
+
+- Append text to a file:
+
+```python
+file.append_text("example.txt", "Hello, World!")
+# Appends without newline; creates if missing
+```
+
+- Calculate SHA-256 checksum:
+
+```python
+checksum = file.calculate_checksum("/path/to/file.txt")
+print(f"Checksum: {checksum}")
+```
+
+- Copy multiple files with overwrite:
+
+```python
+files = ["/path/to/file1.txt", "/path/to/file2.txt"]
+file.copy(files, "/destination/dir/", overwrite=True)
+```
+
+- Get formatted file size:
+
+```python
+size = file.get_size("/path/to/file.txt", show_unit=True)
+print(size)  # e.g., "1.5 MB"
+```
+
+- Batch integrity check and report:
+
+```python
+results = file.batch_check_integrity("/path/to/directory", log_file="report.log")
+report = file.generate_integrity_report(results, "summary.txt")
+print(report)
+```
+
+- Split and reassemble a large file:
+
+```python
+file.split_file("large_file.bin", chunk_size=1024*1024)  # 1 MB chunks
+file.reassemble_file("large_file", "reassembled.bin")  # Deletes chunks after
+```
+
+- Set last write time:
+
+```python
+from datetime import datetime
+file.set_last_write_time("example.txt", datetime(2023, 1, 1))
 ```
 """
 

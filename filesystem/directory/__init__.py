@@ -4,29 +4,82 @@
 ---
 
 ## Overview
-The Directory module is a component of the FileSystemPro library that provides a collection of functions
-for handling directory-related operations. It simplifies tasks such as path manipulation, 
-directory creation and deletion, file and directory enumeration, and management of directory metadata.
+This module provides comprehensive utilities for directory management, including creation, deletion, enumeration, path manipulation, timestamp handling (creation, access, write times in local/UTC formats), symbolic links, temporary directories, and size calculations. It supports recursive operations, pattern matching via glob, and cross-platform compatibility. Functions return iterators/lists for enumeration and metadata via `wrapper.get_object` where applicable. Global `current_directory` tracks the working directory, updated by `set_current_directory`.
 
 ## Features
-- **Directory Creation:** Creates new directories, with an option to create necessary subdirectories.
-- **Directory Deletion:** Deletes directories, with an option for recursive deletion.
-- **Directory Existence Check:** Checks whether a directory exists at a specified path.
-- **Directory Information:** Retrieves parent directories and root information.
-- **Directory Listing:** Lists all subdirectories within a given directory.
-- **Directory Renaming:** Renames a directory if it exists.
-- **File and Directory Enumeration:** Retrieves lists or iterators of files and directories, with support for search patterns and recursion.
-- **Metadata Management:** Gets and sets creation, access, and modification times of directories.
-- **Path Combination:** Dynamically combines multiple paths into a single path string.
-- **Parent Directory Information:** Retrieves the name or path of a file's parent directory.
-- **Symbolic Links:** Creates and resolves symbolic links.
+- **Path Operations:** Combine/join paths (with absolute checks), get parent/name, resolve links.
+- **Creation & Deletion:** Create dirs (with subdirs), temp subdirs, symbolic links; delete (recursive).
+- **Enumeration:** List files/directories/entries with patterns ("TopDirectoryOnly" or "AllDirectories").
+- **Existence & Size:** Check existence, compute recursive total size (bytes or formatted units).
+- **Timestamps:** Get/set creation/access/write times (local/UTC, as datetime or str; Unix approximations).
+- **Movement & Rename:** Move dirs/files (with root/content options, overwrite), rename dirs.
+- **Tree Visualization:** Generate a tree-like string representation, ignoring common dev dirs (e.g., .git).
+- **Current Dir Management:** Get/set working directory with global tracking.
 
 ## Usage
-To use the functions provided by this module, 
-import the module and call the desired function with the appropriate parameters:
+To use these functions, simply import the module and call the desired function:
 
 ```python
-from filesystem import directory as dir
+from filesystem import directory
+```
+
+### Examples:
+
+- Create a directory with subdirs and get metadata:
+
+```python
+result = directory.create("/path/to/new_directory")
+print(result['abspath'])  # Full path
+print(result['size'])     # "0.0 bytes" for empty dir
+```
+
+- Enumerate files recursively with pattern:
+
+```python
+files = directory.get_files("/path/to/directory", "*.txt", "AllDirectories")
+for file_path in files:
+    print(file_path)
+```
+
+- Get directory size formatted:
+
+```python
+size = directory.get_size("/path/to/directory", show_unit=True)
+print(size)  # e.g., "2.5 GB"
+```
+
+- Move directory contents (not root) with overwrite:
+
+```python
+result = directory.move("/source/dir", "/dest/dir", move_root=False, overwrite=True)
+print(result['size'])  # Size of destination
+```
+
+- Generate directory tree:
+
+```python
+lines = directory.get_tree("/path/to/project")
+for line in lines:
+    print(line)
+    # Outputs tree like: 
+    ├── file.txt
+    └── subdir
+        └── nested.py
+```
+
+- Set and get current directory:
+
+```python
+directory.set_current_directory("/path/to/work")
+print(directory.get_current_directory())  # /path/to/work
+```
+
+- Get last write time and set it:
+
+```python
+write_time = directory.get_last_write_time("/path/to/directory")
+print(write_time)  # datetime object
+directory.set_last_write_time("/path/to/directory", "2023-01-01 12:00:00")
 ```
 """
 

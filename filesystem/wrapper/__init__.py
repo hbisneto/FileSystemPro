@@ -4,36 +4,48 @@
 ---
 
 ## Overview
-Wrapper is an integral part of the FileSystemPro library, designed to provide detailed information about 
-files and directories. 
-It includes functions for retrieving metadata and checking file extensions.
+This module provides utility functions for retrieving structured metadata about files or directories at a given path, including absolute paths, timestamps (formatted as "YYYY/MM/DD HH:MM:SS:ff"), existence/type checks (file/dir/link), names/extensions, and sizes (formatted with units like bytes/KB/MB). It also includes a simple check for file extensions. All operations use standard library functions for cross-platform compatibility, with recursive size calculation for directories. Errors like non-existence or permissions are raised where applicable.
 
 ## Features
-- `Metadata Retrieval:` Gathers comprehensive metadata about a file or directory path.
-- `Extension Check:` Determines whether a file has an extension.
-
-## Detailed Functionality
-The module's functions are crafted to offer detailed insights into the file system and to perform common 
-file operations with ease.
-
-### Metadata Retrieval (`get_object`)
-The `get_object` function is the centerpiece of this module. 
-It returns a dictionary containing various properties of the given path, such as absolute path, 
-access time, creation time, directory name, existence, file type, link status, extension, modification time, 
-file name, size, and more.
-
-### Extension Check (`has_extension`)
-The `has_extension` function checks if a given file path has an extension, 
-which is useful for file type validation or processing logic that depends on file types.
+- **Metadata Retrieval:** Get a comprehensive dict with abspath, access/creation/modification dates (formatted strings), dirname, existence, is_dir/is_file/is_link, extension, name (with/without ext), and size (formatted string with units).
+- **Extension Check:** Quickly verify if a path string has a file extension (works even for non-existent paths).
+- **Timestamp Formatting:** Internal helpers format dates consistently; supports both files and directories.
+- **Size Calculation:** For files: raw bytes formatted; for dirs: recursive total of all contained files.
 
 ## Usage
-To use the functions provided by this module, 
-import the module and call the desired function with the appropriate parameters:
+To use these functions, simply import the module and call the desired function:
 
 ```python
-from filesystem import wrapper as wra
+from filesystem import wrapper
 ```
 
+### Examples:
+
+- Get full metadata for a file:
+
+```python
+details = wrapper.get_object("/path/to/file.txt")
+print(details['name'])        # e.g., "file.txt"
+print(details['size'])        # e.g., "1.2 KB"
+print(details['modified'])    # e.g., "2023/11/04 12:34:56:123456"
+print(details['is_file'])     # True
+```
+
+- Get metadata for a directory (recursive size):
+
+```python
+dir_details = wrapper.get_object("/path/to/directory")
+print(dir_details['size'])    # e.g., "10.5 MB" (total of all files)
+print(dir_details['is_dir'])  # True
+```
+
+- Check if a path has an extension:
+
+```python
+has_ext = wrapper.has_extension("/path/to/file.txt")  # True
+no_ext = wrapper.has_extension("/path/to/file")       # False
+print(has_ext, no_ext)
+```
 """
 
 import datetime
