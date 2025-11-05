@@ -1,3 +1,16 @@
+# -*- coding: utf-8 -*-
+#
+# filesystem/console/tests/console_test.py
+# FileSystemPro
+#
+# Created by Heitor Bisneto on 12/11/2025.
+# Copyright © 2023–2025 hbisneto. All rights reserved.
+#
+# This file is part of FileSystemPro.
+# FileSystemPro is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License. See LICENSE for more details.
+#
+
 from .. import console
 
 print("="*80)
