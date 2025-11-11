@@ -1,5 +1,12 @@
 # FileSystemPro
 
+[![PyPI](https://img.shields.io/pypi/v/FileSystemPro?logo=python&logoColor=white&color=blue)](https://pypi.org/project/FileSystemPro/)
+[![Python](https://img.shields.io/badge/Python-%3E=3.10-blue)](https://python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/hbisneto/FileSystemPro)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.1%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
+
 FileSystemPro is a powerful, cross-platform Python toolkit for file and directory management, system monitoring, compression, and enhanced console output. It provides seamless abstractions for OS-specific paths, resource tracking (CPU, disks, memory, network), archive handling (tar/zip), change detection, and colored terminal styling. Built for developers, it integrates standard library tools with optional `psutil` for hardware insights, ensuring portability across Linux, macOS, and Windows.
 
 **Key Pillars**:
@@ -10,7 +17,15 @@ FileSystemPro is a powerful, cross-platform Python toolkit for file and director
 - **Compression & Watching**: Tar/zip handling and real-time filesystem change detection.
 - **Console Enhancement**: ANSI colors/styles with Windows compatibility.
 
-**Compatibility**: Python 3.8+; cross-platform (Linux/macOS/Windows).
+**Compatibility**: Python 3.10+; cross-platform (Linux/macOS/Windows).
+
+---
+
+## Code of Conduct
+
+Please note that this project is released with a [Contributor Code of Conduct](https://github.com/hbisneto/FileSystemPro/blob/main/CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
+
+---
 
 ## Getting Started
 
@@ -39,11 +54,13 @@ Clone the repo:
 git clone https://github.com/hbisneto/FileSystemPro.git
 cd FileSystemPro
 ```
+
 Upgrade build tools:
 
 ```bash
 pip install --upgrade setuptools wheel
 ```
+
 > Note: Requires setuptools 69.5.1+; wheel for packaging.
 
 Run tests or build: See [CONTRIBUTING.md](CONTRIBUTING.md).
