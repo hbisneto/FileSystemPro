@@ -2,7 +2,7 @@
 
 Thank you for considering contributing to **FileSystemPro**! We appreciate your interest in improving this cross-platform file system toolkit. Whether it's fixing bugs, adding features, enhancing documentation, or refining code, your contributions help make the library more robust and user-friendly.
 
-Before starting, please read this guide to understand our contribution process. By participating, you agree to abide by our [Code of Conduct](CODE_OF_CONDUCT.md).
+Before starting, please read this guide to understand our contribution process. By participating, you agree to abide by our [Code of Conduct](https://github.com/hbisneto/FileSystemPro/blob/main/CODE_OF_CONDUCT.md).
 
 ## Code of Conduct
 
