@@ -66,7 +66,6 @@ def get_object(path):
     - "is_file": A boolean indicating whether the path is a file.
     - "is_link": A boolean indicating whether the path is a symbolic link.
     - "extension": The file extension, or an empty string if the path is not a file.
-    - "ext": The file extension, or an empty string if the path is not a file. `Kept for version support.`
     - "modified": The last modification time, or -1 if an error occurs.
     - "name": The base name of the path.
     - "name_without_extension": The base name of the path without the extension.

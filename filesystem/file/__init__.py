@@ -63,33 +63,42 @@ import filesystem as fs
 from filesystem import directory as dir
 from filesystem import wrapper as wra
 
-def append_text(file, text):
+def append_text(file, text, encoding="utf-8"):
     """
-    # file.append_text(file, text)
+    # file.append_text(file, text, encoding="utf-8")
 
     ---
-    
+
     ### Overview
-    Appends UTF-8 encoded text to an existing file, or creates a new file if it does not exist.
+    Appends the specified text to a file at the given path using the specified encoding. If the file does not exist, it is created. The text is appended to the end of the file without adding a newline character.
 
     ### Parameters:
-    - file_path (str): The path to the file.
+    - file (str): The path to the file where the text will be appended.
     - text (str): The text to append to the file.
+    - encoding (str, optional): The encoding to use for writing the text. Defaults to "utf-8".
 
     ### Returns:
     None
 
     ### Raises:
-    - IOError: If an I/O error occurs
+    - IOError: If an I/O error occurs during file writing.
+    - PermissionError: If permission is denied when accessing the file.
+    - UnicodeEncodeError: If the text cannot be encoded with the specified encoding.
 
     ### Examples:
-    - Appends text to a file, creating the file if it does not exist.
+    - Append text to a file with default UTF-8 encoding:
 
     ```python
-    append_text('example.txt', 'This is a sample text.')
+    fsfile.append_text("example.txt", "This is a sample text.")
+    ```
+
+    - Append text to a file with a different encoding:
+
+    ```python
+    fsfile.append_text("example.txt", "This is a sample text.", encoding="utf-16")
     ```
     """
-    with open(file, 'a', encoding='utf-8') as file:
+    with open(file, 'a', encoding=encoding) as file:
         file.write(f'{text}')
 
 def calculate_checksum(file):
@@ -166,11 +175,16 @@ def copy(source, destination, overwrite=False):
 
     ### Overview
     Copies a file or a list of files from the source to the destination. This function handles both single file copying and multiple file copying while providing options for overwriting existing files and performing various validation checks.
+    
+    **For lists, copies each file individually to the destination directory; partial failures do not stop the process.**
 
     ### Parameters:
     - source (str or list): The path to the source file or a list of source files to be copied.
     - destination (str): The path to the destination directory where the file(s) should be copied.
     - overwrite (bool, optional): If set to True, existing files at the destination will be overwritten. Defaults to False.
+
+    ### Returns:
+    None
 
     ### Raises:
     - FileNotFoundError: If the source file or any of the listed source files do not exist.
@@ -238,33 +252,35 @@ def create(file, data, overwrite=False, encoding="utf-8"):
     ---
 
     ### Overview
-    Creates a file at the specified path and writes data into it. If the file already exists, its contents can be either appended to or overwritten based on the `overwrite` parameter. The function then returns the details of the created file.
+    Creates or modifies a file at the specified path by writing the provided data. If `overwrite` is `True`, the file is overwritten; otherwise, the data is appended to the end of the file. Returns a dictionary with the file's metadata after the operation.
 
     ### Parameters:
-    - **file (str)**: The file path to create.
-    - **data (str)**: The data to write into the file.
-    - **overwrite (bool)**: Whether to overwrite the file if it already exists. Defaults to `False`.
-    - **encoding (str)**: The encoding to use when opening the file. Defaults to "utf-8".
+    - file (str): The path to the file to create or modify.
+    - data (str): The data to write into the file.
+    - overwrite (bool, optional): If `True`, overwrites the file; if `False`, appends to it. Defaults to `False`.
+    - encoding (str, optional): The encoding to use for writing the data. Defaults to "utf-8".
 
     ### Returns:
-    - **dict**: A dictionary containing the details of the created file.
+    dict: A dictionary containing metadata of the created or modified file, as returned by `wra.get_object`.
 
     ### Raises:
-    - **FileNotFoundError**: If the file does not exist.
-    - **PermissionError**: If the permission is denied.
-    - **UnicodeEncodeError**: If the data cannot be encoded with the specified encoding.
+    - IOError: If an I/O error occurs during file writing.
+    - PermissionError: If permission is denied when accessing the file.
+    - UnicodeEncodeError: If the data cannot be encoded with the specified encoding.
 
     ### Examples:
-    - Creates a file and writes data into it, then returns the file details.
+    - Create a new file or append to an existing one:
 
     ```python
-    create("/path/to/file", "Hello, World!")
+    file_details = fsfile.create("example.txt", "Hello, World!")
+    print(file_details)
     ```
 
-    - Creates a file with a different encoding, writes data into it, then returns the file details.
+    - Overwrite a file with a different encoding:
 
     ```python
-    create("/path/to/file", "Hello, World!", overwrite=True, encoding="utf-16")
+    file_details = fsfile.create("example.txt", "Hello, World!", overwrite=True, encoding="utf-16")
+    print(file_details)
     ```
     """
     if overwrite==True:
@@ -276,46 +292,47 @@ def create(file, data, overwrite=False, encoding="utf-8"):
 
     return wra.get_object(f'{file}')
 
-def create_binary_file(filename, data):
+def create_binary_file(filename, data, buffer_size=4096):
     """
-    # file.create_binary_file(filename, data)
+    # file.create_binary_file(filename, data, buffer_size=4096)
 
     ---
-    
+
     ### Overview
-    Creates a binary file at the specified filename and writes data into it. If the data is not of bytes type,
-    it is first encoded to bytes.
+    Creates or overwrites a binary file at the specified path and writes the provided data. If the data is a string, it is encoded to bytes using UTF-8 before writing. The file is always overwritten if it exists, and the buffer size can be adjusted for performance optimization.
 
     ### Parameters:
-    - filename (str): The filename of the binary file to create.
-    - data (str or bytes): The data to write into the file. If it is a string, it will be encoded to bytes.
+    - filename (str): The path to the binary file to create or overwrite.
+    - data (str or bytes): The data to write into the file. Strings are encoded to bytes using UTF-8.
+    - buffer_size (int, optional): The buffer size for writing the file, in bytes. Defaults to 4096.
 
     ### Returns:
     None
 
     ### Raises:
-    - FileExistsError: If the file already exists.
-    - PermissionError: If the permission is denied.
-    - UnicodeEncodeError: If the data cannot be encoded to bytes.
+    - IOError: If an I/O error occurs during file writing.
+    - PermissionError: If permission is denied when accessing the file.
+    - UnicodeEncodeError: If a string input cannot be encoded to bytes.
 
     ### Examples:
-    - Creates a binary file and writes string data into it, which is first encoded to bytes.
+    - Create a binary file with string data:
 
     ```python
-    create_binary_file("/path/to/file", "Hello, World!")
+    fsfile.create_binary_file("example.bin", "Hello, World!")
     ```
-    - Creates a binary file and writes byte data into it.
+
+    - Create a binary file with byte data and custom buffer size:
 
     ```python
-    create_binary_file("/path/to/file", b"Hello, World!")
+    fsfile.create_binary_file("example.bin", b"Hello, World!", buffer_size=8192)
     ```
     """
     if type(data) != bytes:
         b_data = bytes(data.encode())
-        with open(filename, 'wb') as binary_file:
+        with open(filename, 'wb', buffering=buffer_size) as binary_file:
             binary_file.write(b_data)
     else:
-        with open(filename, 'wb') as binary_file:
+        with open(filename, 'wb', buffering=buffer_size) as binary_file:
             binary_file.write(data)
 
 def delete(file):
@@ -344,8 +361,9 @@ def delete(file):
     delete("/path/to/file")
     ```
     """
-    if exists(file):
-        os.remove(file)
+    if not exists(file):
+        raise FileNotFoundError(f"The file '{file}' does not exist.")
+    os.remove(file)
 
 def enumerate_files(file):
     """
@@ -400,7 +418,6 @@ def exists(file):
     bool: True if the file exists, False otherwise.
 
     ### Raises:
-    - FileNotFoundError: If the file does not exist.
     - PermissionError: If the permission is denied.
 
     ### Examples:
@@ -459,9 +476,9 @@ def find_duplicates(path):
                 checksums[checksum] = file_path
     return original_files, duplicate_files
 
-def get_extension(file_path, lower=True):
+def get_extension(file, lower=True):
     """
-    # file.get_extension(file_path, lower=True)
+    # file.get_extension(file, lower=True)
 
     ---
     
@@ -469,7 +486,7 @@ def get_extension(file_path, lower=True):
     Extracts the file extension from the given file path and returns it in lowercase or uppercase based on the `lower` parameter.
 
     ### Parameters:
-    file_path (str): The path of the file from which to extract the extension.
+    file (str): The path of the file from which to extract the extension.
     lower (bool, optional): If True, returns the extension in lowercase. If False, returns it in uppercase. Default is True.
 
     ### Returns:
@@ -491,12 +508,12 @@ def get_extension(file_path, lower=True):
     ```
     """
 
-    _, file_extension = os.path.splitext(file_path)
+    _, file_extension = os.path.splitext(file)
     if lower == True:
         return file_extension.lower()
     return file_extension.upper()
 
-def get_filename(filepath):
+def get_filename(file):
     """
     # file.get_filename(path)
 
@@ -518,7 +535,7 @@ def get_filename(filepath):
     get_filename("/path/to/your/file/name.txt")
     ```
     """
-    return os.path.basename(filepath)
+    return os.path.basename(file)
 
 def get_files(path, fullpath=True, extension=None):
     """
@@ -565,40 +582,45 @@ def get_files(path, fullpath=True, extension=None):
                     file_list.append(file)
     return file_list
 
-def get_size(file_path): 
+def get_size(file, show_unit=False):
     """
-    # file.get_size(file_path)
+    # file.get_size(file, show_unit=False)
 
     ---
 
     ### Overview
     Calculates the size of a file at the specified path.
-    The size is returned in bytes, KB, MB, GB, or TB, depending on the size.
+    Returns raw bytes (int) or a formatted string in bytes/KB/MB/GB/TB/PB/EB/ZB/YB (up to ~1 YB), depending on the `show_unit` parameter.
 
     ### Parameters:
-    - file_path (str): The path of the file to calculate the size of.
+    - file (str): The path of the file to calculate the size of.
+    - show_unit (bool, optional): If True, returns a formatted string with units (e.g., '1.0 KB'); if False, returns raw bytes as int. Defaults to False.
 
     ### Returns:
-    - str: A string representing the size of the file, formatted as a float followed by the unit of measurement.
+    - int or str: Raw bytes as int if `show_unit=False`; formatted string with unit if `True` (e.g., '1.0 KB').
 
     ### Raises:
-    - FileNotFoundError: If the file does not exist.
-    - PermissionError: If the permission is denied.
+    - FileNotFoundError: If the file does not exist or is not a file.
+    - OSError (including PermissionError): If access is denied or another OS error occurs during size retrieval.
 
     ### Examples:
-    - Calculate the size of a file:
+    - Calculate the raw size (int) of a file:
 
     ```python
-    get_size("/path/to/file")
+    size = fsfile.get_size("/path/to/file")
+    print(size)  # e.g., 1024
     """ 
 
-    if not os.path.isfile(file_path): 
-        raise FileNotFoundError(f"O arquivo '{file_path}' não foi encontrado.") 
+    if not os.path.isfile(file): 
+        raise FileNotFoundError(f"The file '{file}' was not found.")
+
+    size = os.path.getsize(file) 
+    if not show_unit:
+        return size
     
-    size = os.path.getsize(file_path) 
-    for unit in ['bytes', 'KB', 'MB', 'GB', 'TB']: 
+    for unit in ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']:
         if size < 1024.0: 
-            return f"{size:3.1f} {unit}" 
+            return f"{size:3.1f} {unit}"
         size /= 1024.0
 
 def move(source, destination, new_filename=None, replace_existing=False):
@@ -624,7 +646,6 @@ def move(source, destination, new_filename=None, replace_existing=False):
     ### Raises
     - FileNotFoundError: If the source file does not exist.
     - PermissionError: If permission is denied during the move operation.
-    - UnicodeEncodeError: If the data cannot be encoded with the specified encoding.
 
     ### Examples
     - Move a file:
@@ -669,6 +690,7 @@ def rename(old_name, new_name):
     
     ### Overview
     Renames a file in a given directory from `old_name` to `new_name`.
+    Returns True if the file was successfully renamed, False otherwise.
 
     ### Parameters:
     old_name (str): The current name of the file.
@@ -678,7 +700,6 @@ def rename(old_name, new_name):
     bool: True if the file was successfully renamed, False otherwise.
 
     ### Raises:
-    - FileNotFoundError: If the file does not exist.
     - PermissionError: If the permission is denied.
 
     ### Examples:
@@ -703,6 +724,8 @@ def reassemble_file(large_file, new_file):
     Reassembles a file that was previously split into parts. 
     The function checks for the existence of the split parts and reads each part, writing it to a new file. 
     After all parts have been written to the new file, the function deletes the parts.
+    
+    **Ignores missing sequential parts and processes only existing ones. If no parts exist, no action is taken.**
 
     ### Parameters:
     large_file (str): The name of the original large file that was split.
@@ -712,8 +735,8 @@ def reassemble_file(large_file, new_file):
     None
 
     ### Raises:
-    - FileNotFoundError: If any of the parts do not exist.
-    - PermissionError: If the permission is denied.
+    - IOError: If an error occurs reading or writing parts.
+    - PermissionError: If permission is denied during operations.
 
     ### Examples:
     - Reassembles a file that was split into parts.
@@ -739,34 +762,37 @@ def reassemble_file(large_file, new_file):
 
 def split_file(file, chunk_size = 1048576):
     """
-    # file.split_file(file, chunk_size = 1048576)
+    # file.split_file(file, chunk_size=1048576)
 
     ---
-    
+
     ### Overview
-    Splits a large file into smaller chunks. The function reads the file in chunks of a specified size and writes each chunk to a new file. The new files are named by appending `.fsp` and an index number to the original filename.
+    Splits a file into smaller chunks of a specified size, preserving the original file. Each chunk is saved as a separate file named `{file}.fsp{index}`, where `index` is a zero-based integer (e.g., `file.fsp0`, `file.fsp1`). The chunk size is specified in bytes, defaulting to 1 MB.
 
     ### Parameters:
-    file (str): The name of the file to split.
-    chunk_size (int): The size of each chunk. Defaults to 1048576 bytes (1 MB).
+    - file (str): The path to the file to split.
+    - chunk_size (int, optional): The size of each chunk in bytes. Defaults to 1048576 (1 MB).
 
     ### Returns:
-    True if the file was successfully split, False if the file does not exist.
+    bool: `True` if the file was successfully split, `False` if the file does not exist.
 
     ### Raises:
-    - FileNotFoundError: If the file does not exist.
-    - PermissionError: If the permission is denied.
+    - IOError: If an I/O error occurs during file reading or writing.
+    - PermissionError: If permission is denied when accessing the file or creating chunks.
 
     ### Examples:
-    - Splits a file into 1 MB chunks.
+    - Split a file into 1 MB chunks:
 
     ```python
-    split_file("large_file")
+    success = fsfile.split_file("large_file.bin")
+    print("Split successful:", success)
     ```
-    - Splits a file into chunks of a specified size.
+
+    - Split a file into 500 KB chunks:
 
     ```python
-    split_file("large_file", 512000)  # splits into 500 KB chunks
+    success = fsfile.split_file("large_file.bin", chunk_size=512000)
+    print("Split successful:", success)
     ```
     """
     if exists(file) == False:
@@ -781,4 +807,3 @@ def split_file(file, chunk_size = 1048576):
             i += 1
             chunk = f.read(chunk_size)
     return True
-

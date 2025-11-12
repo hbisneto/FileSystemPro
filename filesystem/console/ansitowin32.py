@@ -135,6 +135,12 @@ class AnsiToWin32(object):
                 AnsiStyle.BRIGHT: (winterm.style, WinStyle.BRIGHT),
                 AnsiStyle.DIM: (winterm.style, WinStyle.NORMAL),
                 AnsiStyle.NORMAL: (winterm.style, WinStyle.NORMAL),
+                # NEW IMPLEMENTATION
+                AnsiStyle.UNDERLINE: (winterm.style, AnsiStyle.UNDERLINE),
+                AnsiStyle.RESET_UNDERLINE: (winterm.style, AnsiStyle.RESET_UNDERLINE),
+                AnsiStyle.STRIKETHROUGH: (winterm.style, AnsiStyle.STRIKETHROUGH),
+                AnsiStyle.RESET_STRIKETHROUGH: (winterm.style, AnsiStyle.RESET_STRIKETHROUGH),
+                # NEW IMPLEMENTATION
                 AnsiFore.BLACK: (winterm.fore, WinColor.BLACK),
                 AnsiFore.RED: (winterm.fore, WinColor.RED),
                 AnsiFore.GREEN: (winterm.fore, WinColor.GREEN),
