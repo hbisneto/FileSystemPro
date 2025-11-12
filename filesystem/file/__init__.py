@@ -1,57 +1,89 @@
+# -*- coding: utf-8 -*-
+#
+# filesystem/file/__init__.py
+# FileSystemPro
+#
+# Created by Heitor Bisneto on 12/11/2025.
+# Copyright © 2023–2025 hbisneto. All rights reserved.
+#
+# This file is part of FileSystemPro.
+# FileSystemPro is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License. See LICENSE for more details.
+#
+
 """
 # File
 
 ---
 
 ## Overview
-The File module is a comprehensive utility toolset that forms part of the FileSystemPro library. 
-It provides a suite of functions designed to handle various file operations such as integrity checks,
-file creation, deletion, enumeration, and file splitting and reassembling.
+This module provides comprehensive file operations, including creation, reading, writing (text/binary), appending, copying/moving/renaming/deleting, integrity verification via SHA-256 checksums, timestamp management (creation/access/write in local/UTC), symbolic links, splitting/reassembling large files, and batch processing for duplicates/hashes/reports. It supports encoding options, overwrite controls, and returns metadata via `wrapper.get_object` where applicable. Cross-platform compatible with error handling for common issues like permissions and non-existence.
 
 ## Features
-- `Checksum Calculation:` Utilizes SHA-256 hashing to calculate file checksums for integrity verification.
-- `Integrity Check:` Compares checksums of two files to verify their integrity.
-- `File Creation:` Supports creating both text and binary files with specified data.
-- `File Deletion:` Safely deletes files by checking for their existence before removal.
-- `File Enumeration:` Enumerates all files in a given directory, providing detailed file information.
-- `File Existence Check:` Determines if a file exists at a given path.
-- `File Listing:` Lists all files in a specified directory.
-- `File Renaming:` Renames files within a directory after checking for their existence.
-- `File Reassembling:` Reassembles split files back into a single file.
-- `File Splitting:` Splits a file into smaller parts based on a specified chunk size.
-
-## Detailed Functionality
-The module's functions are designed to be robust and easy to use, 
-providing a high level of abstraction from the underlying file system operations.
-
-### Checksum Calculation and Integrity Check
-The `calculate_checksum` function reads a file in binary mode and calculates its SHA-256 hash, 
-returning the hexadecimal digest. The `check_integrity` function uses this to compare the checksums of 
-two files, which is essential for verifying that files have not been tampered with or corrupted.
-
-### File Creation, Deletion, and Enumeration
-File creation is handled by two functions: `create` for text files, 
-which uses codecs to handle different encodings, and `create_binary_file` for binary files. 
-The `delete` function removes a file after confirming its existence, 
-while `enumerate_files` provides a comprehensive list of all files in a directory, including their metadata.
-
-### File Existence, Listing, and Renaming
-The `exists` function checks if a file is present at a specified path. 
-The `list` function returns a list of all files in a directory. 
-The `rename` function allows for renaming a file if it exists.
-
-### File Reassembling and Splitting
-The `reassemble_file` function is used to combine parts of a 
-previously split file back into its original form. 
-Conversely, the `split_file` function divides a file into smaller parts, 
-each with a size defined by the `chunk_size` parameter.
+- **I/O Operations:** Create/append/read/write files (text/binary/lines), with encoding and buffer support.
+- **Integrity Tools:** Calculate checksums, check against references, batch verify directories, find duplicates, generate/save/load hash reports.
+- **Path & Metadata:** Get extension/filename/size (raw/formatted), enumerate files recursively, Unix mode.
+- **Manipulation:** Copy/move/rename/delete, create symbolic links, split/reassemble files into chunks.
+- **Timestamps:** Get/set creation/access/write times (local/UTC, as datetime/str; Unix approximations via utime).
+- **Batch & Reporting:** Process multiple files/directories, log results, generate integrity reports.
 
 ## Usage
-To use the functions provided by this module, 
-import the module and call the desired function with the appropriate parameters:
+To use these functions, simply import the module and call the desired function:
 
 ```python
-from filesystem import file as fsfile
+from filesystem import file
+```
+
+### Examples:
+
+- Append text to a file:
+
+```python
+file.append_text("example.txt", "Hello, World!")
+# Appends without newline; creates if missing
+```
+
+- Calculate SHA-256 checksum:
+
+```python
+checksum = file.calculate_checksum("/path/to/file.txt")
+print(f"Checksum: {checksum}")
+```
+
+- Copy multiple files with overwrite:
+
+```python
+files = ["/path/to/file1.txt", "/path/to/file2.txt"]
+file.copy(files, "/destination/dir/", overwrite=True)
+```
+
+- Get formatted file size:
+
+```python
+size = file.get_size("/path/to/file.txt", show_unit=True)
+print(size)  # e.g., "1.5 MB"
+```
+
+- Batch integrity check and report:
+
+```python
+results = file.batch_check_integrity("/path/to/directory", log_file="report.log")
+report = file.generate_integrity_report(results, "summary.txt")
+print(report)
+```
+
+- Split and reassemble a large file:
+
+```python
+file.split_file("large_file.bin", chunk_size=1024*1024)  # 1 MB chunks
+file.reassemble_file("large_file", "reassembled.bin")  # Deletes chunks after
+```
+
+- Set last write time:
+
+```python
+from datetime import datetime
+file.set_last_write_time("example.txt", datetime(2023, 1, 1))
 ```
 """
 
@@ -62,6 +94,113 @@ import shutil
 import filesystem as fs
 from filesystem import directory as dir
 from filesystem import wrapper as wra
+import datetime
+import json
+import logging
+
+def append_all_bytes(file, data):
+    """
+    # file.append_all_bytes(file, data)
+
+    ---
+
+    ### Overview
+    Appends the specified byte array to the end of the file at the given path. If the file does not exist, this method creates a new file.
+
+    ### Parameters:
+    - file (str): The path to the file.
+    - data (bytes): The byte array to append to the file.
+
+    ### Returns:
+    None
+
+    ### Raises:
+    - IOError: If an I/O error occurs.
+    - PermissionError: If permission is denied when accessing the file.
+
+    ### Examples:
+    - Append bytes to a file:
+
+    ```python
+    fsfile.append_all_bytes("example.bin", b"Hello, World!")
+    ```
+    """
+    try:
+        with open(file, 'ab') as f:
+            f.write(data)
+    except (IOError, PermissionError) as e:
+        raise IOError(f"Error appending bytes to {file}: {str(e)}")
+
+def append_all_lines(file, lines, encoding="utf-8"):
+    """
+    # file.append_all_lines(file, lines, encoding="utf-8")
+
+    ---
+
+    ### Overview
+    Appends lines to a file using the specified encoding, and then closes the file. If the file does not exist, this method creates a new file.
+
+    ### Parameters:
+    - file (str): The path to the file.
+    - lines (list): The lines to append to the file.
+    - encoding (str, optional): The encoding to use. Defaults to "utf-8".
+
+    ### Returns:
+    None
+
+    ### Raises:
+    - IOError: If an I/O error occurs.
+    - PermissionError: If permission is denied when accessing the file.
+    - UnicodeEncodeError: If the lines cannot be encoded with the specified encoding.
+
+    ### Examples:
+    - Append lines to a file:
+
+    ```python
+    fsfile.append_all_lines("example.txt", ["Line 1", "Line 2"])
+    ```
+    """
+    try:
+        with codecs.open(file, 'a', encoding=encoding) as f:
+            for line in lines:
+                f.write(f"{line}\n")
+    except (IOError, PermissionError, UnicodeEncodeError) as e:
+        raise IOError(f"Error appending lines to {file}: {str(e)}")
+
+def append_all_text(file, content, encoding="utf-8"):
+    """
+    # file.append_all_text(file, content, encoding="utf-8")
+
+    ---
+
+    ### Overview
+    Appends the specified string to the file using the specified encoding, creating the file if it does not exist.
+
+    ### Parameters:
+    - file (str): The path to the file.
+    - content (str): The string to append to the file.
+    - encoding (str, optional): The encoding to use. Defaults to "utf-8".
+
+    ### Returns:
+    None
+
+    ### Raises:
+    - IOError: If an I/O error occurs.
+    - PermissionError: If permission is denied when accessing the file.
+    - UnicodeEncodeError: If the content cannot be encoded with the specified encoding.
+
+    ### Examples:
+    - Append text to a file:
+
+    ```python
+    fsfile.append_all_text("example.txt", "Hello, World!")
+    ```
+    """
+    try:
+        with codecs.open(file, 'a', encoding=encoding) as f:
+            f.write(content)
+    except (IOError, PermissionError, UnicodeEncodeError) as e:
+        raise IOError(f"Error appending text to {file}: {str(e)}")
 
 def append_text(file, text, encoding="utf-8"):
     """
@@ -100,6 +239,115 @@ def append_text(file, text, encoding="utf-8"):
     """
     with open(file, 'a', encoding=encoding) as file:
         file.write(f'{text}')
+
+def batch_check_integrity(paths, reference_hashes=None, log_file="integrity_report.log"):
+    """
+    # file.batch_check_integrity(paths, reference_hashes=None, log_file="integrity_report.log")
+
+    ---
+
+    ### Overview
+    Performs batch integrity verification on multiple files or directories using SHA-256 checksums.
+    Supports verification against reference hashes if provided, and logs results to a specified log file.
+
+    ### Parameters:
+    - paths (str or list): A single path or list of paths to files or directories to verify.
+    - reference_hashes (dict, optional): A dictionary mapping file paths to their reference SHA-256 hashes. Defaults to None.
+    - log_file (str, optional): Path to the log file for recording verification results. Defaults to "integrity_report.log".
+
+    ### Returns:
+    dict: A dictionary containing verification results with the following keys:    
+    - timestamp: ISO format timestamp of when the verification was performed
+    - total_files: Total number of files checked
+    - successful: Number of files with verified integrity
+    - failed: Number of files that failed verification or encountered errors
+    - errors: List of error messages
+    - file_details: Dictionary mapping file paths to their verification details
+
+    ### Raises:
+    - FileNotFoundError: If a specified file or directory does not exist.
+    - PermissionError: If permission is denied when accessing a file or directory.
+    - IOError: If there is an error reading a file during checksum calculation.
+
+    ### Examples:
+    - Verify integrity of files in a directory without reference hashes:
+
+    ```python
+    results = batch_check_integrity("/path/to/directory")
+    ```
+
+    - Verify integrity of multiple files against reference hashes:
+
+    ```python
+    ref_hashes = {"/path/to/file1.txt": "hash1", "/path/to/file2.txt": "hash2"}
+    results = batch_check_integrity(["/path/to/file1.txt", "/path/to/file2.txt"], ref_hashes)
+    ```
+    """
+
+    logging.basicConfig(
+        filename=log_file,
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s'
+    )
+
+    results = {
+        "timestamp": datetime.datetime.now().isoformat(),
+        "total_files": 0,
+        "successful": 0,
+        "failed": 0,
+        "errors": [],
+        "file_details": {}
+    }
+
+    if isinstance(paths, str):
+        paths = [paths]
+
+    for path in paths:
+        try:
+            if dir.exists(path):
+                files = get_files(path, fullpath=True)
+            else:
+                files = [path] if exists(path) else []
+                if not files:
+                    raise FileNotFoundError(f"Path '{path}' does not exist.")
+
+            for file_path in files:
+                results["total_files"] += 1
+                try:
+                    current_hash = calculate_checksum(file_path)
+                    file_info = {
+                        "size": get_size(file_path),
+                        "last_modified": datetime.datetime.fromtimestamp(os.path.getmtime(file_path)).isoformat(),
+                        "current_hash": current_hash,
+                        "status": "OK"
+                    }
+
+                    if reference_hashes and file_path in reference_hashes:
+                        file_info["reference_hash"] = reference_hashes[file_path]
+                        file_info["status"] = "OK" if current_hash == reference_hashes[file_path] else "CORRUPTED"
+
+                    results["file_details"][file_path] = file_info
+                    results["successful" if file_info["status"] == "OK" else "failed"] += 1
+                    logging.info(f"Verified {file_path}: {file_info['status']}")
+
+                except (IOError, PermissionError) as e:
+                    error_msg = f"Error processing {file_path}: {str(e)}"
+                    results["errors"].append(error_msg)
+                    results["failed"] += 1
+                    logging.error(error_msg)
+
+        except FileNotFoundError as e:
+            error_msg = str(e)
+            results["errors"].append(error_msg)
+            results["failed"] += 1
+            logging.error(error_msg)
+        except PermissionError as e:
+            error_msg = f"Permission denied for {path}: {str(e)}"
+            results["errors"].append(error_msg)
+            results["failed"] += 1
+            logging.error(error_msg)
+
+    return results
 
 def calculate_checksum(file):
     """
@@ -335,6 +583,42 @@ def create_binary_file(filename, data, buffer_size=4096):
         with open(filename, 'wb', buffering=buffer_size) as binary_file:
             binary_file.write(data)
 
+def create_symbolic_link(file_target, file_link):
+    """
+    # file.create_symbolic_link(file_target, file_link)
+
+    ---
+
+    ### Overview
+    Creates a file symbolic link identified by file_link that points to file_target.
+
+    ### Parameters:
+    - file_target (str): The path to the target file or directory.
+    - file_link (str): The path to the symbolic link.
+
+    ### Returns:
+    A dictionary with information about the created symbolic link.
+
+    ### Raises:
+    - FileNotFoundError: If the target path does not exist.
+    - OSError: If an error occurs while creating the symbolic link.
+    - PermissionError: If permission is denied.
+
+    ### Examples:
+    - Create a symbolic link:
+
+    ```python
+    fsfile.create_symbolic_link("target.txt", "link.txt")
+    ```
+    """
+    try:
+        if not os.path.exists(file_target):
+            raise FileNotFoundError(f"Target path '{file_target}' does not exist.")
+        os.symlink(file_target, file_link)
+        return wra.get_object(file_link)
+    except (OSError, PermissionError) as e:
+        raise OSError(f"Error creating symbolic link {file_link} to {file_target}: {str(e)}")
+
 def delete(file):
     """
     # file.delete(file)
@@ -475,6 +759,331 @@ def find_duplicates(path):
             else:
                 checksums[checksum] = file_path
     return original_files, duplicate_files
+
+def generate_integrity_report(results, output_file=None):
+    """
+    # file.generate_integrity_report(results, output_file=None)
+
+    ---
+
+    ### Overview
+    Generates a detailed report of batch integrity verification results, optionally saving it to a file.
+
+    ### Parameters:
+    - results (dict): The results dictionary returned by `batch_check_integrity`.
+    - output_file (str, optional): Path to save the report. If None, the report is only returned as a string. Defaults to None.
+
+    ### Returns:
+    str: The formatted report as a string.
+
+    ### Raises:
+    - PermissionError: If permission is denied when writing to the output file.
+    - IOError: If there is an error writing to the output file.
+
+    ### Examples:
+    - Generate a report and print it:
+
+    ```python
+    results = batch_check_integrity("/path/to/directory")
+    report = generate_integrity_report(results)
+    print(report)
+    ```
+
+    - Generate a report and save it to a file:
+
+    ```python
+    results = batch_check_integrity("/path/to/directory")
+    generate_integrity_report(results, "integrity_report.txt")
+    ```
+    """
+    report = [
+        "=" * 50,
+        f"Integrity Report - {results['timestamp']}",
+        "=" * 50,
+        f"Total files verified: {results['total_files']}",
+        f"Files with integrity: {results['successful']}",
+        f"Files with issues: {results['failed']}",
+        "\nFile Details:"
+    ]
+
+    for file_path, details in results["file_details"].items():
+        report.append(f"\nFile: {file_path}")
+        report.append(f"Size: {details['size']}")
+        report.append(f"Last Modified: {details['last_modified']}")
+        report.append(f"SHA-256 Hash: {details['current_hash']}")
+        if "reference_hash" in details:
+            report.append(f"Reference Hash: {details['reference_hash']}")
+        report.append(f"Status: {details['status']}")
+
+    if results["errors"]:
+        report.append("\nErrors Encountered:")
+        for error in results["errors"]:
+            report.append(f"- {error}")
+
+    report_text = "\n".join(report)
+
+    if output_file:
+        try:
+            with open(output_file, "w", encoding="utf-8") as f:
+                f.write(report_text)
+        except (IOError, PermissionError) as e:
+            raise IOError(f"Error writing report to {output_file}: {str(e)}")
+
+    return report_text
+
+def get_creation_time(file):
+    """
+    # file.get_creation_time(file)
+
+    ---
+
+    ### Overview
+    Returns the creation date and time of the specified file or directory.
+
+    ### Parameters:
+    - file (str): The path to the file or directory.
+
+    ### Returns:
+    datetime: The creation date and time of the file or directory.
+
+    ### Raises:
+    - FileNotFoundError: If the file does not exist.
+    - PermissionError: If permission is denied when accessing the file.
+
+    ### Examples:
+    - Get creation time of a file:
+
+    ```python
+    creation_time = fsfile.get_creation_time("example.txt")
+    print(creation_time)
+    ```
+    """
+    try:
+        if not exists(file):
+            raise FileNotFoundError(f"File '{file}' does not exist.")
+        stat_info = os.stat(file)
+        return datetime.datetime.fromtimestamp(stat_info.st_ctime)
+    except (IOError, PermissionError) as e:
+        raise IOError(f"Error getting creation time for {file}: {str(e)}")
+
+def get_creation_time_utc(file):
+    """
+    # file.get_creation_time_utc(file)
+
+    ---
+
+    ### Overview
+    Returns the creation date and time, in Coordinated Universal Time (UTC), of the specified file or directory.
+
+    ### Parameters:
+    - file (str): The path to the file or directory.
+
+    ### Returns:
+    datetime: The creation date and time in UTC.
+
+    ### Raises:
+    - FileNotFoundError: If the file does not exist.
+    - PermissionError: If permission is denied when accessing the file.
+
+    ### Examples:
+    - Get UTC creation time of a file:
+
+    ```python
+    creation_time_utc = fsfile.get_creation_time_utc("example.txt")
+    print(creation_time_utc)
+    ```
+    """
+    try:
+        if not exists(file):
+            raise FileNotFoundError(f"File '{file}' does not exist.")
+        stat_info = os.stat(file)
+        return datetime.datetime.utcfromtimestamp(stat_info.st_ctime)
+    except (IOError, PermissionError) as e:
+        raise IOError(f"Error getting UTC creation time for {file}: {str(e)}")
+
+def get_last_access_time(file):
+    """
+    # file.get_last_access_time(file)
+
+    ---
+
+    ### Overview
+    Returns the date and time the specified file or directory was last accessed.
+
+    ### Parameters:
+    - file (str): The path to the file or directory.
+
+    ### Returns:
+    datetime: The last access date and time of the file or directory.
+
+    ### Raises:
+    - FileNotFoundError: If the file does not exist.
+    - PermissionError: If permission is denied when accessing the file.
+
+    ### Examples:
+    - Get last access time of a file:
+
+    ```python
+    access_time = fsfile.get_last_access_time("example.txt")
+    print(access_time)
+    ```
+    """
+    try:
+        if not exists(file):
+            raise FileNotFoundError(f"File '{file}' does not exist.")
+        stat_info = os.stat(file)
+        return datetime.datetime.fromtimestamp(stat_info.st_atime)
+    except (IOError, PermissionError) as e:
+        raise IOError(f"Error getting last access time for {file}: {str(e)}")
+
+def get_last_access_time_utc(file):
+    """
+    # file.get_last_access_time_utc(file)
+
+    ---
+
+    ### Overview
+    Returns the last access date and time, in Coordinated Universal Time (UTC), of the specified file or directory.
+
+    ### Parameters:
+    - file (str): The path to the file or directory.
+
+    ### Returns:
+    datetime: The last access date and time in UTC.
+
+    ### Raises:
+    - FileNotFoundError: If the file does not exist.
+    - PermissionError: If permission is denied when accessing the file.
+
+    ### Examples:
+    - Get UTC last access time of a file:
+
+    ```python
+    access_time_utc = fsfile.get_last_access_time_utc("example.txt")
+    print(access_time_utc)
+    ```
+    """
+    try:
+        if not exists(file):
+            raise FileNotFoundError(f"File '{file}' does not exist.")
+        stat_info = os.stat(file)
+        return datetime.datetime.utcfromtimestamp(stat_info.st_atime)
+    except (IOError, PermissionError) as e:
+        raise IOError(f"Error getting UTC last access time for {file}: {str(e)}")
+
+def get_last_write_time(file):
+    """
+    # file.get_last_write_time(file)
+
+    ---
+
+    ### Overview
+    Returns the date and time the specified file or directory was last written to.
+
+    ### Parameters:
+    - file (str): The path to the file or directory.
+
+    ### Returns:
+    datetime: The last write date and time of the file or directory.
+
+    ### Raises:
+    - FileNotFoundError: If the file does not exist.
+    - PermissionError: If permission is denied when accessing the file.
+
+    ### Examples:
+    - Get last write time of a file:
+
+    ```python
+    write_time = fsfile.get_last_write_time("example.txt")
+    print(write_time)
+    ```
+    """
+    try:
+        if not exists(file):
+            raise FileNotFoundError(f"File '{file}' does not exist.")
+        stat_info = os.stat(file)
+        return datetime.datetime.fromtimestamp(stat_info.st_mtime)
+    except (IOError, PermissionError) as e:
+        raise IOError(f"Error getting last write time for {file}: {str(e)}")
+
+def get_last_write_time_utc(file):
+    """
+    # file.get_last_write_time_utc(file)
+
+    ---
+
+    ### Overview
+    Returns the last write date and time, in Coordinated Universal Time (UTC), of the specified file or directory.
+
+    ### Parameters:
+    - file (str): The path to the file or directory.
+
+    ### Returns:
+    datetime: The last write date and time in UTC.
+
+    ### Raises:
+    - FileNotFoundError: If the file does not exist.
+    - PermissionError: If permission is denied when accessing the file.
+
+    ### Examples:
+    - Get UTC last write time of a file:
+
+    ```python
+    write_time_utc = fsfile.get_last_write_time_utc("example.txt")
+    print(write_time_utc)
+    ```
+    """
+    try:
+        if not exists(file):
+            raise FileNotFoundError(f"File '{file}' does not exist.")
+        stat_info = os.stat(file)
+        return datetime.datetime.utcfromtimestamp(stat_info.st_mtime)
+    except (IOError, PermissionError) as e:
+        raise IOError(f"Error getting UTC last write time for {file}: {str(e)}")
+
+def get_unix_file_mode(file, octal=False):
+    """
+    # file.get_unix_file_mode(file)
+
+    ---
+
+    ### Overview
+    Gets the Unix file mode of the file on the path.
+
+    ### Parameters:
+    - file (str): The path to the file.
+    - octal (bool, optional): If True, returns the mode in octal format. Defaults to False.
+
+    ### Returns:
+    int: The Unix file mode (permissions) of the file.
+
+    ### Raises:
+    - FileNotFoundError: If the file does not exist.
+    - PermissionError: If permission is denied when accessing the file.
+
+    ### Examples:
+    - Get Unix file mode of a file:
+
+    ```python
+    mode = fsfile.get_unix_file_mode("example.txt")
+    print(mode)
+    ```
+
+    - Get Unix file mode in octal format:
+    ```python
+    mode_octal = fsfile.get_unix_file_mode("example.txt", octal=True)
+    print(mode_octal)
+    ```
+    """
+    try:
+        if not exists(file):
+            raise FileNotFoundError(f"File '{file}' does not exist.")
+        stat_info = os.stat(file)
+        if octal:
+            return oct(stat_info.st_mode)
+        return stat_info.st_mode
+    except (IOError, PermissionError) as e:
+        raise IOError(f"Error getting Unix file mode for {file}: {str(e)}")
 
 def get_extension(file, lower=True):
     """
@@ -623,6 +1232,43 @@ def get_size(file, show_unit=False):
             return f"{size:3.1f} {unit}"
         size /= 1024.0
 
+def load_reference_hashes(input_file):
+    """
+    # file.load_reference_hashes(input_file)
+
+    ---
+
+    ### Overview
+    Loads SHA-256 checksums from a JSON file for use in integrity verification.
+
+    ### Parameters:
+    - input_file (str): Path to the JSON file containing the reference hashes.
+
+    ### Returns:
+    dict: A dictionary mapping file paths to their reference SHA-256 hashes.
+
+    ### Raises:
+    - FileNotFoundError: If the input file does not exist.
+    - PermissionError: If permission is denied when reading the input file.
+    - IOError: If there is an error reading the input file or parsing the JSON.
+
+    ### Examples:
+    - Load reference hashes from a JSON file:
+
+    ```python
+    ref_hashes = load_reference_hashes("hashes.json")
+    ```
+    """
+    try:
+        with open(input_file, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Reference hash file '{input_file}' does not exist.")
+    except (IOError, PermissionError) as e:
+        raise IOError(f"Error reading reference hashes from {input_file}: {str(e)}")
+    except json.JSONDecodeError as e:
+        raise IOError(f"Invalid JSON format in {input_file}: {str(e)}")
+
 def move(source, destination, new_filename=None, replace_existing=False):
     """
     # file.move(source, destination, new_filename=None, replace_existing=False)
@@ -759,6 +1405,332 @@ def reassemble_file(large_file, new_file):
             
         for part in parts:
             delete(part)
+
+def save_reference_hashes(paths, output_file):
+    """
+    # file.save_reference_hashes(paths, output_file)
+
+    ---
+
+    ### Overview
+    Calculates SHA-256 checksums for specified files or directories and saves them to a JSON file.
+    The resulting file can be used as a reference for integrity verification.
+
+    ### Parameters:
+    - paths (str or list): A single path or list of paths to files or directories to calculate hashes for.
+    - output_file (str): Path to the JSON file where the hashes will be saved.
+
+    ### Returns:
+    None
+
+    ### Raises:
+    - FileNotFoundError: If a specified file or directory does not exist.
+    - PermissionError: If permission is denied when accessing a file or directory or writing to the output file.
+    - IOError: If there is an error writing to the output file.
+
+    ### Examples:
+    - Save hashes for a directory:
+
+    ```python
+    save_reference_hashes("/path/to/directory", "hashes.json")
+    ```
+
+    - Save hashes for multiple files:
+
+    ```python
+    save_reference_hashes(["/path/to/file1.txt", "/path/to/file2.txt"], "hashes.json")
+    ```
+    """
+    hashes = {}
+    
+    if isinstance(paths, str):
+        paths = [paths]
+
+    for path in paths:
+        try:
+            if dir.exists(path):
+                files = get_files(path, fullpath=True)
+            else:
+                files = [path] if exists(path) else []
+                if not files:
+                    raise FileNotFoundError(f"Path '{path}' does not exist.")
+
+            for file_path in files:
+                try:
+                    hash_value = calculate_checksum(file_path)
+                    hashes[file_path] = hash_value
+                except (IOError, PermissionError) as e:
+                    logging.error(f"Error calculating hash for {file_path}: {str(e)}")
+
+        except FileNotFoundError as e:
+            logging.error(str(e))
+        except PermissionError as e:
+            logging.error(f"Permission denied for {path}: {str(e)}")
+
+    try:
+        with open(output_file, "w", encoding="utf-8") as f:
+            json.dump(hashes, f, indent=2)
+    except (IOError, PermissionError) as e:
+        raise IOError(f"Error writing hashes to {output_file}: {str(e)}")
+
+def set_creation_time(file, creation_time):
+    """
+    # file.set_creation_time(file, creation_time)
+
+    ---
+
+    ### Overview
+    Sets the modification time of the specified file as an approximation of the creation time, since Python's standard library does not directly support setting creation time on Unix systems. The creation time can be provided as a datetime object or a string in the format "YYYY-MM-DD HH:MM:SS".
+
+    ### Parameters:
+    - file (str): The path to the file.
+    - creation_time (datetime or str): The creation time to set, either as a datetime object or a string in "YYYY-MM-DD HH:MM:SS" format.
+
+    ### Returns:
+    None
+
+    ### Raises:
+    - FileNotFoundError: If the file does not exist.
+    - PermissionError: If permission is denied when accessing the file.
+    - OSError: If an error occurs while setting the modification time.
+    - ValueError: If the creation time string is not in the correct format.
+
+    ### Examples:
+    - Set the modification time of a file using a datetime object:
+
+    ```python
+    from datetime import datetime
+    fsfile.set_creation_time("example.txt", datetime(2023, 1, 1, 12, 0))
+    ```
+
+    - Set the modification time using a string:
+
+    ```python
+    fsfile.set_creation_time("example.txt", "2023-01-01 12:00:00")
+    ```
+    """
+    if not os.path.exists(file):
+        raise FileNotFoundError(f"The file '{file}' does not exist.")
+    
+    # Note: Setting creation time is not directly supported in Python's standard library.
+    # This is a limitation, as os.utime only sets access and modification times.
+    # For Unix, we can approximate by setting modification time as a fallback.
+    if not type(creation_time) == datetime.datetime:
+        creation_time = datetime.datetime.strptime(creation_time, "%Y-%m-%d %H:%M:%S")
+    os.utime(file, (os.path.getatime(file), creation_time.timestamp()))
+
+def set_creation_time_utc(file, creation_time_utc):
+    """
+    # file.set_creation_time_utc(file, creation_time_utc)
+
+    ---
+
+    ### Overview
+    Sets the modification time of the specified file in Coordinated Universal Time (UTC) as an approximation of the creation time, since Python's standard library does not directly support setting creation time on Unix systems. The time is converted to local time before setting. The creation time can be provided as a datetime object or a string in the format "YYYY-MM-DD HH:MM:SS".
+
+    ### Parameters:
+    - file (str): The path to the file.
+    - creation_time_utc (datetime or str): The creation time in UTC, either as a datetime object or a string in "YYYY-MM-DD HH:MM:SS" format.
+
+    ### Returns:
+    None
+
+    ### Raises:
+    - FileNotFoundError: If the file does not exist.
+    - PermissionError: If permission is denied when accessing the file.
+    - OSError: If an error occurs while setting the modification time.
+    - ValueError: If the creation time string is not in the correct format.
+
+    ### Examples:
+    - Set the UTC modification time of a file using a datetime object:
+
+    ```python
+    from datetime import datetime
+    fsfile.set_creation_time_utc("example.txt", datetime(2023, 1, 1, 12, 0))
+    ```
+
+    - Set the UTC modification time using a string:
+
+    ```python
+    fsfile.set_creation_time_utc("example.txt", "2023-01-01 12:00:00")
+    ```
+    """
+    if not os.path.exists(file):
+        raise FileNotFoundError(f"The file '{file}' does not exist.")
+    if not type(creation_time_utc) == datetime.datetime:
+        creation_time_utc = datetime.datetime.strptime(creation_time_utc, "%Y-%m-%d %H:%M:%S")
+    local_time = creation_time_utc.timestamp() - datetime.datetime.now().astimezone().utcoffset().total_seconds()
+    os.utime(file, (os.path.getatime(file), local_time))
+
+def set_last_access_time(file, last_access_time):
+    """
+    # file.set_last_access_time(file, last_access_time)
+
+    ---
+
+    ### Overview
+    Sets the last access time of the specified file. The access time can be provided as a datetime object or a string in the format "YYYY-MM-DD HH:MM:SS". The file's modification time remains unchanged.
+
+    ### Parameters:
+    - file (str): The path to the file.
+    - last_access_time (datetime or str): The last access time to set, either as a datetime object or a string in "YYYY-MM-DD HH:MM:SS" format.
+
+    ### Returns:
+    None
+
+    ### Raises:
+    - FileNotFoundError: If the file does not exist.
+    - PermissionError: If permission is denied when accessing the file.
+    - OSError: If an error occurs while setting the access time.
+    - ValueError: If the access time string is not in the correct format.
+
+    ### Examples:
+    - Set the last access time of a file using a datetime object:
+
+    ```python
+    from datetime import datetime
+    fsfile.set_last_access_time("example.txt", datetime(2023, 1, 1, 12, 0))
+    ```
+
+    - Set the last access time using a string:
+
+    ```python
+    fsfile.set_last_access_time("example.txt", "2023-01-01 12:00:00")
+    ```
+    """
+    if not os.path.exists(file):
+        raise FileNotFoundError(f"The file '{file}' does not exist.")
+    if not type(last_access_time) == datetime.datetime:
+        last_access_time = datetime.datetime.strptime(last_access_time, "%Y-%m-%d %H:%M:%S")
+    os.utime(file, (last_access_time.timestamp(), os.path.getmtime(file)))
+
+def set_last_access_time_utc(file, last_access_time_utc):
+    """
+    # file.set_last_access_time_utc(file, last_access_time_utc)
+
+    ---
+
+    ### Overview
+    Sets the last access time of the specified file in Coordinated Universal Time (UTC). The time is converted to local time before setting. The access time can be provided as a datetime object or a string in the format "YYYY-MM-DD HH:MM:SS". The file's modification time remains unchanged.
+
+    ### Parameters:
+    - file (str): The path to the file.
+    - last_access_time_utc (datetime or str): The last access time in UTC, either as a datetime object or a string in "YYYY-MM-DD HH:MM:SS" format.
+
+    ### Returns:
+    None
+
+    ### Raises:
+    - FileNotFoundError: If the file does not exist.
+    - PermissionError: If permission is denied when accessing the file.
+    - OSError: If an error occurs while setting the access time.
+    - ValueError: If the access time string is not in the correct format.
+
+    ### Examples:
+    - Set the UTC last access time of a file using a datetime object:
+
+    ```python
+    from datetime import datetime
+    fsfile.set_last_access_time_utc("example.txt", datetime(2023, 1, 1, 12, 0))
+    ```
+
+    - Set the UTC last access time using a string:
+
+    ```python
+    fsfile.set_last_access_time_utc("example.txt", "2023-01-01 12:00:00")
+    ```
+    """
+    if not os.path.exists(file):
+        raise FileNotFoundError(f"The file '{file}' does not exist.")
+    if not type(last_access_time_utc) == datetime.datetime:
+        last_access_time_utc = datetime.datetime.strptime(last_access_time_utc, "%Y-%m-%d %H:%M:%S")
+    local_time = last_access_time_utc.timestamp() - datetime.datetime.now().astimezone().utcoffset().total_seconds()
+    os.utime(file, (local_time, os.path.getmtime(file)))
+
+def set_last_write_time(file, last_write_time):
+    """
+    # file.set_last_write_time(file, last_write_time)
+
+    ---
+
+    ### Overview
+    Sets the last write (modification) time of the specified file. The write time can be provided as a datetime object or a string in the format "YYYY-MM-DD HH:MM:SS". The file's access time remains unchanged.
+
+    ### Parameters:
+    - file (str): The path to the file.
+    - last_write_time (datetime or str): The last write time to set, either as a datetime object or a string in "YYYY-MM-DD HH:MM:SS" format.
+
+    ### Returns:
+    None
+
+    ### Raises:
+    - FileNotFoundError: If the file does not exist.
+    - PermissionError: If permission is denied when accessing the file.
+    - OSError: If an error occurs while setting the write time.
+    - ValueError: If the write time string is not in the correct format.
+
+    ### Examples:
+    - Set the last write time of a file using a datetime object:
+
+    ```python
+    from datetime import datetime
+    fsfile.set_last_write_time("example.txt", datetime(2023, 1, 1, 12, 0))
+    ```
+
+    - Set the last write time using a string:
+
+    ```python
+    fsfile.set_last_write_time("example.txt", "2023-01-01 12:00:00")
+    ```
+    """
+    if not os.path.exists(file):
+        raise FileNotFoundError(f"The file '{file}' does not exist.")
+    if not type(last_write_time) == datetime.datetime:
+        last_write_time = datetime.datetime.strptime(last_write_time, "%Y-%m-%d %H:%M:%S")
+    os.utime(file, (os.path.getatime(file), last_write_time.timestamp()))
+
+def set_last_write_time_utc(file, last_write_time_utc):
+    """
+    # file.set_last_write_time_utc(file, last_write_time_utc)
+
+    ---
+
+    ### Overview
+    Sets the last write (modification) time of the specified file in Coordinated Universal Time (UTC). The time is converted to local time before setting. The write time can be provided as a datetime object or a string in the format "YYYY-MM-DD HH:MM:SS". The file's access time remains unchanged.
+
+    ### Parameters:
+    - file (str): The path to the file.
+    - last_write_time_utc (datetime or str): The last write time in UTC, either as a datetime object or a string in "YYYY-MM-DD HH:MM:SS" format.
+
+    ### Returns:
+    None
+
+    ### Raises:
+    - FileNotFoundError: If the file does not exist.
+    - PermissionError: If permission is denied when accessing the file.
+    - OSError: If an error occurs while setting the write time.
+    - ValueError: If the write time string is not in the correct format.
+
+    ### Examples:
+    - Set the UTC last write time of a file using a datetime object:
+
+    ```python
+    from datetime import datetime
+    fsfile.set_last_write_time_utc("example.txt", datetime(2023, 1, 1, 12, 0))
+    ```
+
+    - Set the UTC last write time using a string:
+
+    ```python
+    fsfile.set_last_write_time_utc("example.txt", "2023-01-01 12:00:00")
+    ```
+    """
+    if not os.path.exists(file):
+        raise FileNotFoundError(f"The file '{file}' does not exist.")
+    if not type(last_write_time_utc) == datetime.datetime:
+        last_write_time_utc = datetime.datetime.strptime(last_write_time_utc, "%Y-%m-%d %H:%M:%S")
+    local_time = last_write_time_utc.timestamp() - datetime.datetime.now().astimezone().utcoffset().total_seconds()
+    os.utime(file, (os.path.getatime(file), local_time))
 
 def split_file(file, chunk_size = 1048576):
     """

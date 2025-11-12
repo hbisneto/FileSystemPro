@@ -1,42 +1,15 @@
-"""
-# Console
-
----
-
-## Overview
-The Console module is a part of the Colorama library that provides terminal text coloring capabilities.
-It is designed to enhance the visual presentation of text output in terminal applications,
-allowing developers to add color and style to their console logs and messages.
-
-## Features
-- `Cross-Platform:` Works on Windows, Mac, and Linux terminals.
-- `Easy to Use:` Simple API for adding color and style to text.
-- `Automatic Reset:` Automatically resets text style after each print statement.
-
-## How It Works
-The `Console` class within the module is used to wrap text with ANSI escape sequences that terminals understand to display color. 
-It provides methods like `foreground`, `background`, and `style` to specify text color, background color, and styles respectively.
-
-### Text Styling
-With `Console`, you can easily change the color and style of text. For example:
-- `foreground:` Changes the color of the text.
-- `background:` Changes the background color of the text.
-- `style:` Changes the style of the text (e.g., bold, underline).
-
-### Results
-Using Console, styled text can be printed to the terminal, enhancing readability and user experience. 
-The module handles the complexities of cross-platform text styling, providing a consistent interface across different operating systems.
-
-## Usage
-To use the `Console` module, simply import the desired classes and wrap your text:
-
-```python
-from filesystem import console as fsconsole
-
-print(fsconsole.foreground.RED, "This is a red message")
-print(fsconsole.foreground.BLUE, "This is a blue message")
-```
-"""
+# -*- coding: utf-8 -*-
+#
+# filesystem/console/__init__.py
+# FileSystemPro
+#
+# Created by Heitor Bisneto on 12/11/2025.
+# Copyright © 2023–2025 hbisneto. All rights reserved.
+#
+# This file is part of FileSystemPro.
+# FileSystemPro is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License. See LICENSE for more details.
+#
 
 # Copyright Jonathan Hartley 2013. BSD 3-Clause license, see LICENSE file.
 from .initialise import init, deinit, reinit, console_text, just_fix_windows_console
@@ -203,3 +176,57 @@ class Console:
         return output
 
 console = Console()
+"""
+# Console
+
+---
+
+## Overview
+This module provides a simple, chainable API for applying ANSI color codes, backgrounds, and styles to console text output, inspired by Colorama. It supports cross-platform compatibility (including Windows via AnsiToWin32 wrapping) and ensures styles reset after application to avoid persistent formatting. The `Console` class can be chained for fluid styling, and a global `console` instance is provided for immediate use. Version: 3.0.0.0.
+
+## Features
+- **Color Foregrounds:** Set text colors (black, blue, cyan, green, magenta, red, yellow, white) with light variants (light_*).
+- **Background Colors:** Apply colored backgrounds (e.g., red_bg, light_blue_bg) to text.
+- **Text Styles:** Add effects like bright, dim, underline, strikethrough, with reset options (reset, reset_underline).
+- **Chaining Support:** Method chaining for combining multiple styles (e.g., console.red().bold().underline()).
+- **Automatic Reset:** Styles are applied and reset automatically when invoking the instance as a callable.
+- **Global Instance:** Pre-instantiated `console` object for quick use without class instantiation.
+
+## Usage
+To use this module, import it and apply styles via the `Console` class or the global `console` instance:
+
+```python
+from filesystem import console
+```
+
+### Examples:
+
+- Basic colored text output:
+
+```python
+colored_text = console.red()("This text is red!")
+print(colored_text)  # Outputs red text, then resets
+```
+
+- Chained styles with background and effects:
+
+```python
+styled_text = console.blue().bright().underline().yellow_bg()("Bright blue underlined text on yellow background!")
+print(styled_text)  # Applies all styles and resets
+```
+
+- Using light colors and partial resets:
+
+```python
+text = console.light_green()("Light green text").reset_underline()(" without underline")
+print(text)  # Light green, then plain text
+```
+
+- Custom instance for persistent state (though resets are automatic):
+
+```python
+my_console = console.Console()
+output = my_console.magenta().dim()("Dim magenta text")
+print(output)
+```
+"""

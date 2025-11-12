@@ -1,64 +1,104 @@
+# -*- coding: utf-8 -*-
+#
+# filesystem/device/disks/__init__.py
+# FileSystemPro
+#
+# Created by Heitor Bisneto on 12/11/2025.
+# Copyright © 2023–2025 hbisneto. All rights reserved.
+#
+# This file is part of FileSystemPro.
+# FileSystemPro is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License. See LICENSE for more details.
+#
+
 """
 # Disks
+##### Optional dependency: psutil (install via `pip install psutil` to use this module).
 
 ---
 
 ## Overview
+This module provides functions to retrieve disk-related information, including mounted partitions, storage usage metrics, I/O statistics, boot time, and boot drive details. It leverages the `psutil` library for cross-platform disk monitoring and platform-specific commands for boot drive naming.
 
-The Disks module provides a comprehensive set of functionalities for managing and retrieving various disk-related information and metrics. This module is divided into two main parts: Disk Information and Disk Usage. It leverages the `psutil` library to gather details efficiently and offers filtering capabilities to narrow down the information based on specific criteria.
+## Features
+- **Disk Partitions:** Retrieve all mounted partitions and filter them by device, filesystem type, mount point, or options.
+- **Storage Metrics:** Get total, free, used space, and usage percentages for specific mount points.
+- **Comprehensive Disk Info:** Aggregate partition details with storage usage across all disks.
+- **Disk I/O Counters:** Monitor read/write operations, bytes transferred, and time spent on I/O for each disk.
+- **System Boot Details:** Fetch boot time in human-readable format and the name of the boot drive.
+- **Filesystem Detection:** Identify the filesystem type of the current boot disk.
 
-### Disk Information
+## Usage
+To use these functions, simply import the module and call the desired function:
 
-The Disk Information part of the module provides functionalities for retrieving various disk-related information, such as disk partitions, boot drive names, and filesystem types. It offers filtering capabilities to narrow down the information based on specific criteria.
+```python
+from filesystem import device
+disks = device.disks
+```
 
-#### Functions:
+### Examples:
 
-1. **current_disk_filesystem_name**
-   - **Returns:** str - The filesystem type of the current disk.
+- Get all disk partitions:
 
-2. **boot_time**
-   - **Returns:** str - The boot time in the format `day/month/year hour:minute:second`.
+```python
+partitions = disks.get_disk_partitions()
+print(partitions)
+```
 
-3. **get_disk_partitions**
-   - **Returns:** list - A list of dictionaries, each containing the attributes of a mounted disk partition.
+- Get comprehensive disk information:
 
-4. **get_boot_drive_name**
-   - **Returns:** str - The name of the boot drive on macOS. If the function is called on a non-macOS platform, it returns "NOT IMPLEMENTED".
+```python
+disk_info = disks.disk_info()
+print(disk_info)
+```
 
-5. **get_disk_partition_filteredby_device**
-   - **Returns:** list - A list of dictionaries, each containing the attributes of a disk partition that matches the specified device filter.
+- Get boot time:
 
-6. **get_disk_partition_filteredby_fstype**
-   - **Returns:** list - A list of dictionaries, each containing the attributes of a disk partition that matches the specified filesystem type filter.
+```python
+boot_time_str = disks.boot_time()
+print(f"Boot Time: {boot_time_str}")
+```
 
-7. **get_disk_partition_filteredby_mountpoint**
-   - **Returns:** list - A list of dictionaries, each containing the attributes of a disk partition that matches the specified mount point filter.
+- Get disk I/O counters:
 
-8. **get_disk_partition_filteredby_opts**
-   - **Returns:** list - A list of dictionaries, each containing the attributes of a disk partition that matches the specified options filter.
+```python
+io_counters = disks.disk_io_counters()
+print(io_counters)
+```
 
-### Disk Usage
+- Filter partitions by filesystem type:
 
-The Disk Usage part of the module provides functionalities for retrieving various disk usage metrics, such as total, free, and used storage, as well as the percentage of free and used storage. It also includes functions for retrieving comprehensive information about the system's disk partitions and disk I/O counters.
+```python
+ext4_partitions = disks.get_disk_partition_filteredby_fstype('ext4')
+print(ext4_partitions)
+```
 
-#### Functions:
+- Get storage metrics for a mount point:
 
-1. **storage_metrics**
-   - **Returns:** dict - A dictionary containing storage metrics for a specific mount point.
-
-2. **disk_info**
-   - **Returns:** dict - A dictionary where each key is an index and each value is a tuple containing the attributes of a disk partition.
-
-3. **disk_io_counters**
-   - **Returns:** dict - A dictionary where each key is a disk name and each value is an object containing disk I/O statistics.
-
-The Disks module is designed to provide essential disk-related information and usage metrics for system monitoring and management tasks. By utilizing the `psutil` library, it ensures accurate and efficient retrieval of disk metrics and attributes.
+```python
+metrics = disks.storage_metrics('/')
+print(f"Total: {metrics[0]} bytes, Used: {metrics[2]} bytes ({metrics[4]}%)")
+```
 """
 
-import psutil
 from datetime import datetime
 import subprocess
 from sys import platform as PLATFORM
+
+__PSUTIL_AVAILABLE__ = False
+try:
+    import psutil as __psutil__
+    __PSUTIL_AVAILABLE__ = True
+except ImportError:
+    psutil = None
+
+def __require_psutil__():
+    """Internal helper function to check and raise error if psutil is not available."""
+    if not __PSUTIL_AVAILABLE__:
+        raise ImportError(
+            "The module Disks requires the 'psutil' library. "
+            "Please install it via: pip install psutil"
+        )
 
 def current_disk_filesystem_name():
     """
@@ -87,7 +127,8 @@ def current_disk_filesystem_name():
     print(filesystem_type)
     ```
     """
-    dskpart = psutil.disk_partitions()
+    __require_psutil__()
+    dskpart = __psutil__.disk_partitions()
     fstypes = [part.fstype for part in dskpart if part.mountpoint in ['C:\\', '/']]
     
     return fstypes[0]
@@ -119,7 +160,8 @@ def boot_time():
     print(boot_time_str)
     ```
     """
-    boot_time_timestamp = psutil.boot_time()
+    __require_psutil__()
+    boot_time_timestamp = __psutil__.boot_time()
     bt = datetime.fromtimestamp(boot_time_timestamp)
     return f'{bt.day}/{bt.month}/{bt.year} {bt.hour}:{bt.minute}:{bt.second}'
 
@@ -153,7 +195,8 @@ def get_disk_partitions():
     print(partitions)
     ```
     """
-    var = psutil.disk_partitions()
+    __require_psutil__()
+    var = __psutil__.disk_partitions()
     output = [part._asdict() for part in var]
     return output
 
@@ -200,7 +243,7 @@ def get_boot_drive_name():
             return str(e)
     elif PLATFORM == "linux" or PLATFORM == "linux2":
         try:
-            cmd = "lsblk -o MOUNTPOINT,LABEL | grep '/'"
+            cmd = "lsblk -o MOUNTPOINT,LABEL | grep -E '^/ +'"
             startup_drive_name = subprocess.check_output(cmd, shell=True).decode("utf-8").strip().split(" ")[-1]
             return startup_drive_name
         except Exception as e:
@@ -235,6 +278,7 @@ def get_disk_partition_filteredby_device(filter):
     print(partitions)
     ```
     """
+    __require_psutil__()
     var = get_disk_partitions()
     out_filter = filter.lower()
     output = [d for d in var if d['device'] == out_filter]
@@ -267,6 +311,7 @@ def get_disk_partition_filteredby_fstype(filter):
     print(partitions)
     ```
     """
+    __require_psutil__()
     var = get_disk_partitions()
     out_filter = filter.lower()
     output = [d for d in var if d['fstype'] == out_filter]
@@ -299,6 +344,7 @@ def get_disk_partition_filteredby_mountpoint(filter):
     print(partitions)
     ```
     """
+    __require_psutil__()
     var = get_disk_partitions()
     output = [d for d in var if d['mountpoint'] == filter]
     return output
@@ -330,6 +376,7 @@ def get_disk_partition_filteredby_opts(filter):
     print(partitions)
     ```
     """
+    __require_psutil__()
     var = get_disk_partitions()
     out_filter = filter.lower()
     output = [d for d in var if d['opts'] == out_filter]
@@ -368,7 +415,8 @@ def storage_metrics(mountpoint):
     storage_metrics('/')
     ```
     """
-    var = psutil.disk_usage(mountpoint)
+    __require_psutil__()
+    var = __psutil__.disk_usage(mountpoint)
     total = var.total
     free = var.free
     used = var.used
@@ -726,6 +774,7 @@ def disk_info():
             used_percent_list.append(metrics[4])
         return used_percent_list
 
+    __require_psutil__()
     devices = __get_disk_device_list__()
     filesystems = __get_disk_filesystem_list__()
     mountpoint = __get_disk_mountpoint_list__()
@@ -770,7 +819,8 @@ def disk_io_counters():
     print(io_counters)
     ```
     """
-    disk_io = psutil.disk_io_counters(perdisk=True)
+    __require_psutil__()
+    disk_io = __psutil__.disk_io_counters(perdisk=True)
     return disk_io
 
 ######################################## DISK INFORMATION ########################################

@@ -1,3 +1,16 @@
+# -*- coding: utf-8 -*-
+#
+# filesystem/console/winterm.py
+# FileSystemPro
+#
+# Created by Heitor Bisneto on 12/11/2025.
+# Copyright © 2023–2025 hbisneto. All rights reserved.
+#
+# This file is part of FileSystemPro.
+# FileSystemPro is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License. See LICENSE for more details.
+#
+
 # Copyright Jonathan Hartley 2013. BSD 3-Clause license, see LICENSE file.
 
 from .ansi import AnsiStyle

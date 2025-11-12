@@ -1,38 +1,76 @@
+# -*- coding: utf-8 -*-
+#
+# filesystem/compression/__init__.py
+# FileSystemPro
+#
+# Created by Heitor Bisneto on 12/11/2025.
+# Copyright © 2023–2025 hbisneto. All rights reserved.
+#
+# This file is part of FileSystemPro.
+# FileSystemPro is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License. See LICENSE for more details.
+#
+
 """
 # Compression
 
 ---
 
 ## Overview
-The Compression module is a component of the FileSystemPro library that provides functions for creating, extracting, and reading compressed archive files in tar and zip formats. 
-It leverages Python's built-in `tarfile` and `zipfile` modules to handle compression and extraction efficiently, supporting single files, directories, or lists thereof.
+This module provides utilities for creating, extracting, and reading tar and zip archives. It supports compressing single or multiple files/directories into archives with optional compression (for tar: none, gz, bz2) while preserving directory structures. Extraction can be selective, and reading functions list contents with optional filtering of system files. All operations return metadata via `wrapper.get_object` for created/extracted items, ensuring cross-platform compatibility.
 
 ## Features
-- **Archive Creation:** Compresses single files/directories or lists into tar (.tar, .tar.gz, .tar.bz2) or zip (.zip) archives, preserving internal structure.
-- **Archive Extraction:** Extracts all contents or specific files/directories from tar or zip archives to a destination directory.
-- **Archive Reading:** Lists the contents of tar or zip archives, with optional filtering of system files (e.g., .DS_Store).
-- **Error Handling:** Raises descriptive exceptions for common issues like missing files or permissions, ensuring robust operations.
-- **Flexibility:** Supports compressed variants (e.g., gzip for tar) and partial extractions for targeted workflows.
-
-## Detailed Functionality
-The module's functions are grouped by archive type (tar and zip) for clarity, providing a unified interface while respecting format-specific behaviors.
-
-### Tar Functions
-- **`create_tar(fullpath_files, destination, compression='none')`**: Compresses files/directories into a tar archive, with optional gzip/bzip2 compression.
-- **`extract_tar(tar_filename, destination, extraction_list=[])`**: Extracts from a tar archive (auto-detects compression like .tar.gz).
-- **`read_tar(tar_filename)`**: Returns a list of files in the tar archive.
-
-### Zip Functions
-- **`create_zip(fullpath_files, destination)`**: Compresses files/directories into a zip archive (uses deflate by default).
-- **`extract_zip(zip_path, destination, extraction_list=None)`**: Extracts from a zip archive, supporting None (all), list, or single file.
-- **`read_zip(zip_filename, show_compression_system_files=True)`**: Returns a list of files, optionally excluding system artifacts.
+- **Tar Archive Creation:** Compress files/directories into .tar, .tar.gz, or .tar.bz2 formats.
+- **Tar Extraction:** Extract entire archives or specific files/directories to a destination.
+- **Tar Reading:** List all files in a tar archive.
+- **Zip Archive Creation:** Compress files/directories into .zip format.
+- **Zip Extraction:** Extract entire archives, specific files, or single files to a destination.
+- **Zip Reading:** List files in a zip archive, optionally excluding system files (e.g., __MACOSX, .DS_Store).
+- **Error Handling:** Raises specific exceptions for missing files, permissions, invalid inputs, or extraction issues.
+- **Structure Preservation:** Maintains relative paths within archives for directories.
 
 ## Usage
-To use the functions provided by this module, 
-import the module and call the desired function with the appropriate parameters:
+To use these functions, simply import the module and call the desired function:
 
 ```python
-from filesystem import compression as comp
+from filesystem import compression
+```
+
+### Examples:
+
+- Create a gzip-compressed tar archive from multiple files:
+
+```python
+files = ["/path/to/file1.txt", "/path/to/dir"]
+result = compression.create_tar(files, "/path/to/archive.tar.gz", compression='gz')
+print(result['size'])  # e.g., "1.2 MB"
+```
+
+- Extract specific files from a tar archive:
+
+```python
+compression.extract_tar("/path/to/archive.tar", "/destination/dir", extraction_list=["file1.txt", "subdir/file2.txt"])
+```
+
+- Read contents of a zip archive, excluding system files:
+
+```python
+contents = compression.read_zip("/path/to/archive.zip", show_compression_system_files=False)
+print(contents)  # e.g., ['file1.txt', 'dir/file2.txt']
+```
+
+- Create a zip archive from a single directory:
+
+```python
+result = compression.create_zip("/path/to/source_dir", "/path/to/archive.zip")
+print(result['abspath'])  # Full path to the created archive
+```
+
+- Extract all files from a zip archive:
+
+```python
+result = compression.extract_zip("/path/to/archive.zip", "/destination/dir")
+print(result['size'])  # Size of the extracted directory
 ```
 """
 
