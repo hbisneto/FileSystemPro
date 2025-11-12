@@ -237,8 +237,8 @@ for ch in recent:
 
 ## Contributing
 
-See the root [README.md](../../README.md) and [CONTRIBUTING.md](https://github.com/hbisneto/FileSystemPro/blob/main/CONTRIBUTING.md) for guidelines. Report issues or suggest enhancements (e.g., native watchers, debounce) via GitHub.
+See the root [README.md](https://github.com/hbisneto/FileSystemPro/blob/main/README.md) and [CONTRIBUTING.md](https://github.com/hbisneto/FileSystemPro/blob/main/CONTRIBUTING.md) for guidelines. Report issues or suggest enhancements (e.g., native watchers, debounce) via GitHub.
 
 ## License
 
-This module is part of **FileSystemPro**, licensed under the MIT License. See [LICENSE](../LICENSE) for details.
+This module is part of **FileSystemPro**, licensed under the MIT License. See [LICENSE](https://github.com/hbisneto/FileSystemPro/blob/main/LICENSE) for details.

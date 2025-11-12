@@ -6,7 +6,7 @@ Before starting, please read this guide to understand our contribution process. 
 
 ## Code of Conduct
 
-We follow the [Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/). All contributors are expected to uphold this standard. If you encounter issues, contact us at [contact@example.com](mailto:contact@example.com) or via GitHub issues.
+We follow the [Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/). All contributors are expected to uphold this standard. If you encounter issues, contact us at [heitor.bardemaker@live.com](mailto:heitor.bardemaker@live.com) or via GitHub issues.
 
 ## Ways to Contribute
 
@@ -125,6 +125,6 @@ Releases are managed by maintainers:
 
 - **Issues/PRs**: Use GitHub for tracking.
 - **Discussions**: [Start one](https://github.com/hbisneto/FileSystemPro/discussions/new) for ideas.
-- **Direct**: Email [contact@example.com](mailto:contact@example.com) or DM @BisnetoDev on X.
+- **Direct**: Email [heitor.bardemaker@live.com](mailto:heitor.bardemaker@live.com) or DM @BisnetoDev on X.
 
 Thanks for contributing—we're excited to collaborate! 🚀

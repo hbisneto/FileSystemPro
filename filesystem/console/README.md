@@ -171,8 +171,8 @@ for f in files:
 
 ## Contributing
 
-See the root [README.md](../../README.md) and [CONTRIBUTING.md](https://github.com/hbisneto/FileSystemPro/blob/main/CONTRIBUTING.md) for guidelines. Report issues or suggest enhancements (e.g., 256-color support, bold italics) via GitHub.
+See the root [README.md](https://github.com/hbisneto/FileSystemPro/blob/main/README.md) and [CONTRIBUTING.md](https://github.com/hbisneto/FileSystemPro/blob/main/CONTRIBUTING.md) for guidelines. Report issues or suggest enhancements (e.g., 256-color support, bold italics) via GitHub.
 
 ## License
 
-This module is part of **FileSystemPro**, licensed under the MIT License. See [LICENSE](../LICENSE) for details. (Based on Colorama BSD 3-Clause.)
+This module is part of **FileSystemPro**, licensed under the MIT License. See [LICENSE](https://github.com/hbisneto/FileSystemPro/blob/main/LICENSE) for details. (Based on Colorama BSD 3-Clause.)

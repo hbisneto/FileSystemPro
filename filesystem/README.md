@@ -196,4 +196,4 @@ See the root [README.md](../README.md) and [CONTRIBUTING.md](https://github.com/
 
 ## License
 
-This module is part of **FileSystemPro**, licensed under the MIT License. See [LICENSE](../LICENSE) for details.
+This module is part of **FileSystemPro**, licensed under the MIT License. See [LICENSE](https://github.com/hbisneto/FileSystemPro/blob/main/LICENSE) for details.
