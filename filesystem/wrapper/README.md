@@ -149,7 +149,7 @@ for f in files:
 
 ## Contributing
 
-See the root [README.md](../README.md) and [CONTRIBUTING.md](https://github.com/hbisneto/FileSystemPro/blob/main/CONTRIBUTING.md) for guidelines. Report issues or suggest enhancements (e.g., raw value options, async sizing) via GitHub.
+See the root [README.md](../../README.md) and [CONTRIBUTING.md](https://github.com/hbisneto/FileSystemPro/blob/main/CONTRIBUTING.md) for guidelines. Report issues or suggest enhancements (e.g., raw value options, async sizing) via GitHub.
 
 ## License
 

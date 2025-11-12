@@ -230,7 +230,7 @@ print(all_if['lo'])  # {'ip': None, 'mac': None, 'is_up': True, ...}
 
 ## Contributing
 
-See the root [README.md](../README.md) and [CONTRIBUTING.md](https://github.com/hbisneto/FileSystemPro/blob/main/CONTRIBUTING.md) for guidelines. Report issues or suggest enhancements (e.g., GPU monitoring, historical averages) via GitHub.
+See the root [README.md](../../README.md) and [CONTRIBUTING.md](https://github.com/hbisneto/FileSystemPro/blob/main/CONTRIBUTING.md) for guidelines. Report issues or suggest enhancements (e.g., GPU monitoring, historical averages) via GitHub.
 
 ## License
 

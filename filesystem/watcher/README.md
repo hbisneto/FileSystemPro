@@ -237,7 +237,7 @@ for ch in recent:
 
 ## Contributing
 
-See the root [README.md](../README.md) and [CONTRIBUTING.md](https://github.com/hbisneto/FileSystemPro/blob/main/CONTRIBUTING.md) for guidelines. Report issues or suggest enhancements (e.g., native watchers, debounce) via GitHub.
+See the root [README.md](../../README.md) and [CONTRIBUTING.md](https://github.com/hbisneto/FileSystemPro/blob/main/CONTRIBUTING.md) for guidelines. Report issues or suggest enhancements (e.g., native watchers, debounce) via GitHub.
 
 ## License
 

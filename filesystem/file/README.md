@@ -233,7 +233,7 @@ for entry in entries:
 
 ## Contributing
 
-See the root [README.md](../README.md) and [CONTRIBUTING.md](https://github.com/hbisneto/FileSystemPro/blob/main/CONTRIBUTING.md) for guidelines. Report issues or suggest enhancements (e.g., async I/O, MD5 support) via GitHub.
+See the root [README.md](../../README.md) and [CONTRIBUTING.md](https://github.com/hbisneto/FileSystemPro/blob/main/CONTRIBUTING.md) for guidelines. Report issues or suggest enhancements (e.g., async I/O, MD5 support) via GitHub.
 
 ## License
 
