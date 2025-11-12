@@ -63,21 +63,21 @@ pip install --upgrade setuptools wheel
 
 > Note: Requires setuptools 69.5.1+; wheel for packaging.
 
-Run tests or build: See [CONTRIBUTING.md](CONTRIBUTING.md).
+Run tests or build: See [CONTRIBUTING.md](https://github.com/hbisneto/FileSystemPro/blob/main/CONTRIBUTING.md).
 
 ## Table of Contents
 
 Jump to module documentation for detailed APIs, examples, and best practices:
 
-- **[FileSystem Module](filesystem/README.md)**: OS detection and standard folder paths (`desktop`, `documents`, etc.).
-- **[Core Module](filesystem/__core__/README.md)**: Config management, logging, performance tuning, and update checks.
-- **[Compression Module](filesystem/compression/README.md)**: Tar/zip creation, extraction, and reading.
-- **[Directory Module](filesystem/directory/README.md)**: Path operations, creation/deletion, enumeration, timestamps, and tree views.
-- **[File Module](filesystem/file/README.md)**: I/O, integrity (SHA-256), copy/move, splitting, and timestamps.
-- **[Watcher Module](filesystem/watcher/README.md)**: Polling-based filesystem change detection with callbacks.
-- **[Wrapper Module](filesystem/wrapper/README.md)**: Unified metadata dicts (paths, sizes, timestamps).
-- **[Console Module](filesystem/console/README.md)**: ANSI colors, backgrounds, and styles (chainable, Windows-compatible).
-- **[Device Module](filesystem/device/README.md)**: CPU/disks/memory/network monitoring (requires `psutil`).
+- **[FileSystem Module](https://github.com/hbisneto/FileSystemPro/blob/main/filesystem/README.md)**: OS detection and standard folder paths (`desktop`, `documents`, etc.).
+- **[Core Module](https://github.com/hbisneto/FileSystemPro/blob/main/filesystem/__core__/README.md)**: Config management, logging, performance tuning, and update checks.
+- **[Compression Module](https://github.com/hbisneto/FileSystemPro/blob/main/filesystem/compression/README.md)**: Tar/zip creation, extraction, and reading.
+- **[Directory Module](https://github.com/hbisneto/FileSystemPro/blob/main/filesystem/directory/README.md)**: Path operations, creation/deletion, enumeration, timestamps, and tree views.
+- **[File Module](https://github.com/hbisneto/FileSystemPro/blob/main/filesystem/file/README.md)**: I/O, integrity (SHA-256), copy/move, splitting, and timestamps.
+- **[Watcher Module](https://github.com/hbisneto/FileSystemPro/blob/main/filesystem/watcher/README.md)**: Polling-based filesystem change detection with callbacks.
+- **[Wrapper Module](https://github.com/hbisneto/FileSystemPro/blob/main/filesystem/wrapper/README.md)**: Unified metadata dicts (paths, sizes, timestamps).
+- **[Console Module](https://github.com/hbisneto/FileSystemPro/blob/main/filesystem/console/README.md)**: ANSI colors, backgrounds, and styles (chainable, Windows-compatible).
+- **[Device Module](https://github.com/hbisneto/FileSystemPro/blob/main/filesystem/device/README.md)**: CPU/disks/memory/network monitoring (requires `psutil`).
 
 ## Quick Start
 
@@ -133,8 +133,8 @@ See submodule READMEs for internals.
 4. Run: `pytest` / `black .` / `flake8`.
 5. PR to `main`.
 
-Guidelines: [CONTRIBUTING.md](CONTRIBUTING.md).
+Guidelines: [CONTRIBUTING.md](https://github.com/hbisneto/FileSystemPro/blob/main/CONTRIBUTING.md).
 
 ## License
 
-MIT License. See [LICENSE](LICENSE).
+MIT License. See [LICENSE](https://github.com/hbisneto/FileSystemPro/blob/main/LICENSE).

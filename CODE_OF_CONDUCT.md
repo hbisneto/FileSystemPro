@@ -51,7 +51,7 @@ All community leaders are obligated to respect the privacy and security of the r
 
 ## Enforcement Guidelines
 
-Community leaders are responsible for enforcing the Code of Conduct. They will follow our [enforcement guidelines](ENFORCEMENT.md) which include:
+Community leaders are responsible for enforcing the Code of Conduct. They will follow our [enforcement guidelines](https://github.com/hbisneto/FileSystemPro/blob/main/ENFORCEMENT.md) which include:
 
 - **Documenting Incidents**: Log all reports and actions taken.
 - **Confidentiality**: Keep reports private unless explicit permission.
@@ -66,7 +66,7 @@ This Code of Conduct is adapted from the [Contributor Covenant, version 2.1](htt
 Specific customizations for FileSystemPro:
 
 - Contact email: [heitor.bardemaker@live.com](mailto:heitor.bardemaker@live.com) for reports.
-- Enforcement link: Points to a custom [ENFORCEMENT.md](ENFORCEMENT.md) (create this if needed for detailed procedures).
+- Enforcement link: Points to a custom [ENFORCEMENT.md](https://github.com/hbisneto/FileSystemPro/blob/main/ENFORCEMENT.md) (create this if needed for detailed procedures).
 
 Community Impact Guidelines were created by [Molly de Blanc](https://github.com/mollydb) and adapted from the [Citizen Code of Conduct](https://github.com/stumpsyn/policies/blob/master/citizen_code_of_conduct.md) by Richard Matthew Cornwell.
 
