@@ -62,9 +62,163 @@ print(has_ext, no_ext)
 """
 
 import datetime
+import hashlib
+import mimetypes
 import os
+import stat
 from filesystem import file as fsfile
 from filesystem import directory as dir
+from typing import(
+    Dict, 
+    List, 
+    Optional, 
+    Union, 
+    Any
+)
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+# Optional Unix-only modules
+try:
+    import pwd
+    import grp
+    _HAS_PWD_GRP = True
+except ImportError:
+    _HAS_PWD_GRP = False
+
+# ===========================================================================
+# Internal helpers
+# ===========================================================================
+
+def _human_age(seconds: float) -> str:
+    """Convert seconds into a human-readable age string."""
+    if seconds < 0:
+        return "in the future"
+    intervals = (
+        ('year', 31536000),
+        ('month', 2592000),
+        ('week', 604800),
+        ('day', 86400),
+        ('hour', 3600),
+        ('minute', 60),
+        ('second', 1),
+    )
+    for name, count in intervals:
+        value = int(seconds // count)
+        if value >= 1:
+            return f"{value} {name}{'s' if value != 1 else ''}"
+    return "0 seconds"
+
+def _require_exists(path: str) -> None:
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"Path '{path}' does not exist.")
+
+# def _format_size(size: int) -> str:
+#     for unit in ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']:
+#         if size < 1024.0:
+#             return f"{size:3.1f} {unit}"
+#         size /= 1024.0
+#     return f"{size:3.1f} YB"
+
+# def _format_timestamp(ts: float) -> str:
+#     dt = datetime.datetime.fromtimestamp(ts)
+#     return dt.strftime("%Y/%m/%d %H:%M:%S:%f")
+
+def compare(path_a: str, path_b: str) -> Dict[str, Any]:
+    """
+    Compares two filesystem objects and returns differences in size,
+    timestamps and type. Useful for sync / audit.
+    """
+    _require_exists(path_a)
+    _require_exists(path_b)
+
+    raw_a = get_raw_object(path_a)
+    raw_b = get_raw_object(path_b)
+
+    differences = {}
+
+    # Type
+    if raw_a["is_file"] != raw_b["is_file"] or raw_a["is_dir"] != raw_b["is_dir"]:
+        differences["type"] = {
+            "a": "file" if raw_a["is_file"] else ("dir" if raw_a["is_dir"] else "other"),
+            "b": "file" if raw_b["is_file"] else ("dir" if raw_b["is_dir"] else "other"),
+        }
+
+    # Size
+    if raw_a["size"] != raw_b["size"]:
+        differences["size"] = {
+            "a": raw_a["size"],
+            "b": raw_b["size"],
+            "delta": raw_b["size"] - raw_a["size"],
+        }
+
+    # Timestamps
+    for key in ("created", "modified", "access"):
+        if abs(raw_a[key] - raw_b[key]) > 1e-6:  # ignore microsecond noise
+            differences[key] = {
+                "a": raw_a[key],
+                "b": raw_b[key],
+                "delta_seconds": raw_b[key] - raw_a[key],
+            }
+
+    return {
+        "identical": len(differences) == 0,
+        "differences": differences,
+        "path_a": path_a,
+        "path_b": path_b,
+    }
+
+def get_age(path: str, reference: str = "modified") -> Dict[str, Any]:
+    """
+    Returns how long ago the object was created or modified.
+
+    Parameters:
+        reference: "created" or "modified" (default).
+
+    Returns a dict with:
+        - seconds: float
+        - human: str  (e.g. "3 days")
+        - reference: the reference used
+    """
+    _require_exists(path)
+
+    if reference == "created":
+        ts = os.path.getctime(path)
+    elif reference == "modified":
+        ts = os.path.getmtime(path)
+    else:
+        raise ValueError("reference must be 'created' or 'modified'")
+
+    now = datetime.datetime.now().timestamp()
+    seconds = now - ts
+
+    return {
+        "seconds": seconds,
+        "human": _human_age(seconds),
+        "reference": reference,
+    }
+
+# TEST FUNCTION
+def get_link_target(path: str) -> str:
+    """
+    Returns the target of a symbolic link (os.readlink).
+    Raises ValueError if the path is not a symlink.
+    """
+    _require_exists(path)
+    if not os.path.islink(path):
+        raise ValueError(f"Path '{path}' is not a symbolic link.")
+    return os.readlink(path)
+
+def get_mime_type(path: str) -> Optional[str]:
+    """
+    Detects the MIME type of a file using the standard library mimetypes module.
+    Returns None if the type cannot be determined.
+    """
+    _require_exists(path)
+    if not os.path.isfile(path):
+        return None
+
+    mime, _ = mimetypes.guess_type(path)
+    return mime
 
 def get_object(path):
     """
@@ -270,6 +424,147 @@ def get_object(path):
     result["size"] = obj_get_size(path)
     return result
 
+def get_objects(
+    paths: Union[str, List[str]],
+    parallel: bool = False,
+    max_workers: int = 4,
+    raw: bool = False,
+) -> Dict[str, Dict[str, Any]]:
+    """
+    Batch version of get_object / get_raw_object.
+
+    Parameters:
+        paths: single path or list of paths.
+        parallel: use ThreadPoolExecutor when True.
+        max_workers: number of threads (only when parallel=True).
+        raw: if True, call get_raw_object instead of get_object.
+
+    Returns a dict keyed by the original path.
+    Paths that raise an exception are stored as {"error": str(exception)}.
+    """
+    if isinstance(paths, str):
+        paths = [paths]
+
+    getter = get_raw_object if raw else get_object
+    results: Dict[str, Dict[str, Any]] = {}
+
+    def _safe_get(p: str) -> tuple:
+        try:
+            return p, getter(p)
+        except Exception as e:
+            return p, {"error": str(e)}
+
+    if parallel and len(paths) > 1:
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = {executor.submit(_safe_get, p): p for p in paths}
+            for future in as_completed(futures):
+                path, data = future.result()
+                results[path] = data
+    else:
+        for p in paths:
+            _, data = _safe_get(p)
+            results[p] = data
+
+    return results
+
+def get_owner(path: str) -> Dict[str, Any]:
+    """
+    Returns ownership information.
+    On Unix tries to resolve UID/GID to names via pwd/grp.
+    On Windows only UID/GID (or equivalent) are available.
+    """
+    _require_exists(path)
+
+    st = os.stat(path)
+    uid = st.st_uid
+    gid = st.st_gid
+
+    user_name = None
+    group_name = None
+
+    if _HAS_PWD_GRP:
+        try:
+            user_name = pwd.getpwuid(uid).pw_name
+        except KeyError:
+            user_name = None
+        try:
+            group_name = grp.getgrgid(gid).gr_name
+        except KeyError:
+            group_name = None
+
+    return {
+        "uid": uid,
+        "gid": gid,
+        "user": user_name,
+        "group": group_name,
+    }
+
+def get_raw_object(path: str) -> Dict[str, Any]:
+    """
+    Same as get_object, but returns raw values:
+    - timestamps as float (Unix epoch)
+    - size as int (bytes)
+    """
+    _require_exists(path)
+
+    head, tail = os.path.split(path)
+    is_file = os.path.isfile(path)
+    is_dir = os.path.isdir(path)
+    is_link = os.path.islink(path)
+
+    if is_file:
+        size_bytes = os.path.getsize(path)
+    else:
+        size_bytes = sum(
+            os.path.getsize(os.path.join(dirpath, filename))
+            for dirpath, _, filenames in os.walk(path)
+            for filename in filenames
+        )
+
+    if is_file:
+        _, ext = os.path.splitext(tail)
+        extension = ext.lstrip('.') if ext else ""
+        name_without_extension = os.path.splitext(tail)[0]
+    else:
+        extension = ""
+        name_without_extension = tail
+
+    return {
+        "abspath": os.path.abspath(path),
+        "access": os.path.getatime(path),          # float
+        "created": os.path.getctime(path),         # float
+        "dirname": os.path.dirname(path),
+        "exists": True,
+        "is_dir": is_dir,
+        "is_file": is_file,
+        "is_link": is_link,
+        "extension": extension,
+        "modified": os.path.getmtime(path),        # float
+        "name": tail,
+        "name_without_extension": name_without_extension,
+        "size": size_bytes,                        # int
+    }
+
+def get_permissions(path: str) -> Dict[str, Any]:
+    """
+    Returns permission information:
+    - mode: integer mode from st_mode
+    - octal: string like '0o755'
+    - readable / writable / executable: booleans via os.access
+    """
+    _require_exists(path)
+
+    st = os.stat(path)
+    mode = st.st_mode
+
+    return {
+        "mode": mode,
+        "octal": oct(stat.S_IMODE(mode)),          # e.g. '0o755'
+        "readable": os.access(path, os.R_OK),
+        "writable": os.access(path, os.W_OK),
+        "executable": os.access(path, os.X_OK),
+    }
+
 def has_extension(file_path):
     """
     # wrapper.has_extension(file_path)
@@ -301,3 +596,35 @@ def has_extension(file_path):
     This will return False because the file does not have an extension.
     """
     return os.path.splitext(file_path)[1] != ''
+
+def is_empty(path: str) -> bool:
+    """
+    Returns True if:
+    - the path is a file with size 0, or
+    - the path is a directory containing no entries.
+    """
+    _require_exists(path)
+
+    if os.path.isfile(path):
+        return os.path.getsize(path) == 0
+    if os.path.isdir(path):
+        return len(os.listdir(path)) == 0
+    return False
+
+# ===========================================================================
+# Explicit exports
+# ===========================================================================
+
+__all__ = [
+    "compare",
+    "get_age",
+    "get_link_target",
+    "get_mime_type",
+    "get_object",
+    "get_objects",
+    "get_owner",
+    "get_raw_object",
+    "get_permissions",
+    "has_extension",
+    "is_empty",
+]
